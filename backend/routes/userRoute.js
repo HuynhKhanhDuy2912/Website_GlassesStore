@@ -1,21 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const { register, login, getUser, updateUser, deleteUser } = require('../controllers/userController');
-const { protect, isAdmin } = require('../middlewares/authMiddleware');
+const userController = require('../controllers/userController'); // Đảm bảo đường dẫn đúng
 
-// Route đăng ký người dùng
-router.post('/register', register);
+// GET /api/users/  -> Sẽ gọi userController.getAllUsers
+// Lưu ý: Chỉ để dấu '/' chứ KHÔNG để '/api/users' hay '/users' ở đây nữa
+router.get('/', userController.getAllUsers);
 
-// Route đăng nhập người dùng
-router.post('/login', login);
+// POST /api/users/ (Tạo mới)
+router.post('/', userController.createUser);
 
-// Route lấy thông tin người dùng (cần xác thực)
-router.get('/profile', protect, getUser);
+// PUT /api/users/:id (Sửa)
+router.put('/:id', userController.updateUser);
 
-// Route cập nhật thông tin người dùng (cần xác thực)
-router.put('/profile', protect, updateUser);
+// DELETE /api/users/:id (Xóa)
+router.delete('/:id', userController.deleteUser);
 
-// Route xóa người dùng (chỉ dành cho admin)
-router.delete('/:id', protect, isAdmin, deleteUser);
-
+router.post('/login', userController.login);
 module.exports = router;
