@@ -1,19 +1,26 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/userController'); // Đảm bảo đường dẫn đúng
+const userController = require('../controllers/userController'); 
 
-// GET /api/users/  -> Sẽ gọi userController.getAllUsers
-// Lưu ý: Chỉ để dấu '/' chứ KHÔNG để '/api/users' hay '/users' ở đây nữa
-router.get('/', userController.getAllUsers);
+// 1. Import Middleware bảo vệ
+// (Đảm bảo đường dẫn '../middleware/authMiddleware' là đúng với cấu trúc folder của bạn)
+const { protect, isAdmin } = require('../middlewares/authMiddleware'); // <--- THÊM DÒNG NÀY
 
-// POST /api/users/ (Tạo mới)
-router.post('/', userController.createUser);
+// GET /api/users/ 
+router.get('/', protect, isAdmin, userController.getAllUsers);
 
-// PUT /api/users/:id (Sửa)
-router.put('/:id', userController.updateUser);
+// POST /api/users/ (Tạo user từ trang Admin)
+router.post('/', protect, isAdmin, userController.createUser);
 
-// DELETE /api/users/:id (Xóa)
-router.delete('/:id', userController.deleteUser);
+// PUT /api/users/:id 
+router.put('/:id', protect, isAdmin, userController.updateUser);
 
+// DELETE /api/users/:id 
+router.delete('/:id', protect, isAdmin, userController.deleteUser);
+
+
+// --- ROUTE CÔNG KHAI (PUBLIC) ---
+// Đăng nhập thì ai cũng được phép, không được chặn!
 router.post('/login', userController.login);
+
 module.exports = router;

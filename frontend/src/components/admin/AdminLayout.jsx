@@ -50,15 +50,7 @@ const AdminLayout = () => {
         {/* Header màu Xám Xanh (Lạnh) */}
         <header className="h-16 bg-slate-800 shadow-md flex items-center justify-between px-8 sticky top-0 z-40 text-white">
           
-          {/* Search Bar */}
-          <div className="flex items-center bg-slate-700 rounded-full px-4 py-2 w-96 border border-slate-600 focus-within:border-blue-400 transition-colors">
-            <Search size={18} className="text-slate-400 mr-2" />
-            <input 
-              type="text" 
-              placeholder="Tìm kiếm..." 
-              className="bg-transparent outline-none text-sm w-full text-white placeholder-slate-400"
-            />
-          </div>
+
 
           {/* Khu vực User */}
           <div className="flex items-center gap-6">

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const shippingAddressController = require('../controllers/ShippingAddressController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect } = require('../middlewares/authMiddleware');
 
 // Bảo vệ tất cả route
 router.use(protect);

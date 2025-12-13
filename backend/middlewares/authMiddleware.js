@@ -4,49 +4,44 @@ const User = require('../models/User');
 const protect = async (req, res, next) => {
   let token;
 
+  // Kiểm tra header có dạng: "Bearer eyJhbGci..."
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
-      // 1. Lấy token
+      // 1. Lấy token (Bỏ chữ 'Bearer ')
       token = req.headers.authorization.split(' ')[1];
 
-      // 2. Kiểm tra JWT Secret (Bắt buộc phải có trong .env)
-      if (!process.env.JWT_SECRET) {
-        throw new Error('JWT_SECRET chưa được cấu hình!');
-      }
-
-      // 3. Verify token
+      // 2. Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // 4. Lấy user từ DB (Loại bỏ password)
-      const user = await User.findById(decoded.id).select('-password');
+      // 3. Lấy user từ DB (Loại bỏ password)
+      // .select('-password') cực quan trọng để bảo mật thông tin
+      req.user = await User.findById(decoded.id).select('-password');
 
-      // --- [QUAN TRỌNG] Kiểm tra user còn tồn tại không ---
-      if (!user) {
+      // 4. [QUAN TRỌNG] Kiểm tra user còn tồn tại không
+      // Phòng trường hợp User bị Admin xóa nick nhưng Token cũ vẫn còn hạn
+      if (!req.user) {
         return res.status(401).json({ message: 'Người dùng không còn tồn tại.' });
       }
 
-      // Gán user vào request để dùng ở các bước sau
-      req.user = user;
-      next();
+      next(); // Cho phép đi tiếp
 
     } catch (error) {
-      console.error(error); // Log lỗi ra console để debug
+      console.error("Auth Error:", error.message); 
       return res.status(401).json({ message: 'Token không hợp lệ hoặc đã hết hạn.' });
     }
   }
 
-  // Trường hợp không có token trong header
+  // Nếu không vào được khối if ở trên (tức là không có token)
   if (!token) {
     return res.status(401).json({ message: 'Không có token, vui lòng đăng nhập.' });
   }
 };
 
 const isAdmin = (req, res, next) => {
-  // Kiểm tra user có tồn tại và role có phải Admin không
-  if (req.user && req.user.role === 'Admin') {
+  if (req.user && req.user.role === 'admin') { 
     next();
   } else {
-    // 403: Forbidden (Biết là ai nhưng không có quyền)
+
     return res.status(403).json({ message: 'Bạn không có quyền quản trị viên.' });
   }
 };

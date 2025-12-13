@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const orderDetailController = require('../controllers/OrderDetailController');
-const { protect, isAdmin } = require('../middleware/authMiddleware');
+const { protect, isAdmin } = require('../middlewares/authMiddleware');
 
 // Tất cả đều cần đăng nhập
 router.use(protect);

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const brandController = require('../controllers/BrandController');
 // Import middleware
-const { protect, isAdmin } = require('../middleware/authMiddleware'); // Đường dẫn tùy file của bạn
+const { protect, isAdmin } = require('../middlewares/authMiddleware'); // Đường dẫn tùy file của bạn
 
 // --- PUBLIC ---
 router.get('/', brandController.getAllBrands);

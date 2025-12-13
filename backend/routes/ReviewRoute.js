@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const reviewController = require('../controllers/ReviewController');
-const { protect, isAdmin } = require('../middleware/authMiddleware');
+const { protect, isAdmin } = require('../middlewares/authMiddleware');
 
 // --- PUBLIC ROUTES ---
 // Xem đánh giá của sản phẩm thì ai cũng xem được (không cần login)
