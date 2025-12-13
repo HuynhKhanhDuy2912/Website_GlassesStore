@@ -3,7 +3,7 @@ const router = express.Router();
 const categoryController = require('../controllers/CategoryController');
 
 // Import Middleware bảo vệ
-const { protect, isAdmin } = require('../middleware/authMiddleware');
+const { protect, isAdmin } = require('../middlewares/authMiddleware');
 
 // --- PUBLIC ROUTES (Ai cũng xem được) ---
 

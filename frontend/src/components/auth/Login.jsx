@@ -17,29 +17,31 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       // 1. Gọi API Login
       const res = await userApi.login(formData);
+
+      // 2. Lưu Token (SỬA LẠI DÒNG NÀY)
+      // Đổi 'token' thành 'accessToken'
+      localStorage.setItem('accessToken', res.token); 
       
-      // 2. Lưu Token và User vào LocalStorage
-      // (Quan trọng: để AdminLayout đọc được tên người dùng)
-      localStorage.setItem('token', res.token); 
-      localStorage.setItem('user', JSON.stringify(res.user)); 
+      // Lưu thông tin user
+      localStorage.setItem('user', JSON.stringify(res.user));
 
       toast.success('Đăng nhập thành công!');
-      
+
       // 3. Chuyển hướng
-      // Nếu là admin -> vào dashboard, nếu là khách -> vào trang chủ (tùy logic bạn)
       if (res.user.role === 'admin') {
         navigate('/admin/dashboard');
+      } else if (res.user.role === 'customer') {
+        navigate('/shop');
       } else {
-        navigate('/'); // Hoặc trang chủ shop
+        navigate('/');
       }
-
     } catch (error) {
       console.error(error);
       const message = error.response?.data?.message || "Đăng nhập thất bại";
@@ -48,7 +50,6 @@ const Login = () => {
       setLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">

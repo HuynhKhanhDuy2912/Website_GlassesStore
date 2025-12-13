@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const cartItemController = require('../controllers/CartItemController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect } = require('../middlewares/authMiddleware');
 
 // Tất cả thao tác giỏ hàng đều cần đăng nhập
 router.use(protect);

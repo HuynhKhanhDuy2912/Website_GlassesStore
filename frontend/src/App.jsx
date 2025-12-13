@@ -12,6 +12,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminLayout from './components/admin/AdminLayout';
 import Dashboard from './components/admin/Dashboard';
 import UserManager from './components/admin/UserManager';
+import BrandManager from './components/admin/BrandManeger';
 
 // Shop (User Interface)
 import ShopLayout from './components/shop/ShopLayout';
@@ -46,6 +47,7 @@ function App() {
             <Route path="users" element={<UserManager />} />
             <Route path="orders" element={<div>Quản lý đơn hàng</div>} />
             <Route path="products" element={<div>Quản lý sản phẩm</div>} />
+            <Route path="brands" element={<BrandManager />} />
           </Route>
         </Route>
 

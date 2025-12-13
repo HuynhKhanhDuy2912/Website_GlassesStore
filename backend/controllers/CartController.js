@@ -1,8 +1,25 @@
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
 
+// --- Helper: Tính toán lại tổng tiền ---
+const updateCartTotals = async (cart) => {
+    // Populate tạm thời để lấy giá sản phẩm hiện tại từ bảng Product
+    // (Nếu chưa populate thì mới populate, tránh làm nhiều lần)
+    if (!cart.items[0] || !cart.items[0].product_id.price) {
+        await cart.populate('items.product_id', 'price');
+    }
+
+    cart.total_items = cart.items.reduce((total, item) => total + item.quantity, 0);
+    
+    cart.total_amount = cart.items.reduce((total, item) => {
+        // Nếu sản phẩm bị xóa khỏi DB (null) thì tính giá là 0
+        const price = item.product_id ? item.product_id.price : 0;
+        return total + (price * item.quantity);
+    }, 0);
+};
+
 const cartController = {
-  // 1. Lấy giỏ hàng (Tính toán lại giá mới nhất)
+  // 1. Lấy giỏ hàng
   getCart: async (req, res) => {
     try {
       let cart = await Cart.findOne({ user_id: req.user._id });
@@ -13,34 +30,27 @@ const cartController = {
         return res.status(200).json({ success: true, data: cart });
       }
 
-      // --- BƯỚC QUAN TRỌNG: Populate để lấy giá hiện tại ---
-      // Lấy thông tin product (name, price, image, etc.)
       await cart.populate('items.product_id', 'name price image slug isActive');
 
-      // Lọc bỏ các sản phẩm đã bị xóa hoặc ngừng kinh doanh (isActive = false)
-      // Đây là bước xử lý logic thực tế rất cần thiết
+      // Lọc bỏ sản phẩm rác (đã bị xóa hoặc ngưng hoạt động)
       const validItems = cart.items.filter(item => item.product_id && item.product_id.isActive);
       
-      // Nếu có sản phẩm bị xóa/ẩn, cập nhật lại mảng items
       if (validItems.length !== cart.items.length) {
           cart.items = validItems;
       }
 
-      // --- TÍNH TOÁN LẠI TỔNG TIỀN THEO GIÁ MỚI ---
+      // Tính toán lại tổng tiền dựa trên giá mới nhất
       let newTotalAmount = 0;
       let newTotalItems = 0;
 
       cart.items.forEach(item => {
-        // item.product_id bây giờ là object chứa thông tin sản phẩm (do đã populate)
         newTotalAmount += item.product_id.price * item.quantity;
         newTotalItems += item.quantity;
       });
 
-      // Cập nhật lại vào DB để đồng bộ
       cart.total_amount = newTotalAmount;
       cart.total_items = newTotalItems;
       
-      // Lưu lại các thay đổi (xóa item lỗi, update giá mới)
       await cart.save();
 
       res.status(200).json({ success: true, data: cart });
@@ -49,7 +59,7 @@ const cartController = {
     }
   },
 
-  // 2. Thêm vào giỏ (Sửa lại: Không lưu price)
+  // 2. Thêm vào giỏ
   addToCart: async (req, res) => {
     const { product_id, quantity } = req.body;
     
@@ -70,18 +80,13 @@ const cartController = {
         cart.items.push({
           product_id: product._id,
           quantity: quantity
-          // KHÔNG lưu price ở đây nữa
         });
       }
 
-      // Lưu tạm, việc tính toán tổng tiền chính xác sẽ do hàm getCart lo 
-      // hoặc tính sơ bộ để update total_amount cho database
-      // Nhưng để nhất quán, ta nên gọi hàm tính toán ở đây luôn:
-      await updateCartTotals(cart); // Xem hàm helper ở dưới
-
+      await updateCartTotals(cart);
       await cart.save();
       
-      // Populate trả về cho đẹp
+      // Populate lại để trả về frontend hiển thị ngay
       await cart.populate('items.product_id', 'name price image slug');
       res.status(200).json({ success: true, message: 'Đã thêm vào giỏ', data: cart });
 
@@ -90,37 +95,73 @@ const cartController = {
     }
   },
 
-  // ... (Các hàm updateItemQuantity, removeItem giữ nguyên logic, chỉ nhớ gọi updateCartTotals sau khi sửa)
+  // 3. Cập nhật số lượng
   updateItemQuantity: async (req, res) => {
-        // ... Logic tìm cart và itemIndex ...
-        // Sau khi update quantity:
-        // await updateCartTotals(cart);
-        // await cart.save();
+      const { product_id, quantity } = req.body;
+      try {
+          const cart = await Cart.findOne({ user_id: req.user._id });
+          if (!cart) return res.status(404).json({ message: 'Giỏ hàng trống.' });
+
+          const itemIndex = cart.items.findIndex(item => item.product_id.toString() === product_id);
+
+          if (itemIndex > -1) {
+              if (quantity > 0) {
+                  cart.items[itemIndex].quantity = quantity;
+              } else {
+                  // Nếu quantity <= 0 thì xóa luôn item đó
+                  cart.items.splice(itemIndex, 1);
+              }
+              
+              await updateCartTotals(cart);
+              await cart.save();
+              
+              await cart.populate('items.product_id', 'name price image slug');
+              res.status(200).json({ success: true, message: 'Cập nhật thành công', data: cart });
+          } else {
+              res.status(404).json({ message: 'Sản phẩm không có trong giỏ.' });
+          }
+      } catch (error) {
+          res.status(500).json({ message: 'Lỗi server', error: error.message });
+      }
   },
-   
+
+  // 4. Xóa 1 sản phẩm (Fix lỗi của bạn ở đây)
   removeItem: async (req, res) => {
-        // ... Logic xóa item ...
-        // await updateCartTotals(cart);
-        // await cart.save();
+      const { product_id } = req.params; // Lấy từ URL params
+      try {
+          const cart = await Cart.findOne({ user_id: req.user._id });
+          if (!cart) return res.status(404).json({ message: 'Giỏ hàng trống.' });
+
+          // Lọc bỏ sản phẩm có id trùng với product_id gửi lên
+          const newItems = cart.items.filter(item => item.product_id.toString() !== product_id);
+
+          cart.items = newItems;
+
+          await updateCartTotals(cart);
+          await cart.save();
+
+          await cart.populate('items.product_id', 'name price image slug');
+          res.status(200).json({ success: true, message: 'Đã xóa sản phẩm', data: cart });
+      } catch (error) {
+          res.status(500).json({ message: 'Lỗi server', error: error.message });
+      }
+  },
+
+  // 5. Xóa sạch giỏ hàng
+  clearCart: async (req, res) => {
+      try {
+          const cart = await Cart.findOne({ user_id: req.user._id });
+          if (cart) {
+              cart.items = [];
+              cart.total_items = 0;
+              cart.total_amount = 0;
+              await cart.save();
+          }
+          res.status(200).json({ success: true, message: 'Giỏ hàng đã được làm trống', data: cart });
+      } catch (error) {
+          res.status(500).json({ message: 'Lỗi server', error: error.message });
+      }
   }
-};
-
-// --- Helper mới: Phải query giá từ Product để tính ---
-const updateCartTotals = async (cart) => {
-    // Vì trong items chỉ có product_id (string/ObjectId) chưa có price,
-    // ta cần populate hoặc loop qua để lấy giá.
-    
-    // Cách tối ưu: Populate tạm để tính toán
-    if (!cart.populated('items.product_id')) {
-        await cart.populate('items.product_id', 'price');
-    }
-
-    cart.total_items = cart.items.reduce((total, item) => total + item.quantity, 0);
-    cart.total_amount = cart.items.reduce((total, item) => {
-        // Cẩn thận trường hợp product bị null (đã bị xóa khỏi DB)
-        const price = item.product_id ? item.product_id.price : 0;
-        return total + (price * item.quantity);
-    }, 0);
 };
 
 module.exports = cartController;

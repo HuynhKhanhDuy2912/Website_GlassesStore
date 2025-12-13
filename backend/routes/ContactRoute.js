@@ -3,7 +3,7 @@ const router = express.Router();
 const contactController = require('../controllers/ContactController');
 
 // Import Middleware
-const { protect, isAdmin } = require('../middleware/authMiddleware');
+const { protect, isAdmin } = require('../middlewares/authMiddleware');
 
 // --- CẤU HÌNH BẢO VỆ CHUNG ---
 // Tất cả các route bên dưới đều phải có Token (Đã đăng nhập)

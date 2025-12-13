@@ -5,7 +5,7 @@ const router = express.Router();
 const cartController = require('../controllers/CartController');
 
 // Import Middleware xác thực (Để đảm bảo req.user luôn tồn tại)
-const { protect } = require('../middleware/authMiddleware');
+const { protect } = require('../middlewares/authMiddleware');
 
 // --- CẤU HÌNH MIDDLEWARE CHUNG ---
 // Dòng này áp dụng 'protect' cho tất cả các route bên dưới. 
