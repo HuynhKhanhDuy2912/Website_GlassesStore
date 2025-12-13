@@ -12,47 +12,67 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminLayout from './components/admin/AdminLayout';
 import Dashboard from './components/admin/Dashboard';
 import UserManager from './components/admin/UserManager';
-import BrandManager from './components/admin/BrandManeger';
-
-// Shop (User Interface)
-import ShopLayout from './components/shop/ShopLayout';
-
+import BrandManager from './components/admin/BrandManager';
+import CategoryManager from './components/admin/CategoryManager';
+import ProductManager from './components/admin/ProductManager';
+import OrderManager from './components/admin/OrderManager';
+import OrderDetail from './components/admin/OrderDetailPage';
+import Contact from './components/admin/ContactManager';
+import Payment from './components/admin/PaymentManager';
+import Review from './components/admin/ReviewManager';
+// Client (Shop)
+import ClientLayout from './components/client/ClientLayout';
+import ShopPage from './components/client/ShopPage';
+import CartPage from './components/client/CartPage';
+import CheckoutPage from './components/client/CheckoutPage';
+import OrderHistoryPage from './components/client/OrderHistoryPage';
+import ClientOrderDetailPage from './components/client/ClientOrderDetailPage';
+import ContactPage from './components/client/ContactPage';
 function App() {
   return (
     <BrowserRouter>
       <ToastContainer position="top-right" autoClose={3000} />
-      
+
       <Routes>
-        {/* 1. Route Public (Ai cũng vào được) */}
+        {/* 1. Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* 2. Mặc định vào "/" sẽ đẩy về trang Login (hoặc Shop nếu đã login - xử lý ở Login page) */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        {/* Redirect trang chủ về Shop */}
+        <Route path="/" element={<Navigate to="/shop" replace />} />
 
-        {/* 3. KHU VỰC SHOP (Dành cho User đã đăng nhập & Admin) */}
+        {/* 2. KHU VỰC CLIENT (Cần đăng nhập - hoặc tùy bạn chỉnh public) */}
+        {/* Bọc ProtectedRoute trước, sau đó bọc ClientLayout */}
         <Route element={<ProtectedRoute allowedRoles={['customer', 'admin']} />}>
-          <Route path="/shop" element={<ShopLayout />}>
-             {/* Tại đây bạn sẽ thêm các trang con như Home, ProductDetail... */}
-             <Route index element={<div>Trang chủ bán hàng (Danh sách kính mắt)</div>} />
-             <Route path="profile" element={<div>Trang thông tin cá nhân</div>} />
+          <Route element={<ClientLayout />}>
+            <Route path="/shop" element={<ShopPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/my-orders" element={<OrderHistoryPage />} />
+            <Route path="/my-orders/:id" element={<ClientOrderDetailPage />} />
+            <Route path="/contact" element={<ContactPage />} />
           </Route>
         </Route>
 
-        {/* 4. KHU VỰC ADMIN (Chỉ dành cho Admin) */}
+        {/* 3. KHU VỰC ADMIN */}
         <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Navigate to="/admin/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="users" element={<UserManager />} />
-            <Route path="orders" element={<div>Quản lý đơn hàng</div>} />
-            <Route path="products" element={<div>Quản lý sản phẩm</div>} />
+            <Route path="order" element={<OrderManager />} />
+            <Route path="order/:id" element={<OrderDetail />} />
+            <Route path="category" element={<CategoryManager />} />
             <Route path="brands" element={<BrandManager />} />
+            <Route path="product" element={<ProductManager />} />
+            <Route path="contact" element={<Contact />} />
+            <Route path="payment" element={<Payment />} />
+            <Route path="review" element={<Review />} />
           </Route>
         </Route>
 
-        {/* 5. Route 404 */}
-        <Route path="*" element={<div className="text-center mt-10">404 - Không tìm thấy trang</div>} />
+        {/* 4. Not Found */}
+        <Route path="*" element={<div className="text-center mt-20 text-xl font-bold text-gray-500">404 - Trang không tồn tại</div>} />
       </Routes>
     </BrowserRouter>
   );

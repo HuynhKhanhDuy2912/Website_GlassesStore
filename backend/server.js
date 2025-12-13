@@ -16,6 +16,7 @@ const payment = require('./routes/PaymentRoute');
 const product = require('./routes/ProductRoute');
 const review = require('./routes/ReviewRoute');
 const shippingAddress = require('./routes/ShippingAddressRoute');
+const upload = require('./routes/UploadRoute');
 
 const app = express();
 app.use(cors());
@@ -50,6 +51,7 @@ app.use('/api/payment', payment);
 app.use('/api/product', product);
 app.use('/api/review', review);
 app.use('/api/shippingAddress', shippingAddress);
+app.use('/api/upload', upload);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

@@ -29,10 +29,10 @@ const paymentController = {
             order.payment_id = savedPayment._id;
             await order.save();
 
-            res.status(201).json({ 
-                success: true, 
-                message: 'Đã tạo phiếu thanh toán', 
-                data: savedPayment 
+            res.status(201).json({
+                success: true,
+                message: 'Đã tạo phiếu thanh toán',
+                data: savedPayment
             });
 
         } catch (error) {
@@ -44,12 +44,12 @@ const paymentController = {
     // Hàm này được gọi sau khi VNPAY trả kết quả về Backend
     updateVnpayResult: async (req, res) => {
         try {
-            const { 
-                order_id, 
-                vnp_transaction_no, 
-                vnp_bank_code, 
-                vnp_order_info, 
-                vnp_response_code 
+            const {
+                order_id,
+                vnp_transaction_no,
+                vnp_bank_code,
+                vnp_order_info,
+                vnp_response_code
             } = req.body;
 
             // Tìm phiếu thanh toán của đơn hàng này
@@ -64,7 +64,7 @@ const paymentController = {
                 payment.vnp_transaction_no = vnp_transaction_no;
                 payment.vnp_bank_code = vnp_bank_code;
                 payment.vnp_order_info = vnp_order_info;
-                
+
                 await payment.save();
 
                 // Cập nhật luôn trạng thái đơn hàng sang 'processing' (hoặc 'paid')
@@ -97,7 +97,24 @@ const paymentController = {
         } catch (error) {
             res.status(500).json({ message: 'Lỗi server', error: error.message });
         }
+    },
+    // 4. Lấy tất cả lịch sử thanh toán (Dành cho Admin)
+    getAllPayments: async (req, res) => {
+        try {
+            const payments = await Payment.find()
+                .populate({
+                    path: 'order_id',
+                    select: 'user_id total_amount', // Lấy thông tin đơn hàng
+                    populate: { path: 'user_id', select: 'fullname email' } // Lấy luôn tên người mua
+                })
+                .sort({ created_at: -1 }); // Mới nhất lên đầu
+
+            res.status(200).json({ success: true, count: payments.length, data: payments });
+        } catch (error) {
+            res.status(500).json({ message: 'Lỗi server', error: error.message });
+        }
     }
 };
+
 
 module.exports = paymentController;
