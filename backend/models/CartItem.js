@@ -13,11 +13,7 @@ const CartItemSchema = new Schema({
     timestamps: true
 });
 
-// Tự tính total_price
-CartItemSchema.pre("save", function(next) {
-    this.total_price = this.quantity * this.price_at_time;
-    next();
-});
+
 
 // Không cho trùng sản phẩm + variant
 CartItemSchema.index(

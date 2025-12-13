@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const paymentController = require('../controllers/PaymentController');
-const { protect } = require('../middlewares/authMiddleware');
+const { protect , isAdmin } = require('../middlewares/authMiddleware');
 
 // Yêu cầu đăng nhập
 router.use(protect);
@@ -27,4 +27,5 @@ router.post('/vnpay-update', paymentController.updateVnpayResult);
  */
 router.get('/:orderId', paymentController.getPaymentByOrder);
 
+router.get('/', protect, isAdmin, paymentController.getAllPayments);
 module.exports = router;

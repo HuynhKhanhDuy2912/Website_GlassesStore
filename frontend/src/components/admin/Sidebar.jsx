@@ -27,12 +27,16 @@ const Sidebar = () => {
 
   const menuItems = [
     { path: '/admin/dashboard', name: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-    { path: '/admin/orders', name: 'Đơn hàng', icon: <ShoppingCart size={20} /> },
-    { path: '/admin/products', name: 'Sản phẩm', icon: <ShoppingBag size={20} /> },
+    { path: '/admin/order', name: 'Đơn hàng', icon: <ShoppingCart size={20} /> },
+    { path: '/admin/product', name: 'Sản phẩm', icon: <ShoppingBag size={20} /> },
     { path: '/admin/users', name: 'Tài khoản', icon: <Users size={20} /> },
     { path: '/admin/brands', name: 'Thương hiệu', icon: <Tag size={20} /> },
-    { path: '/admin/categories', name: 'Danh mục', icon: <Layers size={20} /> },
-    { path: '/admin/reviews', name: 'Đánh giá', icon: <MessageSquare size={20} /> },
+    { path: '/admin/category', name: 'Danh mục', icon: <Layers size={20} /> },
+    { path: '/admin/contact', name: 'Liên hệ', icon: <MessageSquare size={20} /> },
+    { path: '/admin/payment', name: 'Thanh toán', icon: <MessageSquare size={20} /> },
+    { path: '/admin/review', name: 'Đánh giá', icon: <MessageSquare size={20} /> },
+
+
   ];
 
   // 3. Hàm xử lý Đăng xuất

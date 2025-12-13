@@ -31,5 +31,7 @@ router.get('/', isAdmin, contactController.getAllContacts);
  * @access  Private (Admin Only)
  */
 router.delete('/:id', isAdmin, contactController.deleteContact);
-
+router.put('/:id/reply', isAdmin, contactController.replyContact);
+router.get('/my-history', protect, contactController.getMyContacts);
+router.put('/:id/chat', protect, contactController.addMessage);
 module.exports = router;

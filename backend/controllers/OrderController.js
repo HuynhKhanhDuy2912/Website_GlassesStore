@@ -6,42 +6,53 @@ const Product = require('../models/Product');
 
 const orderController = {
     // 1. Tạo đơn hàng mới (Checkout)
+    // 1. Tạo đơn hàng mới (Checkout)
     createOrder: async (req, res) => {
         try {
             const { shipping_address_id, shipping_fee = 30000, discount_amount = 0 } = req.body;
             const userId = req.user._id;
 
+            // Log để debug xem Frontend gửi gì lên
+            console.log("📦 Dữ liệu đặt hàng:", req.body);
+
+            // Kiểm tra ID địa chỉ có hợp lệ không
+            if (!shipping_address_id || shipping_address_id.length < 24) {
+                return res.status(400).json({ message: 'Địa chỉ giao hàng không hợp lệ' });
+            }
+
             // A. Lấy giỏ hàng của user
             const cart = await Cart.findOne({ user_id: userId });
             if (!cart) return res.status(400).json({ message: 'Giỏ hàng trống' });
 
-            // B. Lấy các item trong giỏ hàng (Kèm thông tin Product để lấy giá hiện tại)
+            // B. Lấy các item trong giỏ hàng
             const cartItems = await CartItem.find({ cart_id: cart._id }).populate('product_id');
             if (cartItems.length === 0) {
                 return res.status(400).json({ message: 'Giỏ hàng không có sản phẩm nào' });
             }
 
-            // C. Tính toán tổng tiền (Backend phải tự tính, không tin tưởng số từ Frontend gửi lên)
+            // C. Tính toán tổng tiền
             let subtotal = 0;
-            const orderItemsData = []; // Mảng tạm để lưu dữ liệu tạo OrderItem sau này
+            const orderItemsData = [];
 
             for (const item of cartItems) {
-                if (!item.product_id) continue; // Bỏ qua nếu sản phẩm bị xóa
-                
+                // Bỏ qua nếu sản phẩm bị xóa hoặc null
+                if (!item.product_id) continue;
+
                 const price = item.product_id.price;
                 const quantity = item.quantity;
-                
+
                 subtotal += price * quantity;
 
-                // Chuẩn bị dữ liệu để lưu vào OrderItem
+                // --- SỬA LỖI TẠI ĐÂY ---
+                // Model OrderDetail yêu cầu 'unit_price', không phải 'price'
                 orderItemsData.push({
                     product_id: item.product_id._id,
                     quantity: quantity,
-                    price: price // Snapshot giá ngay lúc này
+                    unit_price: price // <--- Đã sửa thành unit_price cho khớp Model
                 });
             }
 
-            const total_amount = subtotal + shipping_fee - discount_amount;
+            const total_amount = subtotal + Number(shipping_fee) - Number(discount_amount);
 
             // D. Tạo Order (Bảng cha)
             const newOrder = new Order({
@@ -56,24 +67,24 @@ const orderController = {
             await newOrder.save();
 
             // E. Tạo các OrderItem (Bảng con)
-            // Gán order_id vừa tạo vào các item
             const itemsToSave = orderItemsData.map(item => ({
                 ...item,
                 order_id: newOrder._id
             }));
             await OrderItem.insertMany(itemsToSave);
 
-            // F. Xóa sạch giỏ hàng (Sau khi đã tạo đơn thành công)
+            // F. Xóa sạch giỏ hàng
             await CartItem.deleteMany({ cart_id: cart._id });
             await Cart.findByIdAndUpdate(cart._id, { total_items: 0, total_amount: 0 });
 
-            res.status(201).json({ 
-                success: true, 
-                message: 'Đặt hàng thành công!', 
-                order_id: newOrder._id 
+            res.status(201).json({
+                success: true,
+                message: 'Đặt hàng thành công!',
+                order_id: newOrder._id
             });
 
         } catch (error) {
+            console.error("❌ Lỗi createOrder:", error); // Log lỗi ra terminal để dễ sửa
             res.status(500).json({ message: 'Lỗi server', error: error.message });
         }
     },
@@ -81,11 +92,48 @@ const orderController = {
     // 2. Lấy danh sách đơn hàng của tôi (Customer xem lịch sử)
     getMyOrders: async (req, res) => {
         try {
+            // Bước 1: Lấy danh sách Order
             const orders = await Order.find({ user_id: req.user._id })
-                .sort({ createdAt: -1 })
-                .populate('shipping_address_id'); // Lấy chi tiết địa chỉ
-            
-            res.status(200).json({ success: true, data: orders });
+                .sort({ createdAt: -1 });
+
+            // Bước 2: Với mỗi order, lấy danh sách item của nó (Manual Populate)
+            // Cách này hơi chậm nếu nhiều đơn, nhưng dễ hiểu. 
+            // Cách tối ưu hơn là dùng Aggregate $lookup
+            const ordersWithItems = await Promise.all(orders.map(async (order) => {
+                const items = await OrderItem.find({ order_id: order._id })
+                    .populate('product_id', 'product_name');
+
+                // Trả về order dạng object thuần + thêm trường items
+                return {
+                    ...order.toObject(),
+                    items: items // Frontend sẽ dùng cái này để hiện tên
+                };
+            }));
+
+            res.status(200).json({ success: true, data: ordersWithItems });
+        } catch (error) {
+            res.status(500).json({ message: 'Lỗi server', error: error.message });
+        }
+    },
+
+    cancelOrderUser: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const userId = req.user._id;
+
+            const order = await Order.findOne({ _id: id, user_id: userId });
+
+            if (!order) return res.status(404).json({ message: 'Đơn hàng không tồn tại' });
+
+            // Chỉ cho hủy khi đang 'pending'
+            if (order.order_status !== 'pending') {
+                return res.status(400).json({ message: 'Không thể hủy đơn hàng đã được xử lý' });
+            }
+
+            order.order_status = 'cancelled';
+            await order.save();
+
+            res.status(200).json({ success: true, message: 'Đã hủy đơn hàng' });
         } catch (error) {
             res.status(500).json({ message: 'Lỗi server', error: error.message });
         }
@@ -95,7 +143,7 @@ const orderController = {
     getOrderById: async (req, res) => {
         try {
             const orderId = req.params.id;
-            
+
             // Tìm đơn hàng
             const order = await Order.findById(orderId).populate('shipping_address_id');
             if (!order) return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
@@ -146,7 +194,7 @@ const orderController = {
             }
 
             const order = await Order.findByIdAndUpdate(
-                orderId, 
+                orderId,
                 { order_status: status },
                 { new: true }
             );
