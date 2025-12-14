@@ -1,54 +1,80 @@
 import React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom'; // 1. Import thêm useNavigate
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   ShoppingBag,
   Users,
-  ShoppingCart,
+  ClipboardList, // Đổi icon Đơn hàng cho hợp lý hơn
   MessageSquare,
   Tag,
   Layers,
-  LogOut
+  LogOut,
+  CreditCard, // Icon mới cho Thanh toán
+  Star        // Icon mới cho Đánh giá
 } from 'lucide-react';
 
 const Sidebar = () => {
   const location = useLocation();
-  const navigate = useNavigate(); // 2. Khởi tạo hook điều hướng
+  const navigate = useNavigate();
 
   // 1. ĐỊNH NGHĨA CSS DÙNG CHUNG
-  // Class cơ bản cho form dáng (layout, spacing, font)
   const baseClass = "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 font-medium w-full";
-  
-  // Class khi item đang được chọn (Active)
   const activeClass = "bg-blue-600 text-white shadow-md";
-  
-  // Class khi item bình thường (Inactive)
   const inactiveClass = "text-gray-400 hover:bg-gray-800 hover:text-white";
 
   const menuItems = [
-    { path: '/admin/dashboard', name: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-    { path: '/admin/order', name: 'Đơn hàng', icon: <ShoppingCart size={20} /> },
-    { path: '/admin/product', name: 'Sản phẩm', icon: <ShoppingBag size={20} /> },
-    { path: '/admin/users', name: 'Tài khoản', icon: <Users size={20} /> },
-    { path: '/admin/brands', name: 'Thương hiệu', icon: <Tag size={20} /> },
-    { path: '/admin/category', name: 'Danh mục', icon: <Layers size={20} /> },
-    { path: '/admin/contact', name: 'Liên hệ', icon: <MessageSquare size={20} /> },
-    { path: '/admin/payment', name: 'Thanh toán', icon: <MessageSquare size={20} /> },
-    { path: '/admin/review', name: 'Đánh giá', icon: <MessageSquare size={20} /> },
-
-
+    { 
+      path: '/admin/dashboard', 
+      name: 'Dashboard', 
+      icon: <LayoutDashboard size={20} /> 
+    },
+    { 
+      path: '/admin/order', 
+      name: 'Đơn hàng', 
+      icon: <ClipboardList size={20} /> // Đổi từ ShoppingCart -> ClipboardList (Danh sách đơn)
+    },
+    { 
+      path: '/admin/product', 
+      name: 'Sản phẩm', 
+      icon: <ShoppingBag size={20} /> 
+    },
+    { 
+      path: '/admin/users', 
+      name: 'Tài khoản', 
+      icon: <Users size={20} /> 
+    },
+    { 
+      path: '/admin/brands', 
+      name: 'Thương hiệu', 
+      icon: <Tag size={20} /> 
+    },
+    { 
+      path: '/admin/category', 
+      name: 'Danh mục', 
+      icon: <Layers size={20} /> 
+    },
+    { 
+      path: '/admin/contact', 
+      name: 'Liên hệ', 
+      icon: <MessageSquare size={20} /> 
+    },
+    { 
+      path: '/admin/payment', 
+      name: 'Thanh toán', 
+      icon: <CreditCard size={20} /> // Đổi thành icon Thẻ tín dụng
+    },
+    { 
+      path: '/admin/review', 
+      name: 'Đánh giá', 
+      icon: <Star size={20} /> // Đổi thành icon Ngôi sao
+    },
   ];
 
   // 3. Hàm xử lý Đăng xuất
   const handleLogout = () => {
-    // Xác nhận người dùng có muốn thoát không
     if (window.confirm("Bạn có chắc chắn muốn đăng xuất không?")) {
-      // Xóa token hoặc thông tin user trong localStorage
-      // (Bạn hãy sửa key 'accessToken' thành tên key bạn đang dùng, hoặc dùng localStorage.clear() để xóa hết)
       localStorage.removeItem('accessToken'); 
       localStorage.removeItem('user');
-      
-      // Chuyển hướng về trang đăng nhập
       navigate('/login');
     }
   };
@@ -68,7 +94,6 @@ const Sidebar = () => {
             <Link
               key={item.path}
               to={item.path}
-              // Kết hợp baseClass với active hoặc inactive
               className={`${baseClass} ${isActive ? activeClass : inactiveClass}`}
             >
               {item.icon}
@@ -78,9 +103,8 @@ const Sidebar = () => {
         })}
       </nav>
 
-      {/* Footer Actions (Shop Link & Logout) */}
+      {/* Footer Actions */}
       <div className="p-4 border-t border-gray-700 space-y-2">
-        {/* Link về trang bán hàng */}
         <Link
           to="/shop"
           className={`${baseClass} ${inactiveClass}`}
@@ -89,10 +113,9 @@ const Sidebar = () => {
           <span>Về trang bán hàng</span>
         </Link>
 
-        {/* Logout Button */}
         <button 
-          onClick={handleLogout} // 4. Gắn sự kiện click
-          className={`${baseClass} ${inactiveClass} text-left hover:text-red-400`} // Thêm chút màu đỏ khi hover cho khác biệt xíu (nếu muốn)
+          onClick={handleLogout}
+          className={`${baseClass} ${inactiveClass} text-left hover:text-red-400`}
         >
           <LogOut size={20} />
           <span>Đăng xuất</span>
