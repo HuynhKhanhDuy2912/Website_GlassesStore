@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Eye, Star, Search, CheckCircle, Zap } from 'lucide-react';
+import { ShoppingCart, Eye, Star, Search, Zap } from 'lucide-react';
 import { toast } from 'react-toastify';
 import productApi from '../../api/productApi';
 import cartItemApi from '../../api/cartItemApi';
 
-// Hàm format tiền
+// --- 1. IMPORT HOOK CONTEXT ---
+import { useCart } from '../../context/CartContext'; 
+
 const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 };
@@ -14,16 +16,14 @@ const ShopPage = () => {
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    
-    // State quản lý loading cho từng sản phẩm và từng hành động
-    // Cấu trúc: { [productId]: 'cart' | 'buy' | null }
     const [actionLoading, setActionLoading] = useState({});
 
-    // 1. Lấy danh sách sản phẩm từ API
+    // --- 2. LẤY HÀM CẬP NHẬT GIỎ HÀNG TỪ CONTEXT ---
+    const { fetchCartCount } = useCart(); 
+
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                // params: { page: 1, limit: 20, sort: '-createdAt' }
                 const res = await productApi.getAll({ limit: 20 });
                 setProducts(res.data || []);
             } catch (error) {
@@ -35,7 +35,7 @@ const ShopPage = () => {
         fetchProducts();
     }, []);
 
-    // 2. Xử lý: Thêm vào giỏ hàng
+    // Xử lý: Thêm vào giỏ hàng
     const handleAddToCart = async (product) => {
         if (!localStorage.getItem('user')) {
             toast.info("Vui lòng đăng nhập để mua hàng");
@@ -44,7 +44,6 @@ const ShopPage = () => {
         }
 
         try {
-            // Set trạng thái loading là 'cart'
             setActionLoading(prev => ({ ...prev, [product._id]: 'cart' }));
             
             await cartItemApi.add({
@@ -52,6 +51,9 @@ const ShopPage = () => {
                 quantity: 1
             });
             
+            // --- 3. GỌI HÀM NÀY ĐỂ HEADER NHẢY SỐ NGAY LẬP TỨC ---
+            fetchCartCount(); 
+
             toast.success(`Đã thêm ${product.product_name} vào giỏ`);
         } catch (error) {
             toast.error("Lỗi thêm vào giỏ hàng");
@@ -60,7 +62,7 @@ const ShopPage = () => {
         }
     };
 
-    // 3. Xử lý: Mua ngay
+    // Xử lý: Mua ngay
     const handleBuyNow = async (product) => {
         if (!localStorage.getItem('user')) {
             toast.info("Vui lòng đăng nhập để mua hàng");
@@ -69,20 +71,19 @@ const ShopPage = () => {
         }
 
         try {
-            // Set trạng thái loading là 'buy'
             setActionLoading(prev => ({ ...prev, [product._id]: 'buy' }));
 
-            // Bước 1: Thêm vào giỏ trước
             await cartItemApi.add({
                 product_id: product._id,
                 quantity: 1
             });
 
-            // Bước 2: Chuyển hướng ngay sang trang Checkout
-            navigate('/checkout');
+            // --- 3. CẬP NHẬT GIỎ HÀNG TRƯỚC KHI CHUYỂN TRANG ---
+            await fetchCartCount();
+
+            navigate('/cart'); // Chuyển sang giỏ hàng (hoặc checkout)
         } catch (error) {
             toast.error("Lỗi khi xử lý mua ngay");
-            // Tắt loading nếu lỗi (nếu thành công thì trang sẽ chuyển hướng nên ko cần tắt cũng được)
             setActionLoading(prev => ({ ...prev, [product._id]: null }));
         }
     };
@@ -96,14 +97,12 @@ const ShopPage = () => {
     }
 
     return (
-        <div className="container mx-auto">
-            {/* Banner hoặc Tiêu đề */}
+        <div className="container mx-auto px-4 py-8"> {/* Thêm padding cho đẹp */}
             <div className="mb-8 text-center">
                 <h1 className="text-3xl font-bold text-gray-800 mb-2">Bộ sưu tập Kính mắt</h1>
                 <p className="text-gray-500">Tìm kiếm phong cách phù hợp với bạn</p>
             </div>
 
-            {/* Grid Sản phẩm */}
             {products.length === 0 ? (
                 <div className="text-center py-10">
                     <Search size={48} className="mx-auto text-gray-300 mb-4"/>
@@ -113,7 +112,7 @@ const ShopPage = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {products.map((product) => {
                         const isOutOfStock = product.quantity <= 0;
-                        const currentLoading = actionLoading[product._id]; // 'cart' hoặc 'buy' hoặc undefined
+                        const currentLoading = actionLoading[product._id];
 
                         return (
                             <div key={product._id} className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col">
@@ -137,7 +136,7 @@ const ShopPage = () => {
                                         </span>
                                     )}
 
-                                    {/* Overlay Buttons (Hiện khi hover) - Nút Xem chi tiết */}
+                                    {/* Nút Xem chi tiết (Overlay) */}
                                     <div className="absolute inset-0 bg-black/5 bg-opacity-0 group-hover:bg-opacity-10 transition-all flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 duration-300">
                                         <Link 
                                             to={`/product/${product.slug}`}
@@ -180,9 +179,8 @@ const ShopPage = () => {
                                         )}
                                     </div>
                                     
-                                    {/* Khu vực nút bấm (Footer Card) */}
+                                    {/* Khu vực nút bấm */}
                                     <div className="mt-auto flex gap-2">
-                                        {/* Nút Thêm Giỏ */}
                                         <button 
                                             onClick={() => handleAddToCart(product)}
                                             disabled={isOutOfStock || currentLoading === 'cart' || currentLoading === 'buy'}
@@ -200,7 +198,6 @@ const ShopPage = () => {
                                             )}
                                         </button>
 
-                                        {/* Nút Mua Ngay */}
                                         <button 
                                             onClick={() => handleBuyNow(product)}
                                             disabled={isOutOfStock || currentLoading === 'cart' || currentLoading === 'buy'}
