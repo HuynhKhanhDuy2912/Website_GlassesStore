@@ -2,37 +2,38 @@ import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 
 const ProtectedRoute = ({ allowedRoles }) => {
-  // 1. Lấy dữ liệu thô từ LocalStorage trước
-  const token = localStorage.getItem('token');
-  const userStr = localStorage.getItem('user'); // Lấy chuỗi trước, chưa parse vội
+  const token = localStorage.getItem('accessToken');
+  
+  const userStr = localStorage.getItem('user');
 
   let user = null;
 
-  // 2. Parse an toàn bằng try-catch
   if (userStr) {
     try {
       user = JSON.parse(userStr);
     } catch (error) {
-      // Nếu dữ liệu bị lỗi (ví dụ: "undefined"), xóa luôn để tránh lỗi vòng lặp
-      console.error("Dữ liệu user trong LocalStorage bị lỗi, đang reset...", error);
-      localStorage.removeItem('token');
+      console.error("Dữ liệu user lỗi, reset...", error);
+      
+      // 2. SỬA LẠI KEY KHI XÓA:
+      localStorage.removeItem('accessToken');
       localStorage.removeItem('user');
       return <Navigate to="/login" replace />;
     }
   }
 
-  // 3. Nếu không có token hoặc không parse được user -> Đá về Login
+  // 3. Logic chặn
   if (!token || !user) {
+    // Nếu không có token -> Về Login
     return <Navigate to="/login" replace />;
   }
 
   // 4. Kiểm tra quyền (Role)
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    // Nếu cố vào trang admin mà chỉ là user -> Đẩy về trang shop
+    // Nếu Admin đi lạc vào trang Shop -> OK (cho qua hoặc tùy bạn)
+    // Nếu Customer cố vào trang Admin -> Đá về Shop
     return <Navigate to="/shop" replace />;
   }
 
-  // 5. Hợp lệ -> Cho đi tiếp
   return <Outlet />;
 };
 
