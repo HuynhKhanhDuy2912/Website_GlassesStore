@@ -29,6 +29,7 @@ import CheckoutPage from './components/client/CheckoutPage';
 import OrderHistoryPage from './components/client/OrderHistoryPage';
 import ClientOrderDetailPage from './components/client/ClientOrderDetailPage';
 import ContactPage from './components/client/ContactPage';
+import ProductDetailPage from './components/client/ProductDetailPage';
 function App() {
   return (
     <CartProvider>
@@ -55,6 +56,7 @@ function App() {
               <Route path="/my-orders" element={<OrderHistoryPage />} />
               <Route path="/my-orders/:id" element={<ClientOrderDetailPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/product/:slug" element={<ProductDetailPage />} />
             </Route>
 
           </Route>

@@ -24,6 +24,10 @@ const productApi = {
     delete: (id) => {
         const url = `/product/${id}`;
         return axiosClient.delete(url);
+    },
+    getDetail: (slug) => {
+        const url = `/product/${slug}`; 
+        return axiosClient.get(url);
     }
 };
 
