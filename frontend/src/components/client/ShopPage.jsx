@@ -78,8 +78,6 @@ const ShopPage = () => {
                 quantity: 1
             });
 
-            // --- 3. CẬP NHẬT GIỎ HÀNG TRƯỚC KHI CHUYỂN TRANG ---
-            await fetchCartCount();
 
             navigate('/cart'); // Chuyển sang giỏ hàng (hoặc checkout)
         } catch (error) {

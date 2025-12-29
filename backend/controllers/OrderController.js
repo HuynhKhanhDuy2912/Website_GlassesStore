@@ -7,87 +7,109 @@ const Product = require('../models/Product');
 const orderController = {
     // 1. Tạo đơn hàng mới (Checkout)
     // 1. Tạo đơn hàng mới (Checkout)
-    createOrder: async (req, res) => {
-        try {
-            const { shipping_address_id, shipping_fee = 30000, discount_amount = 0 } = req.body;
-            const userId = req.user._id;
+// 1. Tạo đơn hàng mới
+createOrder: async (req, res) => {
+    try {
+        // Lấy cả 'items' (từ giỏ) và 'direct_items' (mua ngay)
+        const { shipping_address_id, shipping_fee = 30000, discount_amount = 0, items, direct_items } = req.body;
+        const userId = req.user._id;
 
-            // Log để debug xem Frontend gửi gì lên
-            console.log("📦 Dữ liệu đặt hàng:", req.body);
+        console.log("📦 Body nhận được:", req.body); // <-- Debug xem frontend gửi gì lên
 
-            // Kiểm tra ID địa chỉ có hợp lệ không
-            if (!shipping_address_id || shipping_address_id.length < 24) {
-                return res.status(400).json({ message: 'Địa chỉ giao hàng không hợp lệ' });
-            }
+        let orderItemsData = [];
+        let subtotal = 0;
 
-            // A. Lấy giỏ hàng của user
-            const cart = await Cart.findOne({ user_id: userId });
-            if (!cart) return res.status(400).json({ message: 'Giỏ hàng trống' });
-
-            // B. Lấy các item trong giỏ hàng
-            const cartItems = await CartItem.find({ cart_id: cart._id }).populate('product_id');
-            if (cartItems.length === 0) {
-                return res.status(400).json({ message: 'Giỏ hàng không có sản phẩm nào' });
-            }
-
-            // C. Tính toán tổng tiền
-            let subtotal = 0;
-            const orderItemsData = [];
+        // --- TRƯỜNG HỢP 1: Mua từ GIỎ HÀNG (Logic cũ) ---
+        if (items && items.length > 0) {
+            const cartItems = await CartItem.find({ 
+                _id: { $in: items }, 
+                user_id: userId 
+            }).populate('product_id');
 
             for (const item of cartItems) {
-                // Bỏ qua nếu sản phẩm bị xóa hoặc null
                 if (!item.product_id) continue;
-
                 const price = item.product_id.price;
-                const quantity = item.quantity;
-
-                subtotal += price * quantity;
-
-                // --- SỬA LỖI TẠI ĐÂY ---
-                // Model OrderDetail yêu cầu 'unit_price', không phải 'price'
+                subtotal += price * item.quantity;
                 orderItemsData.push({
                     product_id: item.product_id._id,
-                    quantity: quantity,
-                    unit_price: price // <--- Đã sửa thành unit_price cho khớp Model
+                    quantity: item.quantity,
+                    unit_price: price
                 });
             }
+        } 
+        
+        // --- TRƯỜNG HỢP 2: Mua NGAY (Logic MỚI - Bạn đang thiếu cái này) ---
+        else if (direct_items && direct_items.length > 0) {
+            for (const item of direct_items) {
+                // Phải query lại Product để lấy giá chính xác từ DB
+                const product = await Product.findById(item.product_id);
+                if (!product) continue;
 
-            const total_amount = subtotal + Number(shipping_fee) - Number(discount_amount);
+                const price = product.price;
+                const qty = Number(item.quantity);
+                
+                subtotal += price * qty; // Cộng dồn tiền
+                
+                // Đẩy vào mảng để tí nữa lưu vào DB
+                orderItemsData.push({
+                    product_id: product._id,
+                    quantity: qty,
+                    unit_price: price
+                });
+            }
+        } 
+        // Nếu không có cả 2 -> Báo lỗi
+        else {
+            return res.status(400).json({ message: 'Không có sản phẩm nào để đặt hàng' });
+        }
 
-            // D. Tạo Order (Bảng cha)
-            const newOrder = new Order({
-                user_id: userId,
-                shipping_address_id,
-                subtotal,
-                shipping_fee,
-                discount_amount,
-                total_amount,
-                order_status: 'pending'
-            });
-            await newOrder.save();
+        // Tính tổng tiền cuối cùng
+        const total_amount = subtotal + Number(shipping_fee) - Number(discount_amount);
 
-            // E. Tạo các OrderItem (Bảng con)
+        // A. Tạo Order (Bảng cha)
+        const newOrder = new Order({
+            user_id: userId,
+            shipping_address_id,
+            subtotal, // <-- Cái này giờ mới có giá trị
+            shipping_fee,
+            discount_amount,
+            total_amount,
+            order_status: 'pending'
+        });
+        await newOrder.save();
+
+        // B. Tạo OrderItems (Bảng con - Lưu chi tiết sản phẩm)
+        if (orderItemsData.length > 0) {
             const itemsToSave = orderItemsData.map(item => ({
                 ...item,
                 order_id: newOrder._id
             }));
             await OrderItem.insertMany(itemsToSave);
-
-            // F. Xóa sạch giỏ hàng
-            await CartItem.deleteMany({ cart_id: cart._id });
-            await Cart.findByIdAndUpdate(cart._id, { total_items: 0, total_amount: 0 });
-
-            res.status(201).json({
-                success: true,
-                message: 'Đặt hàng thành công!',
-                order_id: newOrder._id
-            });
-
-        } catch (error) {
-            console.error("❌ Lỗi createOrder:", error); // Log lỗi ra terminal để dễ sửa
-            res.status(500).json({ message: 'Lỗi server', error: error.message });
         }
-    },
+
+        // C. Nếu mua từ giỏ thì mới xóa giỏ
+        if (items && items.length > 0) {
+            await CartItem.deleteMany({ _id: { $in: items } });
+            // Cập nhật lại số lượng giỏ hàng (nếu cần thiết)
+            const cart = await Cart.findOne({ user_id: userId });
+            if(cart) {
+                const remaining = await CartItem.countDocuments({ cart_id: cart._id });
+                cart.total_items = remaining;
+                await cart.save();
+            }
+        }
+
+        res.status(201).json({
+            success: true,
+            message: 'Đặt hàng thành công!',
+            order_id: newOrder._id
+        });
+
+    } catch (error) {
+        console.error("❌ Lỗi createOrder:", error);
+        res.status(500).json({ message: 'Lỗi server', error: error.message });
+    }
+},
 
     // 2. Lấy danh sách đơn hàng của tôi (Customer xem lịch sử)
     getMyOrders: async (req, res) => {

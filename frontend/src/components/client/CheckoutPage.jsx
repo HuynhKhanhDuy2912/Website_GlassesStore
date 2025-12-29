@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { MapPin, CreditCard, Package, ArrowLeft, CheckCircle, Plus } from 'lucide-react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { MapPin, CreditCard, Package, ArrowLeft, CheckCircle, Plus, TicketPercent } from 'lucide-react';
 import { toast } from 'react-toastify';
 import cartItemApi from '../../api/cartItemApi';
 import orderApi from '../../api/orderApi';
-import addressApi from '../../api/addressApi'; // Import API địa chỉ
-import AddressModal from '../../components/common/AddressModal'; // Import Modal
+import addressApi from '../../api/addressApi';
+import AddressModal from '../../components/common/AddressModal';
 
 const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
@@ -13,10 +13,14 @@ const formatCurrency = (amount) => {
 
 const CheckoutPage = () => {
     const navigate = useNavigate();
-    const [cartItems, setCartItems] = useState([]);
+    const location = useLocation();
+    
+    // Lấy dữ liệu từ 2 nguồn: Giỏ hàng (selectedItemIds) HOẶC Mua ngay (directProduct)
+    const { selectedItemIds, directProduct } = location.state || {};
+
+    const [cartItems, setCartItems] = useState([]); 
     const [cartSummary, setCartSummary] = useState({ total_amount: 0 });
     
-    // State cho địa chỉ thật
     const [addresses, setAddresses] = useState([]);
     const [selectedAddressId, setSelectedAddressId] = useState(null);
     const [showAddressModal, setShowAddressModal] = useState(false);
@@ -24,78 +28,129 @@ const CheckoutPage = () => {
     const [loading, setLoading] = useState(true);
     const [processing, setProcessing] = useState(false);
 
-    // 1. Fetch dữ liệu Giỏ hàng & Địa chỉ
+    // 1. Fetch dữ liệu & Xử lý logic hiển thị
     const fetchCheckoutData = async () => {
         try {
-            // Gọi song song 2 API
+            // --- TRƯỜNG HỢP 1: MUA NGAY (Direct) ---
+            // Dữ liệu sản phẩm được truyền trực tiếp từ trang Detail, không cần gọi API giỏ hàng
+            if (directProduct) {
+                const product = directProduct.product_id; // Object sản phẩm đầy đủ
+                const qty = directProduct.quantity;
+                
+                // Tạo một item giả lập giống cấu trúc CartItem để tái sử dụng giao diện
+                const fakeCartItem = {
+                    _id: "temp_direct_buy", 
+                    product_id: product,
+                    quantity: qty,
+                    total_price: product.price * qty // Tạm tính (chưa trừ giảm giá nếu có logic phức tạp)
+                };
+
+                setCartItems([fakeCartItem]);
+                setCartSummary({ total_amount: fakeCartItem.total_price });
+
+                // Vẫn phải gọi API lấy địa chỉ
+                await fetchAddresses();
+                setLoading(false);
+                return; 
+            }
+
+            // --- TRƯỜNG HỢP 2: MUA TỪ GIỎ HÀNG (Cart) ---
+            if (!selectedItemIds || selectedItemIds.length === 0) {
+                toast.warning("Vui lòng chọn sản phẩm để thanh toán");
+                navigate('/cart');
+                return;
+            }
+
+            // Gọi song song lấy giỏ hàng và địa chỉ
             const [cartRes, addrRes] = await Promise.all([
                 cartItemApi.getMyCart(),
                 addressApi.getMyAddresses()
             ]);
 
-            // Xử lý giỏ hàng
-            if (!cartRes.data || cartRes.data.length === 0) {
-                toast.warning("Giỏ hàng trống");
-                navigate('/shop');
+            // Lọc sản phẩm theo ID đã chọn
+            const allItems = cartRes.data || [];
+            const filteredItems = allItems.filter(item => selectedItemIds.includes(item._id));
+
+            if (filteredItems.length === 0) {
+                toast.error("Sản phẩm không tồn tại hoặc đã bị xóa");
+                navigate('/cart');
                 return;
             }
-            setCartItems(cartRes.data);
-            setCartSummary(cartRes.cart_summary);
+
+            setCartItems(filteredItems);
+
+            // Tự tính lại tổng tiền các món đã chọn
+            const calculatedTotal = filteredItems.reduce((sum, item) => sum + item.total_price, 0);
+            setCartSummary({ total_amount: calculatedTotal });
 
             // Xử lý địa chỉ
-            const addrList = addrRes.data || [];
-            setAddresses(addrList);
-
-            // Tự động chọn địa chỉ mặc định (hoặc cái đầu tiên)
-            if (addrList.length > 0) {
-                const defaultAddr = addrList.find(a => a.isDefault);
-                setSelectedAddressId(defaultAddr ? defaultAddr._id : addrList[0]._id);
-            }
+            handleAddressData(addrRes.data);
+            setLoading(false);
 
         } catch (error) {
             console.error(error);
             navigate('/cart');
-        } finally {
-            setLoading(false);
+        }
+    };
+
+    // Hàm riêng để lấy địa chỉ (tái sử dụng)
+    const fetchAddresses = async () => {
+        const res = await addressApi.getMyAddresses();
+        handleAddressData(res.data);
+    };
+
+    // Hàm xử lý logic chọn địa chỉ mặc định
+    const handleAddressData = (data) => {
+        const list = data || [];
+        setAddresses(list);
+        if (list.length > 0) {
+            const defaultAddr = list.find(a => a.isDefault);
+            setSelectedAddressId(defaultAddr ? defaultAddr._id : list[0]._id);
         }
     };
 
     useEffect(() => {
         fetchCheckoutData();
+        // eslint-disable-next-line
     }, [navigate]);
 
-    // 2. Refresh lại list địa chỉ sau khi thêm mới
+    // Callback khi thêm địa chỉ mới thành công
     const handleAddressAdded = async () => {
-        const res = await addressApi.getMyAddresses();
-        const newlist = res.data || [];
-        setAddresses(newlist);
-        // Chọn luôn cái vừa thêm (thường là cái cuối cùng hoặc cái default mới)
-        if (newlist.length > 0) {
-             // Logic: nếu vừa thêm là default, chọn nó. Nếu không, chọn cái mới nhất (thường ở cuối mảng nếu sort createdAt)
-             // Nhưng backend bạn sort: default lên đầu, created_at mới nhất.
-             // Nên cứ chọn cái đầu tiên (nếu user set default) hoặc user tự chọn
-             // Ở đây mình để user tự chọn lại cho chắc, hoặc auto chọn cái đầu
-             setSelectedAddressId(newlist[0]._id); 
-        }
+        await fetchAddresses();
     };
 
-    // 3. Xử lý Đặt hàng
+    // 2. Xử lý ĐẶT HÀNG
     const handlePlaceOrder = async () => {
         if (!selectedAddressId) {
-            toast.error("Vui lòng thêm và chọn địa chỉ giao hàng");
+            toast.error("Vui lòng thêm địa chỉ giao hàng");
             return;
         }
 
         try {
             setProcessing(true);
+            const shippingFee = 30000;
             
-            const res = await orderApi.createOrder({
-                shipping_address_id: selectedAddressId, // ID thật từ MongoDB
-                shipping_fee: 30000, 
+            // Payload cơ bản
+            const payload = {
+                shipping_address_id: selectedAddressId,
+                shipping_fee: shippingFee,
                 discount_amount: 0
-            });
+            };
 
-            toast.success("🎉 Đặt hàng thành công!");
+            // Logic phân loại payload gửi lên Backend
+            if (directProduct) {
+                payload.direct_items = [{
+                    product_id: directProduct.product_id._id,
+                    quantity: directProduct.quantity
+                }];
+            } else {
+                // Nếu là Mua từ Giỏ -> Gửi items (CartItem ID)
+                payload.items = selectedItemIds;
+            }
+
+            const res = await orderApi.createOrder(payload);
+
+            toast.success("Đặt hàng thành công! 🎉");
             navigate(`/my-orders/${res.order_id}`);
 
         } catch (error) {
@@ -106,19 +161,24 @@ const CheckoutPage = () => {
         }
     };
 
-    if (loading) return <div className="min-h-screen flex items-center justify-center">Đang tải...</div>;
+    if (loading) return (
+        <div className="min-h-screen flex items-center justify-center">
+             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-slate-900"></div>
+        </div>
+    );
 
     return (
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <div className="container mx-auto px-4 py-8 max-w-6xl font-sans">
             <h1 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
                 <CreditCard className="text-blue-600" /> Thanh toán
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {/* CỘT TRÁI */}
+                
+                {/* --- CỘT TRÁI: THÔNG TIN --- */}
                 <div className="md:col-span-2 space-y-6">
                     
-                    {/* Phần Địa chỉ */}
+                    {/* 1. Phần Địa chỉ */}
                     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="font-bold text-gray-800 flex items-center gap-2">
@@ -146,14 +206,15 @@ const CheckoutPage = () => {
                                         <input 
                                             type="radio" 
                                             name="address" 
-                                            className="mt-1"
+                                            className="mt-1 accent-blue-600 w-4 h-4"
                                             checked={selectedAddressId === addr._id}
                                             onChange={() => setSelectedAddressId(addr._id)}
                                         />
-                                        <div>
-                                            <p className="font-bold text-gray-800">
-                                                {addr.recipient} <span className="font-normal text-gray-500">| {addr.phone}</span>
-                                                {addr.isDefault && <span className="ml-2 text-[10px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded border border-blue-200">Mặc định</span>}
+                                        <div className="flex-1">
+                                            <p className="font-bold text-gray-800 flex items-center gap-2">
+                                                {addr.recipient} 
+                                                <span className="font-normal text-gray-500 text-sm">| {addr.phone}</span>
+                                                {addr.isDefault && <span className="text-[10px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded border border-blue-200 font-bold uppercase">Mặc định</span>}
                                             </p>
                                             <p className="text-sm text-gray-600 mt-1">{addr.address_line}</p>
                                         </div>
@@ -163,22 +224,32 @@ const CheckoutPage = () => {
                         )}
                     </div>
 
-                    {/* Danh sách sản phẩm */}
+                    {/* 2. Danh sách sản phẩm */}
                     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                         <h2 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
                             <Package size={18} /> Sản phẩm ({cartItems.length})
                         </h2>
                         <div className="divide-y divide-gray-100">
-                            {cartItems.map(item => (
-                                <div key={item._id} className="py-3 flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-gray-100 rounded border overflow-hidden">
-                                        <img src={item.product_id?.image_url} alt="" className="w-full h-full object-cover"/>
+                            {cartItems.map((item, index) => (
+                                <div key={item._id || index} className="py-4 flex items-center gap-4">
+                                    <div className="w-16 h-16 bg-gray-100 rounded-lg border overflow-hidden shrink-0 flex items-center justify-center">
+                                        <img 
+                                            src={item.product_id?.image_url || "/placeholder.png"} 
+                                            alt={item.product_id?.product_name} 
+                                            className="w-full h-full object-cover mix-blend-multiply"
+                                        />
                                     </div>
-                                    <div className="flex-1">
-                                        <p className="text-sm font-medium text-gray-800 line-clamp-1">{item.product_id?.product_name}</p>
-                                        <p className="text-xs text-gray-500">x{item.quantity}</p>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium text-gray-800 line-clamp-2 mb-1">
+                                            {item.product_id?.product_name}
+                                        </p>
+                                        <div className="text-xs text-gray-500 flex items-center gap-2">
+                                            <span>Đơn giá: {formatCurrency(item.product_id?.price)}</span>
+                                            <span className="w-px h-3 bg-gray-300"></span>
+                                            <span>SL: <span className="font-bold text-gray-800">x{item.quantity}</span></span>
+                                        </div>
                                     </div>
-                                    <div className="text-sm font-bold text-gray-900">
+                                    <div className="text-sm font-bold text-blue-600 whitespace-nowrap">
                                         {formatCurrency(item.total_price)}
                                     </div>
                                 </div>
@@ -187,35 +258,47 @@ const CheckoutPage = () => {
                     </div>
                 </div>
 
-                {/* CỘT PHẢI: TỔNG TIỀN */}
+                {/* --- CỘT PHẢI: TỔNG TIỀN --- */}
                 <div className="md:col-span-1">
                     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 sticky top-24">
-                        <h2 className="font-bold text-gray-800 mb-4 border-b pb-2">Đơn hàng</h2>
+                        <h2 className="font-bold text-gray-800 mb-4 border-b pb-2 flex items-center gap-2">
+                            <TicketPercent size={18}/> Đơn hàng
+                        </h2>
                         <div className="space-y-3 text-sm mb-6">
                             <div className="flex justify-between text-gray-600">
                                 <span>Tạm tính:</span>
-                                <span>{formatCurrency(cartSummary.total_amount)}</span>
+                                <span className="font-medium">{formatCurrency(cartSummary.total_amount)}</span>
                             </div>
                             <div className="flex justify-between text-gray-600">
                                 <span>Phí vận chuyển:</span>
-                                <span>{formatCurrency(30000)}</span>
+                                <span className="font-medium">{formatCurrency(30000)}</span>
                             </div>
-                            <div className="border-t pt-3 flex justify-between text-lg font-bold text-blue-600">
-                                <span>Tổng cộng:</span>
-                                <span>{formatCurrency(cartSummary.total_amount + 30000)}</span>
+                            <div className="border-t pt-3 flex justify-between items-end">
+                                <span className="font-bold text-gray-800 text-base">Tổng cộng:</span>
+                                <span className="font-bold text-xl text-blue-600">
+                                    {formatCurrency(cartSummary.total_amount + 30000)}
+                                </span>
                             </div>
                         </div>
 
                         <button 
                             onClick={handlePlaceOrder}
                             disabled={processing}
-                            className="w-full bg-slate-900 text-white py-3 rounded-lg font-bold hover:bg-slate-800 transition shadow-lg disabled:opacity-70 flex justify-center items-center gap-2"
+                            className={`w-full py-3.5 rounded-xl font-bold text-white transition shadow-lg flex justify-center items-center gap-2 ${
+                                processing 
+                                ? 'bg-gray-400 cursor-not-allowed' 
+                                : 'bg-slate-900 hover:bg-slate-800 shadow-blue-900/10 hover:shadow-xl hover:-translate-y-0.5'
+                            }`}
                         >
-                            {processing ? "Đang xử lý..." : <>Đặt hàng ngay <CheckCircle size={18}/></>}
+                            {processing ? (
+                                <><div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div> Đang xử lý...</>
+                            ) : (
+                                <>Đặt hàng ngay <CheckCircle size={18}/></>
+                            )}
                         </button>
                         
-                        <Link to="/cart" className="block text-center text-sm text-gray-500 mt-4 hover:text-blue-600">
-                            <ArrowLeft size={14} className="inline mr-1" /> Quay lại giỏ hàng
+                        <Link to="/cart" className="block text-center text-sm text-gray-500 mt-4 hover:text-blue-600 flex items-center justify-center gap-1 transition group">
+                            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Quay lại giỏ hàng
                         </Link>
                     </div>
                 </div>
