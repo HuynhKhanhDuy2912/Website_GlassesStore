@@ -9,8 +9,8 @@ const productSchema = new mongoose.Schema({
   stock: { type: Number, default: 0 },
   flavor: { 
       type: String, 
-      enum: ['Vani', 'Socola', 'Dâu', 'Matcha', 'Phô mai', 'Trái cây', 'Cà phê', 'Khác'], 
-      default: 'Khác' 
+      trim: true,        
+      default: '' 
   },
   category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
   images: [{ url: String, alt: String }],

@@ -7,7 +7,7 @@ const axiosClient = axios.create({
   },
 });
 
-// 🔐 Gắn token tự động
+// Gắn token tự động
 axiosClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("ACCESS_TOKEN");

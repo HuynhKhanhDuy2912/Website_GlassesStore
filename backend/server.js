@@ -27,7 +27,7 @@ import { notFound, errorHandler } from "./middleware/error.middleware.js";
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:5173", // URL frontend của bạn
+  origin: "http://localhost:5173",
   credentials: true
 }));
 
@@ -47,7 +47,7 @@ app.use("/api/categories", categoryRoute);
 app.use("/api/products", productRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/orders", orderRoute);
-app.use("/api/contacts", contactRoute); // Nhớ là số nhiều 'contacts'
+app.use("/api/contacts", contactRoute);
 app.use("/api/upload", uploadRoute);
 app.use("/api/reviews", reviewRoute);
 app.use("/api/users", userRoutes);

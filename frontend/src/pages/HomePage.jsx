@@ -6,7 +6,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 
-// ✅ 1. THÊM DÒNG NÀY ĐỂ IMPORT COMPONENT FLASH SALE
+// 1. THÊM DÒNG NÀY ĐỂ IMPORT COMPONENT FLASH SALE
 import FlashSale from '../components/FlashSale';
 
 // Hàm helper ảnh
@@ -82,7 +82,7 @@ const HomePage = () => {
                             <div className="container mx-auto px-6">
                                 <div className="max-w-2xl text-white animate-fade-in-up">
                                     <span className="bg-pink-600 text-white px-3 py-1 rounded-full text-sm font-semibold mb-4 inline-block">
-                                        Hot Deal 🔥
+                                        Hot Deal
                                     </span>
                                     <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight drop-shadow-lg">
                                         {banner.title}
@@ -104,9 +104,9 @@ const HomePage = () => {
                 <img src="/assets/img/banner2.jpg" alt="Default Banner" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent"></div>
                 <div className="absolute inset-0 flex items-center container mx-auto px-6">
-                    <div className="max-w-2xl text-white">
-                        <h1 className="text-5xl md:text-7xl font-bold mb-6">Vị Ngọt <br/> <span className="text-pink-400">Của Hạnh Phúc</span></h1>
-                        <Link to="/san-pham" className="bg-pink-600 text-white px-8 py-3 rounded-full font-bold">Đặt Bánh Ngay</Link>
+                    <div className="max-w-2xl">
+                        <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">Vẻ Đẹp <br/> <span className="text-blue-900">Của Sự Sang Trọng</span></h1>
+                        <Link to="/san-pham" className="bg-yellow-300 px-8 py-3 rounded-full font-bold">Mua Ngay</Link>
                     </div>
                 </div>
             </div>
@@ -175,7 +175,7 @@ const HomePage = () => {
           <div className="flex justify-between items-end mb-10">
             <div>
               <h2 className="text-3xl font-bold text-gray-800">Sản Phẩm Nổi Bật</h2>
-              <p className="text-gray-500 mt-2">Những chiếc bánh được đánh giá cao nhất (4 sao trở lên)</p>
+              <p className="text-gray-500 mt-2">Những chiếc mắt kính được đánh giá cao nhất (4 sao trở lên)</p>
             </div>
             <Link to="/san-pham" className="text-pink-600 font-semibold hover:underline hidden md:block">Xem tất cả &rarr;</Link>
           </div>
@@ -194,7 +194,7 @@ const HomePage = () => {
                     
                   </div>
                   <h3 className="font-bold text-lg text-gray-800 mb-1 group-hover:text-pink-600 transition line-clamp-1">{product.name}</h3>
-                  <p className="text-gray-500 text-sm mb-2">{product.category?.name || 'Bánh ngọt'}</p>
+                  <p className="text-gray-500 text-sm mb-2">{product.category?.name || 'Mắt kính Nam'}</p>
                   
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-pink-600 text-lg">{product.price.toLocaleString()}đ</span>
@@ -219,7 +219,7 @@ const HomePage = () => {
             <div className="text-center py-10 bg-gray-50 rounded-2xl">
                 <p className="text-gray-500 mb-4 text-lg">Chưa có sản phẩm nào đạt đánh giá cao tuần này.</p>
                 <Link to="/san-pham" className="bg-pink-100 text-pink-600 px-6 py-2 rounded-full font-bold hover:bg-pink-200 transition">
-                    Xem tất cả bánh
+                    Xem tất cả
                 </Link>
             </div>
           )}

@@ -112,7 +112,7 @@ const CategoryManager = () => {
       resetForm();
     } catch (error) {
       console.error(error);
-      alert("❌ Lỗi: " + (error.response?.data?.message || error.message));
+      alert("Lỗi: " + (error.response?.data?.message || error.message));
     } finally {
       setLoading(false);
       setUploading(false);
@@ -125,7 +125,7 @@ const CategoryManager = () => {
         await api.delete(`/categories/${id}`);
         fetchCategories();
       } catch (error) {
-        alert("Không thể xóa danh mục này.");
+        alert("Không thể xóa danh mục này.", error);
       }
     }
   };
@@ -174,7 +174,7 @@ const CategoryManager = () => {
               </label>
               <input
                 className="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-pink-200 outline-none bg-gray-50 focus:bg-white transition"
-                placeholder="Ví dụ: Bánh Kem"
+                placeholder="Ví dụ: Kính mát ABC..."
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })

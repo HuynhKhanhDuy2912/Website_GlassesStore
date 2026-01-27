@@ -22,8 +22,8 @@ const BannerManager = () => {
   // State form
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null); // File ảnh được chọn từ máy
-  const [preview, setPreview] = useState(null); // Link xem trước
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
 
   const fetchBanners = async () => {
     try {
@@ -39,7 +39,7 @@ const BannerManager = () => {
 
   useEffect(() => { fetchBanners(); }, []);
 
-  // ✅ 1. Xử lý khi người dùng chọn file từ máy tính
+  // 1. Xử lý khi người dùng chọn file từ máy tính
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -49,7 +49,7 @@ const BannerManager = () => {
     }
   };
 
-  // ✅ 2. Gửi file lên server
+  // 2. Gửi file lên server
   const handleAddBanner = async (e) => {
     e.preventDefault();
     if (!selectedFile) return alert("Vui lòng chọn ảnh!");
@@ -67,7 +67,7 @@ const BannerManager = () => {
       await axios.post("http://localhost:5000/api/banners", formData, {
         headers: { 
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data" // Bắt buộc dòng này
+            "Content-Type": "multipart/form-data"
         }
       });
 
@@ -76,7 +76,7 @@ const BannerManager = () => {
       setTitle(''); setDescription(''); setSelectedFile(null); setPreview(null);
       fetchBanners(); 
     } catch (error) {
-      alert("Lỗi thêm banner");
+      alert("Lỗi thêm banner", error);
     } finally {
       setLoading(false);
     }
@@ -90,7 +90,7 @@ const BannerManager = () => {
             headers: { Authorization: `Bearer ${token}` }
         });
         setBanners(banners.filter(b => b._id !== id));
-    } catch (error) { alert("Lỗi xóa banner"); }
+    } catch (error) { alert("Lỗi xóa banner", error); }
   };
 
   const handleToggle = async (id) => {
@@ -100,7 +100,7 @@ const BannerManager = () => {
             headers: { Authorization: `Bearer ${token}` }
         });
         fetchBanners();
-    } catch (error) { alert("Lỗi cập nhật"); }
+    } catch (error) { alert("Lỗi cập nhật", error); }
   };
 
   return (
@@ -112,7 +112,7 @@ const BannerManager = () => {
             </h2>
             <form onSubmit={handleAddBanner} className="flex flex-col md:flex-row gap-6">
                 
-                {/* ✅ KHUNG UPLOAD ẢNH TỪ MÁY */}
+                {/* KHUNG UPLOAD ẢNH TỪ MÁY */}
                 <div className="w-full md:w-1/3">
                     <label className="block w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition overflow-hidden bg-gray-50 relative">
                         {preview ? (
@@ -137,7 +137,7 @@ const BannerManager = () => {
                 <div className="flex-1 space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Tiêu đề lớn</label>
-                        <input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-pink-500" placeholder="VD: Vị Ngọt Hạnh Phúc" value={title} onChange={e => setTitle(e.target.value)} />
+                        <input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-pink-500" placeholder="VD: Vẻ đẹp của sự sang trọng" value={title} onChange={e => setTitle(e.target.value)} />
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Mô tả ngắn</label>

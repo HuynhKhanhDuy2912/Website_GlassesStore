@@ -5,7 +5,8 @@ import {
     deleteProduct, 
     getProductBySlug,
     getProduct,
-    updateProduct
+    updateProduct,
+    getUniqueFlavors
 } from "../controllers/product.controller.js";
 
 import { uploadFiles } from "../middleware/upload.js"; // file bạn vừa tạo
@@ -14,6 +15,7 @@ const router = express.Router();
 
 // --- PUBLIC ROUTES ---
 
+router.get("/flavors", getUniqueFlavors);
 router.get("/", listProducts);
 router.get("/:id", getProduct);
 router.get("/slug/:slug", getProductBySlug);

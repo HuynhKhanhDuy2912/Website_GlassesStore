@@ -47,7 +47,7 @@ import ReviewManager from "./pages/admin/ReviewManager";
 import BannerManager from "./pages/admin/BannerManager";
 import FlashSaleManager from "./pages/admin/FlashSaleManager";
 
-// ✅ 1. IMPORT FOOTER VỪA TẠO
+//1. IMPORT FOOTER VỪA TẠO
 import Footer from "./components/Footer"; 
 
 
@@ -75,7 +75,7 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // ✅ 2. KIỂM TRA: Nếu đang ở trang Admin thì KHÔNG hiện Navbar và Footer của khách
+  //2. KIỂM TRA: Nếu đang ở trang Admin thì KHÔNG hiện Navbar và Footer của khách
   const isAdminPage = location.pathname.startsWith("/admin");
 
   const fetchCartCount = async () => {
@@ -145,8 +145,8 @@ function App() {
       {!isAdminPage && (
         <nav className="bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm border-b border-pink-100">
           <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-            <Link to="/" className="text-2xl font-bold text-pink-600 flex items-center gap-2">
-              🍰 HanHan Bakery
+            <Link to="/" className="text-2xl font-bold text-blue-800 flex items-center gap-2">
+              DHD - GlassesShop
             </Link>
 
             <div className="hidden md:flex space-x-8 font-medium text-gray-600">
@@ -248,7 +248,8 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           
 
-          <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+          {/* <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}> */}
+          <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="products" element={<ProductManager />} />
             <Route path="categories" element={<CategoryManager />} />

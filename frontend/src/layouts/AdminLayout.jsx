@@ -1,6 +1,5 @@
 import React from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-// ✅ 1. Thêm icon 'Zap' vào đây
 import { LayoutDashboard, ShoppingBag, Layers, LogOut, Home, Package, Mail, Users, Star, Image, Zap } from 'lucide-react';
 
 const AdminLayout = () => {
@@ -8,18 +7,15 @@ const AdminLayout = () => {
   const navigate = useNavigate();
 
   const menuItems = [
-    { path: '/admin', icon: <LayoutDashboard size={20} />, label: 'Thống kê' },
-    { path: '/admin/orders', icon: <Package size={20} />, label: 'Đơn hàng' },
-    { path: '/admin/products', icon: <ShoppingBag size={20} />, label: 'Sản phẩm' },
-    
-    // ✅ 2. THÊM MỤC FLASH SALE VÀO ĐÂY
-    { path: '/admin/flash-sale', icon: <Zap size={20} />, label: 'Flash Sale' },
-
-    { path: '/admin/categories', icon: <Layers size={20} />, label: 'Danh mục' },
-    { path: '/admin/users', icon: <Users size={20} />, label: 'Khách hàng' }, 
-    { path: '/admin/reviews', icon: <Star size={20} />, label: 'Đánh giá' },
-    { path: '/admin/banners', icon: <Image size={20} />, label: 'Banner' },
-    { path: '/admin/contacts', icon: <Mail size={20} />, label: 'Liên hệ' },
+    { path: '/admin', icon: <LayoutDashboard size={20} />, label: 'Báo cáo Thống kê' },    
+    { path: '/admin/categories', icon: <Layers size={20} />, label: 'Quản lý Danh mục' },
+    { path: '/admin/products', icon: <ShoppingBag size={20} />, label: 'Quản lý Sản phẩm' },
+    { path: '/admin/orders', icon: <Package size={20} />, label: 'Quản lý Đơn hàng' },
+    { path: '/admin/flash-sale', icon: <Zap size={20} />, label: 'Quản lý Flash Sale' },
+    { path: '/admin/users', icon: <Users size={20} />, label: 'Quản lý Khách hàng' }, 
+    { path: '/admin/reviews', icon: <Star size={20} />, label: 'Quản lý Đánh giá' },
+    { path: '/admin/banners', icon: <Image size={20} />, label: 'Quản lý Banner' },
+    { path: '/admin/contacts', icon: <Mail size={20} />, label: 'Quản lý Liên hệ' },
   ];
 
   const handleLogout = () => {
@@ -68,7 +64,7 @@ const AdminLayout = () => {
           HanHan Admin
         </div>
         
-        {/* ✅ Thêm class 'custom-scroll sidebar-scroll' vào đây */}
+        {/* Thêm class 'custom-scroll sidebar-scroll' vào đây */}
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto custom-scroll sidebar-scroll">
           {menuItems.map((item) => (
             <Link

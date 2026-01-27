@@ -42,6 +42,6 @@ const upload = multer({
   },
 });
 
-// ✅ EXPORT CẢ HAI KIỂU
+// EXPORT CẢ HAI KIỂU
 export { upload as uploadFiles };
 export default upload;
