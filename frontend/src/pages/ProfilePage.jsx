@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { User, Phone, MapPin, Save, Camera } from 'lucide-react';
-// ✅ 1. Import useNavigate
 import { useNavigate } from 'react-router-dom';
 
 const getImageUrl = (path) => {
@@ -12,7 +11,7 @@ const getImageUrl = (path) => {
 };
 
 const ProfilePage = () => {
-  const navigate = useNavigate(); // ✅ 2. Khai báo hook
+  const navigate = useNavigate(); 
   
   const [userInfo, setUserInfo] = useState({
     name: '',
@@ -81,15 +80,10 @@ const ProfilePage = () => {
         config
       );
 
-      // 1. Lưu vào LocalStorage
       localStorage.setItem("USER_INFO", JSON.stringify(data));
-      
-      // ✅ 2. QUAN TRỌNG: Bắn tín hiệu cho App.js biết để cập nhật Avatar ngay
       window.dispatchEvent(new Event("USER_INFO_UPDATED"));
-
       setMessage({ type: 'success', text: 'Cập nhật thành công!' });
       
-      // ✅ 3. Chuyển hướng về Trang chủ sau 1.5s
       setTimeout(() => {
         navigate("/"); 
       }, 1500);
@@ -106,9 +100,9 @@ const ProfilePage = () => {
   return (
     <div className="container mx-auto px-4 py-10 min-h-[80vh]">
         {/* ... Code giao diện form giữ nguyên ... */}
-        <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-sm border border-pink-100 overflow-hidden">
+        <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-sm border border-blue-100 overflow-hidden">
             {/* Header Form */}
-            <div className="bg-pink-600 px-6 py-4">
+            <div className="bg-blue-600 px-6 py-4">
                 <h1 className="text-xl font-bold text-white flex items-center gap-2">
                     <User /> Hồ sơ cá nhân
                 </h1>
@@ -127,7 +121,7 @@ const ProfilePage = () => {
                                 <User size={48} className="text-gray-400" />
                             )}
                         </div>
-                        <label className="absolute bottom-0 right-0 bg-pink-600 text-white p-2 rounded-full cursor-pointer hover:bg-pink-700 transition shadow-sm border-2 border-white">
+                        <label className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700 transition shadow-sm border-2 border-white">
                             <Camera size={18} />
                             <input type="file" accept="image/*" className="hidden" onChange={handleFileChange}/>
                         </label>
@@ -139,7 +133,7 @@ const ProfilePage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Họ và tên</label>
-                        <input type="text" name="name" required value={userInfo.name} onChange={handleChange} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-pink-500"/>
+                        <input type="text" name="name" required value={userInfo.name} onChange={handleChange} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500"/>
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
@@ -149,14 +143,14 @@ const ProfilePage = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-1">Số điện thoại</label>
                         <div className="relative">
                             <Phone className="absolute left-3 top-3 text-gray-400" size={18}/>
-                            <input type="text" name="phone" value={userInfo.phone} onChange={handleChange} placeholder="Nhập số điện thoại..." className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-pink-500"/>
+                            <input type="text" name="phone" value={userInfo.phone} onChange={handleChange} placeholder="Nhập số điện thoại..." className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500"/>
                         </div>
                     </div>
                     <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Địa chỉ giao hàng mặc định</label>
                         <div className="relative">
                             <MapPin className="absolute left-3 top-3 text-gray-400" size={18}/>
-                            <textarea name="address" value={userInfo.address} onChange={handleChange} placeholder="Ví dụ: 123 Đường Nguyễn Huệ, Quận 1, TP.HCM" rows="3" className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-pink-500"></textarea>
+                            <textarea name="address" value={userInfo.address} onChange={handleChange} placeholder="Ví dụ: 123 Đường Nguyễn Huệ, Quận 1, TP.HCM" rows="3" className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500"></textarea>
                         </div>
                     </div>
                 </div>
@@ -169,7 +163,7 @@ const ProfilePage = () => {
                 )}
 
                 {/* Button Submit */}
-                <button type="submit" disabled={loading} className="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-lg transition flex items-center justify-center gap-2">
+                <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition flex items-center justify-center gap-2">
                     {loading ? 'Đang lưu...' : <><Save size={20} /> Lưu thay đổi</>}
                 </button>
             </form>

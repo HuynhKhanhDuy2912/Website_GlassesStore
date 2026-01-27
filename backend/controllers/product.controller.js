@@ -131,11 +131,11 @@ export const getProductBySlug = async (req, res) => {
 
 export const getUniqueFlavors = async (req, res) => {
   try {
-    // Lấy tất cả các vị khác nhau, loại bỏ các giá trị rỗng hoặc null
+    // Lấy tất cả các thương hiệu khác nhau, loại bỏ các giá trị rỗng hoặc null
     const flavors = await Product.distinct("flavor", { flavor: { $ne: "" } });
     res.json(flavors);
   } catch (error) {
-    res.status(500).json({ message: "Lỗi lấy danh sách hương vị" });
+    res.status(500).json({ message: "Lỗi lấy danh sách thương hiệu" });
   }
 };
 

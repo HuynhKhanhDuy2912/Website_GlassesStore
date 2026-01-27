@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { 
-    MessageSquare, Send, User, ShieldCheck, Clock, Loader, 
-    MapPin, Phone, Mail, Trash2, Image as ImageIcon, X, Store, ChevronRight
+    MessageSquare, Send, ShieldCheck, Loader, 
+    MapPin, Phone, Mail, Trash2, Image as ImageIcon, X, Store
 } from 'lucide-react';
 
 const ContactPage = () => {
@@ -65,14 +65,14 @@ const ContactPage = () => {
         setLoading(true);
         try {
             const res = await axios.post('http://localhost:5000/api/contacts', 
-                { message: "Xin chào HanHan Bakery, mình cần hỗ trợ!" },
+                { message: "Xin chào DHD - GlassesShop, mình cần hỗ trợ!" },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             const newTicket = res.data.data;
             setContacts([newTicket, ...contacts]);
             setSelectedTicket(newTicket);
         } catch (error) { 
-            alert("Lỗi khởi tạo chat"); 
+            alert("Lỗi khởi tạo chat", error); 
         } finally { 
             setLoading(false); 
         }
@@ -111,7 +111,7 @@ const ContactPage = () => {
             setChatInput('');
             clearSelectedFile();
         } catch (error) { 
-            alert("Lỗi gửi tin nhắn"); 
+            alert("Lỗi gửi tin nhắn", error); 
         }
     };
 
@@ -139,9 +139,9 @@ const ContactPage = () => {
             <div className="bg-white border-b border-gray-100 py-6 px-4 mb-6 shadow-sm">
                 <div className="container mx-auto max-w-6xl">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <InfoCard icon={MapPin} title="Cửa hàng" desc="126 Nguyễn Thiện Thành, Trà Vinh" color="bg-pink-500" />
+                        <InfoCard icon={MapPin} title="Cửa hàng" desc="126 Nguyễn Thiện Thành, Trà Vinh" color="bg-red-500" />
                         <InfoCard icon={Phone} title="Hotline" desc="0999 999 999" color="bg-orange-400" />
-                        <InfoCard icon={Mail} title="Hỗ trợ" desc="contact@hanhanbakery.com" color="bg-blue-500" />
+                        <InfoCard icon={Mail} title="Hỗ trợ" desc="contact@dhdglassesshop.com" color="bg-blue-500" />
                     </div>
                 </div>
             </div>
@@ -149,7 +149,7 @@ const ContactPage = () => {
             <div className="container mx-auto max-w-6xl px-4 pb-10">
                 {!token ? (
                     <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-gray-200">
-                        <p className="text-gray-500 mb-4">Vui lòng đăng nhập để chat với HanHan Bakery.</p>
+                        <p className="text-gray-500 mb-4">Vui lòng đăng nhập để nhắn tin với DHD - GlassesShop.</p>
                         <a href="/login" className="bg-pink-600 text-white px-6 py-2 rounded-full font-bold hover:bg-pink-700 transition">Đăng nhập</a>
                     </div>
                 ) : (
@@ -159,7 +159,7 @@ const ContactPage = () => {
                         <div className="w-full md:w-80 border-r border-gray-100 flex flex-col bg-gray-50">
                             <div className="p-4 border-b border-gray-200 bg-white">
                                 <h2 className="font-bold text-gray-800 flex items-center gap-2">
-                                    <MessageSquare size={18} className="text-pink-600"/> Tin nhắn
+                                    <MessageSquare size={18} className="text-blue-600"/> Tin nhắn
                                 </h2>
                             </div>
 
@@ -169,7 +169,7 @@ const ContactPage = () => {
                                 ) : contacts.length === 0 ? (
                                     <div className="text-center py-10 px-4">
                                         <p className="text-gray-400 text-xs mb-4">Bạn chưa có hội thoại nào</p>
-                                        <button onClick={handleStartChat} className="text-xs bg-pink-600 text-white px-4 py-2 rounded-lg font-bold">Bắt đầu chat ngay</button>
+                                        <button onClick={handleStartChat} className="text-xs bg-blue-600 text-white px-4 py-2 rounded-lg font-bold">Bắt đầu cuộc hội thoại</button>
                                     </div>
                                 ) : (
                                     contacts.map(ticket => {
@@ -191,7 +191,7 @@ const ContactPage = () => {
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex justify-between items-center">
-                                                        <h4 className={`text-sm truncate ${isUnread ? 'font-bold text-gray-900' : 'font-semibold text-gray-600'}`}>HanHan Bakery</h4>
+                                                        <h4 className={`text-sm truncate ${isUnread ? 'font-bold text-gray-900' : 'font-semibold text-gray-600'}`}>DHD - GlassesShop</h4>
                                                         {isUnread && <span className="bg-pink-500 w-2 h-2 rounded-full"></span>}
                                                     </div>
                                                     <p className={`text-xs truncate ${isUnread ? 'font-bold text-gray-800' : 'text-gray-400'}`}>
@@ -217,7 +217,7 @@ const ContactPage = () => {
                                             </div>
                                             <div>
                                                 <h3 className="font-bold text-gray-800 text-base flex items-center gap-1">
-                                                    HanHan Bakery <ShieldCheck size={14} className="text-blue-500"/>
+                                                    DHD - GlassesShop <ShieldCheck size={14} className="text-blue-500"/>
                                                 </h3>
                                                 <p className="text-[10px] text-green-500 font-bold">Đang trực tuyến</p>
                                             </div>
@@ -260,7 +260,7 @@ const ContactPage = () => {
                             ) : (
                                 <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
                                     <MessageSquare size={48} className="mb-2 text-pink-100" />
-                                    <p className="text-sm">Hãy chọn một hội thoại để nhắn tin</p>
+                                    <p className="text-sm">Hãy chọn bắt đầu cuộc hội thoại để nhắn tin</p>
                                 </div>
                             )}
                         </div>

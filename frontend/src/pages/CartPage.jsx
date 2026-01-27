@@ -231,9 +231,9 @@ const CartPage = () => {
                         <ShoppingBag size={40} />
                     </div>
                     <h2 className="text-2xl font-bold text-gray-800 mb-2">Giỏ hàng đang trống</h2>
-                    <p className="text-gray-500 mb-8">Bạn chưa chọn chiếc bánh nào cả. Hãy dạo một vòng thực đơn nhé!</p>
+                    <p className="text-gray-500 mb-8">Bạn chưa chọn sản phẩm nào cả. Hãy dạo một vòng cửa hàng nhé!</p>
                     <Link to="/san-pham" className="flex items-center justify-center gap-2 bg-pink-600 text-white px-6 py-3 rounded-xl hover:bg-pink-700 transition font-medium w-full">
-                        Xem thực đơn <ArrowRight size={18} />
+                        Xem sản phẩm <ArrowRight size={18} />
                     </Link>
                 </div>
             </div>

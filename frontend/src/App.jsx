@@ -149,31 +149,31 @@ function App() {
               DHD - GlassesShop
             </Link>
 
-            <div className="hidden md:flex space-x-8 font-medium text-gray-600">
-              <Link to="/" className="hover:text-pink-600 transition">Trang chủ</Link>
-              <Link to="/san-pham" className="hover:text-pink-600 transition">Sản phẩm</Link>
-              <Link to="/gioi-thieu" className="hover:text-pink-600 transition">Giới thiệu</Link>
-              <Link to="/lien-he" className="hover:text-pink-600 transition">Liên hệ</Link>
+            <div className="hidden md:flex space-x-8 font-medium text-gray-600 text-lg">
+              <Link to="/" className="hover:text-blue-600 transition">Trang chủ</Link>
+              <Link to="/san-pham" className="hover:text-blue-600 transition">Sản phẩm</Link>
+              <Link to="/gioi-thieu" className="hover:text-blue-600 transition">Giới thiệu</Link>
+              <Link to="/lien-he" className="hover:text-blue-600 transition">Liên hệ</Link>
             </div>
 
             <div className="flex items-center space-x-6">
-              <Link to="/cart" className="relative hover:text-pink-600 transition group">
+              <Link to="/cart" className="relative hover:text-gray-600 transition group">
                 <ShoppingCart className="w-6 h-6" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-[10px] font-bold h-5 min-w-[20px] px-1 rounded-full flex items-center justify-center border-2 border-white animate-bounce-short">
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold h-5 min-w-[20px] px-1 rounded-full flex items-center justify-center border-2 border-white animate-bounce-short">
                     {cartCount > 99 ? "99+" : cartCount}
                   </span>
                 )}
               </Link>
 
               <div className="relative group py-2">
-                <button className="hover:text-pink-600 transition flex items-center gap-2">
+                <button className="hover:text-gray-600 transition flex items-center gap-2">
                   {currentUser ? (
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-semibold max-w-[100px] truncate hidden md:block">
                         {currentUser.name}
                       </span>
-                      <div className="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 border border-pink-200 overflow-hidden">
+                      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-dark-600 border overflow-hidden">
                         {currentUser.avatarUrl ? (
                            <img 
                               src={getImageUrl(currentUser.avatarUrl)} 
@@ -195,7 +195,7 @@ function App() {
                           Tài khoản: <br />
                           <span className="text-gray-600 font-medium truncate block">{currentUser.email}</span>
                         </div>
-                        <Link to="/profile" className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-pink-50 hover:text-pink-600 rounded-lg transition">
+                        <Link to="/profile" className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition">
                           <User size={18} /> <span>Hồ sơ cá nhân</span>
                         </Link>
                         {currentUser.role === "admin" && (

@@ -4,8 +4,8 @@ import {
   Loader,
   Filter,
   ChevronDown,
-  Banknote,
-  Coffee,
+  DollarSign,
+  Tag,
   ShoppingCart,
   Plus,
   Zap,
@@ -30,7 +30,7 @@ const ProductPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const maxPriceFilter = parseInt(searchParams.get("maxPrice")) || 1000000;
+  const maxPriceFilter = parseInt(searchParams.get("maxPrice")) || 10000000;
   const categoryId = searchParams.get("category") || "";
   const searchTerm = searchParams.get("q") || "";
   const flavorFilter = searchParams.get("flavor") || "";
@@ -55,10 +55,10 @@ const ProductPage = () => {
       try {
         setLoading(true);
 
-        // --- 🔥 LOGIC MỚI: TỰ ĐỘNG RANDOM KHI Ở TRANG TẤT CẢ ---
+        // --- LOGIC MỚI: TỰ ĐỘNG RANDOM KHI Ở TRANG TẤT CẢ ---
         let sortType = "newest"; // Mặc định là mới nhất
 
-        // Điều kiện: Không chọn danh mục AND Không tìm kiếm AND Không lọc vị
+        // Điều kiện: Không chọn danh mục AND Không tìm kiếm AND Không lọc thương hiệu
         if (!categoryId && !searchTerm && !flavorFilter) {
           sortType = "random";
         }
@@ -70,7 +70,7 @@ const ProductPage = () => {
           flavor: flavorFilter || undefined,
           page: page,
           limit: 6,
-          maxPrice: maxPriceFilter < 1000000 ? maxPriceFilter : undefined,
+          maxPrice: maxPriceFilter < 10000000 ? maxPriceFilter : undefined,
           sort: sortType, // Gửi tham số sort xuống Backend
         };
 
@@ -94,7 +94,7 @@ const ProductPage = () => {
     return () => clearTimeout(t);
   }, [page, maxPriceFilter, categoryId, searchTerm, flavorFilter]);
 
-  // Fetch danh sách vị từ server
+  // Fetch danh sách thương hiệu từ server
   useEffect(() => {
     axios
       .get("http://localhost:5000/api/products/flavors")
@@ -138,7 +138,7 @@ const ProductPage = () => {
     e.stopPropagation();
     const token = localStorage.getItem("ACCESS_TOKEN");
     if (!token) {
-      if (window.confirm("Đăng nhập để mua bánh?")) navigate("/login");
+      if (window.confirm("Đăng nhập để mua hàng?")) navigate("/login");
       return;
     }
     setAddingId(product._id);
@@ -167,10 +167,10 @@ const ProductPage = () => {
     <div className="bg-gray-50 min-h-screen font-sans flex flex-col">
       <div className="bg-pink-100 py-12 mb-8 text-center">
         <h1 className="text-5xl font-extrabold text-pink-700 mb-3 font-serif">
-          Thực Đơn Bánh Ngọt
+          Bộ sưu tập kính thời trang
         </h1>
         <p className="text-pink-500 text-lg">
-          Hương vị ngọt ngào cho mọi khoảnh khắc
+          Rõ nét từng khoảnh khắc cuộc sống
         </p>
       </div>
 
@@ -188,7 +188,7 @@ const ProductPage = () => {
                       onClick={() => handleCategoryChange("")}
                       className={`w-full px-3 py-2 rounded-lg flex justify-between ${categoryId === "" ? "bg-pink-50 text-pink-700 font-bold" : "hover:bg-gray-50"}`}
                     >
-                      <span>Tất cả bánh</span>
+                      <span>Tất cả</span>
                       {categoryId === "" && (
                         <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
                       )}
@@ -211,10 +211,10 @@ const ProductPage = () => {
               </div>
               <div className="mb-8 border-t border-gray-100 pt-6">
                 <h3 className="font-bold text-xl mb-4 flex items-center gap-2">
-                  <Coffee className="w-5 h-5 text-pink-500" /> Hương Vị
+                  <Tag  className="w-5 h-5 text-pink-500" /> Thương Hiệu
                 </h3>
                 <ul className="space-y-2">
-                  {/* Nút mặc định: Tất cả bánh (xóa lọc vị) */}
+                  {/* Nút mặc định: Tất cả bánh (xóa lọc thương hiệu) */}
                   <li>
                     <button
                       onClick={() => handleFlavorChange("")}
@@ -224,14 +224,14 @@ const ProductPage = () => {
                           : "hover:bg-gray-50 text-gray-600"
                       }`}
                     >
-                      <span>Tất cả vị</span>
+                      <span>Tất cả</span>
                       {flavorFilter === "" && (
                         <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
                       )}
                     </button>
                   </li>
 
-                  {/* Map danh sách vị lấy từ API */}
+                  {/* Map danh sách thương hiệu lấy từ API */}
                   {dynamicFlavors.map((flavor) => (
                     <li key={flavor}>
                       <button
@@ -252,13 +252,13 @@ const ProductPage = () => {
                 </ul>
               </div>
               <div>
-                <h3 className="font-bold text-xl mb-6 flex items-center gap-2">
-                  <Banknote className="w-5 h-5 text-pink-500" /> Lọc Theo Giá
+                <h3 className="font-bold text-xl mb-4 flex items-center gap-2">
+                  <DollarSign  className="w-5 h-5 text-pink-500" /> Giá Tiền
                 </h3>
                 <input
                   type="range"
                   min="0"
-                  max="1000000"
+                  max="10000000"
                   step="10000"
                   value={maxPriceFilter}
                   onChange={handlePriceChange}
@@ -276,7 +276,7 @@ const ProductPage = () => {
               <div className="relative w-full">
                 <input
                   type="text"
-                  placeholder="Bạn đang tìm bánh gì..."
+                  placeholder="Bạn đang tìm loại kính gì..."
                   value={searchTerm}
                   onChange={handleSearch}
                   className="w-full pl-12 pr-4 py-3 bg-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-200 transition"
@@ -359,7 +359,7 @@ const ProductPage = () => {
                         </h3>
                         <p className="text-gray-500 text-sm mb-2 line-clamp-1">
                           {product.flavor
-                            ? `Vị: ${product.flavor}`
+                            ? `Thương hiệu: ${product.flavor}`
                             : product.category?.name || "Bánh ngọt"}
                         </p>
                         <div className="flex justify-between items-center">

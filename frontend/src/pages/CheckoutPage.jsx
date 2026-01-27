@@ -253,7 +253,7 @@ const CheckoutPage = () => {
                                 </button>
                                 
                                 <p className="text-[10px] text-center text-gray-400 mt-4 italic">
-                                    Bằng việc nhấn đặt hàng, bạn đồng ý với các điều khoản của HanHan Bakery
+                                    Bằng việc nhấn đặt hàng, bạn đồng ý với các điều khoản của DHD - GlassesShop
                                 </p>
                             </div>
                         </div>

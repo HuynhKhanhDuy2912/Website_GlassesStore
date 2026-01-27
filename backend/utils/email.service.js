@@ -54,7 +54,7 @@ const createOrderTemplate = (order) => {
         </div>
         <div style="padding: 20px;">
             <p>Xin chào <strong>${userName}</strong>,</p>
-            <p>Cảm ơn bạn đã đặt hàng tại HanHan Bakery. Đơn hàng của bạn đã được tiếp nhận và đang được xử lý.</p>
+            <p>Cảm ơn bạn đã đặt hàng tại DHD - GlassesShop. Đơn hàng của bạn đã được tiếp nhận và đang được xử lý.</p>
             
             <div style="background-color: #fff8e1; padding: 15px; border-radius: 6px; margin: 20px 0; border: 1px solid #ffe082;">
                 <h3 style="margin-top: 0; color: #d35400; font-size: 15px; margin-bottom: 5px;">📍 Địa chỉ nhận hàng</h3>
@@ -80,7 +80,7 @@ const createOrderTemplate = (order) => {
             </div>
         </div>
         <div style="background-color: #333; padding: 15px; text-align: center; font-size: 12px; color: #ccc;">
-            <p style="margin: 0;">&copy; 2025 HanHan Bakery. Hotline: 090.123.4567</p>
+            <p style="margin: 0;">&copy; 2026 DHD - GlassesShop. Hotline: 090.123.4567</p>
         </div>
     </div>
   `;
@@ -93,9 +93,9 @@ export const sendOrderConfirmationEmail = async (order) => {
     if (!userEmail) return;
 
     const mailOptions = {
-      from: `"HanHan Bakery" <${process.env.EMAIL_USER}>`,
+      from: `"DHD - GlassesShop" <${process.env.EMAIL_USER}>`,
       to: userEmail,
-      subject: `[HanHan Bakery] Xác nhận đơn hàng #${order._id}`,
+      subject: `[DHD - GlassesShop] Xác nhận đơn hàng #${order._id}`,
       html: createOrderTemplate(order),
     };
     await transporter.sendMail(mailOptions);
@@ -123,7 +123,7 @@ export const sendOrderStatusEmail = async (order) => {
       }
   
       const mailOptions = {
-        from: `"HanHan Bakery" <${process.env.EMAIL_USER}>`,
+        from: `"DHD - GlassesShop" <${process.env.EMAIL_USER}>`,
         to: userEmail,
         subject: `[Cập nhật] Đơn hàng #${order._id} - ${statusText}`,
         html: `
@@ -134,7 +134,7 @@ export const sendOrderStatusEmail = async (order) => {
             <div style="text-align: center; margin-top: 30px;">
                 <a href="http://localhost:5173/order/${order._id}" style="background-color: ${color}; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Xem chi tiết đơn hàng</a>
             </div>
-            <p style="margin-top: 30px; font-size: 12px; color: #888;">Cảm ơn bạn đã mua sắm tại HanHan Bakery!</p>
+            <p style="margin-top: 30px; font-size: 12px; color: #888;">Cảm ơn bạn đã mua sắm tại DHD - GlassesShop!</p>
           </div>
         `,
       };
@@ -149,7 +149,7 @@ export const sendOrderStatusEmail = async (order) => {
 // ✅ 3. Hàm gửi mail chung (Dùng cho quên mật khẩu, v.v...)
 export const sendEmail = async (options) => {
     const mailOptions = {
-      from: `"HanHan Bakery" <${process.env.EMAIL_USER}>`,
+      from: `"DHD - GlassesShop" <${process.env.EMAIL_USER}>`,
       to: options.email,
       subject: options.subject,
       html: options.html || options.message, // Hỗ trợ cả 2 trường

@@ -447,10 +447,10 @@ const ProductManager = () => {
                   </select>
                 </div>
 
-                 {/* Hương vị */}
+                 {/* Thương hiệu */}
                 <div>
                   <label className="block mb-1.5 font-medium text-gray-700">
-                    Hương vị chính
+                    Thương hiệu
                   </label>
                   <input
                     type="text"

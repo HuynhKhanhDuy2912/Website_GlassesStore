@@ -68,7 +68,7 @@ export const forgotPassword = async (req, res, next) => {
     try {
       await sendEmail({
         email: user.email,
-        subject: "Đặt lại mật khẩu HanHan Bakery",
+        subject: "Đặt lại mật khẩu DHD - GlassesShop",
         message,
       });
       res.status(200).json({ message: "Email đã được gửi!" });

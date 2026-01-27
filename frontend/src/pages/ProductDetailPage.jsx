@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Star, Minus, Plus, ShoppingCart, ShieldCheck, 
   Check, ChevronRight, Search, MessageSquare, User, Zap 
-} from 'lucide-react'; // ✅ Đã thêm icon Zap
+} from 'lucide-react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
@@ -86,7 +86,7 @@ const ProductDetailPage = () => {
   const handleAddToCart = async () => {
     const token = localStorage.getItem("ACCESS_TOKEN");
     if (!token) {
-        if(window.confirm("Bạn cần đăng nhập để mua bánh. Đi đến trang đăng nhập ngay?")) navigate("/login");
+        if(window.confirm("Bạn cần đăng nhập để mua hàng. Đi đến trang đăng nhập ngay?")) navigate("/login");
         return;
     }
     setAddingToCart(true);
@@ -130,7 +130,7 @@ const ProductDetailPage = () => {
   };
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50"><div className="w-10 h-10 border-4 border-pink-200 border-t-pink-600 rounded-full animate-spin"></div></div>;
-  if (error || !product) return <div className="min-h-[70vh] flex flex-col items-center justify-center text-center p-4 bg-gray-50"><div className="bg-white p-8 rounded-2xl shadow-sm"><h2 className="text-2xl font-bold">Không tìm thấy sản phẩm</h2><Link to="/san-pham" className="text-pink-600 mt-4 block">Quay lại thực đơn</Link></div></div>;
+  if (error || !product) return <div className="min-h-[70vh] flex flex-col items-center justify-center text-center p-4 bg-gray-50"><div className="bg-white p-8 rounded-2xl shadow-sm"><h2 className="text-2xl font-bold">Không tìm thấy sản phẩm</h2><Link to="/san-pham" className="text-pink-600 mt-4 block">Quay lại</Link></div></div>;
 
   const images = product.images && product.images.length > 0 ? product.images : [{ url: '' }];
   const mainImage = getImageUrl(images[selectedImageIndex]?.url);
@@ -146,7 +146,7 @@ const ProductDetailPage = () => {
       <div className="bg-white border-b border-gray-100 sticky top-16 z-10 shadow-sm">
           <div className="container mx-auto px-4 py-3 text-sm text-gray-500 flex items-center gap-2 overflow-x-auto whitespace-nowrap">
               <Link to="/" className="hover:text-pink-600">Trang chủ</Link> <ChevronRight size={14} />
-              <Link to="/san-pham" className="hover:text-pink-600">Thực đơn</Link> <ChevronRight size={14} />
+              <Link to="/san-pham" className="hover:text-pink-600">Sản phẩm</Link> <ChevronRight size={14} />
               <span className="text-gray-900 font-medium truncate">{product.name}</span>
           </div>
       </div>

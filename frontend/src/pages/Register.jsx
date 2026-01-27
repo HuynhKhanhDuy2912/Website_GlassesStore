@@ -46,12 +46,12 @@ const Register = () => {
 
         <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-pink-600 mb-2">Tạo tài khoản mới</h2>
-            <p className="text-gray-500">Tham gia cùng HanHan Bakery ngay hôm nay</p>
+            <p className="text-gray-500">Tham gia cùng DHD - GlassesShop ngay hôm nay</p>
         </div>
 
         {error && (
             <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 text-sm border border-red-100 flex items-center">
-                ⚠️ {error}
+                {error}
             </div>
         )}
 
