@@ -158,8 +158,38 @@ export const listProducts = async (req, res, next) => {
     const filter = {};
     if (q) filter.name = { $regex: q, $options: "i" };
     if (category) filter.category = category;
-    if (minPrice) filter.price = { ...filter.price, $gte: Number(minPrice) };
-    if (maxPrice) filter.price = { ...filter.price, $lte: Number(maxPrice) };
+    // if (minPrice) filter.price = { ...filter.price, $gte: Number(minPrice) };
+    // if (maxPrice) filter.price = { ...filter.price, $lte: Number(maxPrice) };
+    if (minPrice || maxPrice) {
+      const min = Number(minPrice) || 0;
+      const max = Number(maxPrice) || 999999999;
+
+      // Xóa filter cũ nếu có
+      delete filter.price;
+      delete filter.salePrice;
+
+      filter.$or = [
+        // TH1: Có giá giảm hợp lệ (>0) → lọc theo salePrice
+        {
+          salePrice: { $gt: 0, $gte: min, $lte: max },
+        },  
+
+        // TH2: Không có giá giảm hoặc giá giảm = 0 → lọc theo price
+        {
+          $and: [
+            {
+              $or: [
+                { salePrice: { $exists: false } },
+                { salePrice: 0 },
+                { salePrice: null },
+              ],
+            },
+            { price: { $gte: min, $lte: max } },
+          ],
+        },
+      ];
+    }
+
     if (flavor) filter.flavor = flavor;
     if (featured === "true") filter.avgRating = { $gte: 4 };
 
@@ -169,7 +199,7 @@ export const listProducts = async (req, res, next) => {
     let total = 0;
     const skip = (page - 1) * limit;
 
-    // 🔥 LOGIC SẮP XẾP MỚI
+    // LOGIC SẮP XẾP MỚI
     if (sort === "random") {
       // Nếu yêu cầu random -> Dùng $sample để lấy ngẫu nhiên
       items = await Product.aggregate([

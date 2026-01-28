@@ -57,22 +57,22 @@ const MyOrdersPage = () => {
 
     if (loading) return (
         <div className="flex justify-center items-center min-h-[60vh]">
-            <Loader className="animate-spin text-pink-600 w-10 h-10" />
+            <Loader className="animate-spin text-blue-600 w-10 h-10" />
         </div>
     );
 
     return (
         <div className="container mx-auto px-4 py-8 min-h-screen bg-gray-50 font-sans">
             <h1 className="text-2xl font-bold mb-8 flex items-center gap-2 text-gray-800">
-                <Package className="text-pink-600" /> Đơn hàng của tôi
+                <Package className="text-blue-600" /> Đơn hàng của tôi
             </h1>
 
             {orders.length === 0 ? (
                 <div className="text-center py-16 bg-white rounded-2xl shadow-sm border border-gray-100">
                     <ShoppingBag size={64} className="mx-auto text-gray-200 mb-4" />
                     <p className="text-gray-500 mb-6 text-lg">Bạn chưa có đơn hàng nào.</p>
-                    <Link to="/san-pham" className="bg-pink-600 text-white px-6 py-3 rounded-full font-bold hover:bg-pink-700 transition">
-                        Đi mua bánh ngay
+                    <Link to="/san-pham" className="bg-blue-600 text-white px-6 py-3 rounded-full font-bold hover:bg-blue-700 transition">
+                        Mua ngay
                     </Link>
                 </div>
             ) : (
@@ -102,12 +102,12 @@ const MyOrdersPage = () => {
                                 <div className="flex items-center justify-between md:justify-end gap-6 w-full md:w-auto pt-4 md:pt-0 border-t md:border-t-0 border-gray-100">
                                     <div className="text-right">
                                         <div className="text-xs text-gray-400">Tổng tiền</div>
-                                        <div className="text-pink-600 font-bold text-xl">
+                                        <div className="text-blue-600 font-bold text-xl">
                                             {order.totalPrice.toLocaleString()}đ
                                         </div>
                                     </div>
                                     
-                                    <Link to={`/order/${order._id}`} className="bg-gray-50 hover:bg-pink-50 text-gray-600 hover:text-pink-600 p-3 rounded-xl transition-colors">
+                                    <Link to={`/order/${order._id}`} className="bg-gray-50 hover:bg-blue-50 text-gray-600 hover:text-blue-600 p-3 rounded-xl transition-colors">
                                         <ChevronRight size={20} />
                                     </Link>
                                 </div>

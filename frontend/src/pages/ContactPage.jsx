@@ -139,7 +139,7 @@ const ContactPage = () => {
             <div className="bg-white border-b border-gray-100 py-6 px-4 mb-6 shadow-sm">
                 <div className="container mx-auto max-w-6xl">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <InfoCard icon={MapPin} title="Cửa hàng" desc="126 Nguyễn Thiện Thành, Trà Vinh" color="bg-red-500" />
+                        <InfoCard icon={MapPin} title="Cửa hàng" desc="126 Nguyễn Thiện Thành, Hòa Thuận, Vĩnh Lonng" color="bg-red-500" />
                         <InfoCard icon={Phone} title="Hotline" desc="0999 999 999" color="bg-orange-400" />
                         <InfoCard icon={Mail} title="Hỗ trợ" desc="contact@dhdglassesshop.com" color="bg-blue-500" />
                     </div>
@@ -150,7 +150,7 @@ const ContactPage = () => {
                 {!token ? (
                     <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-gray-200">
                         <p className="text-gray-500 mb-4">Vui lòng đăng nhập để nhắn tin với DHD - GlassesShop.</p>
-                        <a href="/login" className="bg-pink-600 text-white px-6 py-2 rounded-full font-bold hover:bg-pink-700 transition">Đăng nhập</a>
+                        <a href="/login" className="bg-blue-600 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition">Đăng nhập</a>
                     </div>
                 ) : (
                     <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden flex flex-col md:flex-row h-[70vh]">
@@ -165,7 +165,7 @@ const ContactPage = () => {
 
                             <div className="flex-1 overflow-y-auto p-2 space-y-1">
                                 {loadingList ? (
-                                    <div className="text-center py-10"><Loader className="animate-spin inline text-pink-500"/></div>
+                                    <div className="text-center py-10"><Loader className="animate-spin inline text-blue-500"/></div>
                                 ) : contacts.length === 0 ? (
                                     <div className="text-center py-10 px-4">
                                         <p className="text-gray-400 text-xs mb-4">Bạn chưa có hội thoại nào</p>
@@ -182,17 +182,17 @@ const ContactPage = () => {
                                                 onClick={() => handleSelectTicket(ticket)}
                                                 className={`p-3 rounded-xl cursor-pointer transition flex items-center gap-3 ${
                                                     selectedTicket?._id === ticket._id 
-                                                    ? 'bg-pink-50 text-pink-700' 
+                                                    ? 'bg-blue-50 text-blue-700' 
                                                     : 'hover:bg-white hover:shadow-sm'
                                                 }`}
                                             >
-                                                <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 border border-pink-200 flex-shrink-0">
+                                                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 border border-blue-200 flex-shrink-0">
                                                     <Store size={20} />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex justify-between items-center">
                                                         <h4 className={`text-sm truncate ${isUnread ? 'font-bold text-gray-900' : 'font-semibold text-gray-600'}`}>DHD - GlassesShop</h4>
-                                                        {isUnread && <span className="bg-pink-500 w-2 h-2 rounded-full"></span>}
+                                                        {isUnread && <span className="bg-blue-500 w-2 h-2 rounded-full"></span>}
                                                     </div>
                                                     <p className={`text-xs truncate ${isUnread ? 'font-bold text-gray-800' : 'text-gray-400'}`}>
                                                         {lastMsg?.message || "Đã gửi một ảnh"}
@@ -212,7 +212,7 @@ const ContactPage = () => {
                                     {/* Header Shop */}
                                     <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-white z-10 shadow-sm">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center text-white shadow-sm">
+                                            <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white shadow-sm">
                                                 <Store size={22} />
                                             </div>
                                             <div>
@@ -222,7 +222,7 @@ const ContactPage = () => {
                                                 <p className="text-[10px] text-green-500 font-bold">Đang trực tuyến</p>
                                             </div>
                                         </div>
-                                        <button onClick={() => handleDeleteTicket(selectedTicket._id)} className="text-gray-300 hover:text-red-500 p-2 transition"><Trash2 size={18} /></button>
+                                        {/* <button onClick={() => handleDeleteTicket(selectedTicket._id)} className="text-gray-300 hover:text-red-500 p-2 transition"><Trash2 size={18} /></button> */}
                                     </div>
 
                                     {/* Nội dung chat */}
@@ -231,7 +231,7 @@ const ContactPage = () => {
                                             const isMe = msg.sender === 'user';
                                             return (
                                                 <div key={idx} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                                                    <div className={`max-w-[75%] ${isMe ? 'bg-pink-600 text-white rounded-2xl rounded-tr-none shadow-pink-100' : 'bg-white text-gray-700 border border-gray-100 rounded-2xl rounded-tl-none shadow-sm'} p-3 shadow-sm`}>
+                                                    <div className={`max-w-[75%] ${isMe ? 'bg-blue-600 text-white rounded-2xl rounded-tr-none shadow-blue-100' : 'bg-white text-gray-700 border border-gray-100 rounded-2xl rounded-tl-none shadow-sm'} p-3 shadow-sm`}>
                                                         {msg.image && <img src={getImageUrl(msg.image)} alt="sent" className="max-w-full h-auto rounded-lg mb-2" onClick={() => window.open(getImageUrl(msg.image), '_blank')}/>}
                                                         {msg.message && <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.message}</p>}
                                                         <div className={`text-[9px] mt-1 opacity-60 ${isMe ? 'text-right' : 'text-left'}`}>
@@ -247,19 +247,19 @@ const ContactPage = () => {
                                     {/* Input */}
                                     <div className="p-3 bg-white border-t border-gray-100">
                                         {previewUrl && (
-                                            <div className="pb-2 flex"><div className="relative"><img src={previewUrl} alt="preview" className="h-14 w-auto rounded-lg border border-pink-200 shadow-sm"/><button onClick={clearSelectedFile} className="absolute -top-2 -right-2 bg-gray-500 text-white rounded-full p-0.5"><X size={10}/></button></div></div>
+                                            <div className="pb-2 flex"><div className="relative"><img src={previewUrl} alt="preview" className="h-14 w-auto rounded-lg border border-blue-200 shadow-sm"/><button onClick={clearSelectedFile} className="absolute -top-2 -right-2 bg-gray-500 text-white rounded-full p-0.5"><X size={10}/></button></div></div>
                                         )}
                                         <form onSubmit={handleSendMessage} className="flex gap-2 items-center bg-gray-50 p-1 rounded-full border border-gray-200">
-                                            <button type="button" onClick={() => fileInputRef.current.click()} className="p-2 text-gray-400 hover:text-pink-600 transition"><ImageIcon size={20} /></button>
+                                            <button type="button" onClick={() => fileInputRef.current.click()} className="p-2 text-gray-400 hover:text-blue-600 transition"><ImageIcon size={20} /></button>
                                             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileSelect}/>
                                             <input type="text" className="flex-1 px-4 py-2 bg-transparent outline-none text-sm" placeholder="Nhắn tin cho shop..." value={chatInput} onChange={(e) => setChatInput(e.target.value)}/>
-                                            <button type="submit" disabled={(!chatInput.trim() && !selectedFile)} className="bg-pink-600 text-white p-2 rounded-full hover:bg-pink-700 transition disabled:bg-gray-300"><Send size={18} /></button>
+                                            <button type="submit" disabled={(!chatInput.trim() && !selectedFile)} className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition disabled:bg-gray-300"><Send size={18} /></button>
                                         </form>
                                     </div>
                                 </>
                             ) : (
                                 <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
-                                    <MessageSquare size={48} className="mb-2 text-pink-100" />
+                                    <MessageSquare size={48} className="mb-2 text-blue-100" />
                                     <p className="text-sm">Hãy chọn bắt đầu cuộc hội thoại để nhắn tin</p>
                                 </div>
                             )}

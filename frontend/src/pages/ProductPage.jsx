@@ -165,11 +165,11 @@ const ProductPage = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen font-sans flex flex-col">
-      <div className="bg-pink-100 py-12 mb-8 text-center">
-        <h1 className="text-5xl font-extrabold text-pink-700 mb-3 font-serif">
+      <div className="bg-blue-100 py-12 mb-8 text-center">
+        <h1 className="text-5xl font-extrabold text-blue-700 mb-3 font-serif">
           Bộ sưu tập kính thời trang
         </h1>
-        <p className="text-pink-500 text-lg">
+        <p className="text-blue-500 text-lg">
           Rõ nét từng khoảnh khắc cuộc sống
         </p>
       </div>
@@ -177,20 +177,20 @@ const ProductPage = () => {
       <div className="container mx-auto px-4 pb-16 flex-grow">
         <div className="flex flex-col lg:flex-row gap-8">
           <aside className="w-full lg:w-1/4 space-y-6">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-pink-100 sticky top-20">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-blue-100 sticky top-20">
               <div className="mb-8">
                 <h3 className="font-bold text-xl mb-4 flex items-center gap-2">
-                  <Filter className="w-5 h-5 text-pink-500" /> Danh Mục
+                  <Filter className="w-5 h-5" /> Danh Mục
                 </h3>
                 <ul className="space-y-2">
                   <li>
                     <button
                       onClick={() => handleCategoryChange("")}
-                      className={`w-full px-3 py-2 rounded-lg flex justify-between ${categoryId === "" ? "bg-pink-50 text-pink-700 font-bold" : "hover:bg-gray-50"}`}
+                      className={`w-full px-3 py-2 rounded-lg flex justify-between ${categoryId === "" ? "bg-blue-50 text-blue-700 font-bold" : "hover:bg-gray-50"}`}
                     >
                       <span>Tất cả</span>
                       {categoryId === "" && (
-                        <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
+                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                       )}
                     </button>
                   </li>
@@ -198,11 +198,11 @@ const ProductPage = () => {
                     <li key={cat._id}>
                       <button
                         onClick={() => handleCategoryChange(cat._id)}
-                        className={`w-full px-3 py-2 rounded-lg flex justify-between ${categoryId === cat._id ? "bg-pink-50 text-pink-700 font-bold" : "hover:bg-gray-50"}`}
+                        className={`w-full px-3 py-2 rounded-lg flex justify-between ${categoryId === cat._id ? "bg-blue-50 text-blue-700 font-bold" : "hover:bg-gray-50"}`}
                       >
                         <span>{cat.name}</span>
                         {categoryId === cat._id && (
-                          <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                         )}
                       </button>
                     </li>
@@ -211,7 +211,7 @@ const ProductPage = () => {
               </div>
               <div className="mb-8 border-t border-gray-100 pt-6">
                 <h3 className="font-bold text-xl mb-4 flex items-center gap-2">
-                  <Tag  className="w-5 h-5 text-pink-500" /> Thương Hiệu
+                  <Tag  className="w-5 h-5" /> Thương Hiệu
                 </h3>
                 <ul className="space-y-2">
                   {/* Nút mặc định: Tất cả bánh (xóa lọc thương hiệu) */}
@@ -220,13 +220,13 @@ const ProductPage = () => {
                       onClick={() => handleFlavorChange("")}
                       className={`w-full px-3 py-2 rounded-lg flex justify-between items-center ${
                         flavorFilter === ""
-                          ? "bg-pink-50 text-pink-700 font-bold"
+                          ? "bg-blue-50 text-blue-700 font-bold"
                           : "hover:bg-gray-50 text-gray-600"
                       }`}
                     >
                       <span>Tất cả</span>
                       {flavorFilter === "" && (
-                        <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
+                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                       )}
                     </button>
                   </li>
@@ -238,13 +238,13 @@ const ProductPage = () => {
                         onClick={() => handleFlavorChange(flavor)}
                         className={`w-full px-3 py-2 rounded-lg flex justify-between items-center ${
                           flavorFilter === flavor
-                            ? "bg-pink-50 text-pink-700 font-bold"
+                            ? "bg-blue-50 text-blue-700 font-bold"
                             : "hover:bg-gray-50 text-gray-600"
                         }`}
                       >
                         <span>{flavor}</span>
                         {flavorFilter === flavor && (
-                          <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                         )}
                       </button>
                     </li>
@@ -253,7 +253,7 @@ const ProductPage = () => {
               </div>
               <div>
                 <h3 className="font-bold text-xl mb-4 flex items-center gap-2">
-                  <DollarSign  className="w-5 h-5 text-pink-500" /> Giá Tiền
+                  <DollarSign  className="w-5 h-5" /> Giá Tiền
                 </h3>
                 <input
                   type="range"
@@ -262,7 +262,7 @@ const ProductPage = () => {
                   step="10000"
                   value={maxPriceFilter}
                   onChange={handlePriceChange}
-                  className="w-full accent-pink-500 cursor-pointer"
+                  className="w-full accent-blue-500 cursor-pointer"
                 />
                 <p className="mt-2 text-center text-sm text-gray-700">
                   Giá dưới <b>{formatCurrency(maxPriceFilter)}</b>
@@ -272,14 +272,14 @@ const ProductPage = () => {
           </aside>
 
           <main className="w-full lg:w-3/4">
-            <div className="mb-8 bg-white p-4 rounded-2xl shadow-sm border border-pink-100 flex items-center">
+            <div className="mb-8 bg-white p-4 rounded-2xl shadow-sm border border-blue-100 flex items-center">
               <div className="relative w-full">
                 <input
                   type="text"
                   placeholder="Bạn đang tìm loại kính gì..."
                   value={searchTerm}
                   onChange={handleSearch}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-200 transition"
+                  className="w-full pl-12 pr-4 py-3 bg-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-200 transition"
                 />
                 <Search className="w-5 h-5 text-gray-400 absolute left-4 top-3.5" />
               </div>
@@ -290,7 +290,7 @@ const ProductPage = () => {
                 <Search className="w-8 h-8 text-gray-400 mx-auto mb-4" />
                 <p className="text-gray-500">Không tìm thấy bánh nào</p>
                 <button
-                  className="text-pink-600 underline mt-3 hover:text-pink-800"
+                  className="text-blue-600 underline mt-3 hover:text-blue-800"
                   onClick={clearFilters}
                 >
                   Xóa bộ lọc
@@ -316,7 +316,7 @@ const ProductPage = () => {
                     <Link
                       to={`/san-pham/${productSlug}`}
                       key={product._id}
-                      className={`group bg-white p-3 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-pink-100 block relative overflow-hidden ${isFlashSale ? "ring-1 ring-orange-200" : ""}`}
+                      className={`group bg-white p-3 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-blue-100 block relative overflow-hidden ${isFlashSale ? "ring-1 ring-orange-200" : ""}`}
                     >
                       <div className="h-60 rounded-xl overflow-hidden bg-gray-100 mb-4 relative">
                         <img
@@ -342,7 +342,7 @@ const ProductPage = () => {
                           <button
                             onClick={(e) => handleQuickAdd(e, product)}
                             disabled={isAdding}
-                            className={`absolute bottom-3 right-3 w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 transform ${isAdding ? "bg-white text-pink-500 opacity-100 scale-100" : "bg-white text-pink-600 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 hover:bg-pink-600 hover:text-white"}`}
+                            className={`absolute bottom-3 right-3 w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 transform ${isAdding ? "bg-white text-blue-500 opacity-100 scale-100" : "bg-white text-blue-600 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 hover:bg-blue-600 hover:text-white"}`}
                             title="Thêm nhanh vào giỏ"
                           >
                             {isAdding ? (
@@ -354,18 +354,18 @@ const ProductPage = () => {
                         )}
                       </div>
                       <div className="px-2">
-                        <h3 className="font-bold text-lg mb-1 text-gray-800 group-hover:text-pink-600 transition line-clamp-1">
+                        <h3 className="font-bold text-lg mb-1 text-gray-800 group-hover:text-blue-600 transition line-clamp-1">
                           {product.name}
                         </h3>
                         <p className="text-gray-500 text-sm mb-2 line-clamp-1">
                           {product.flavor
                             ? `Thương hiệu: ${product.flavor}`
-                            : product.category?.name || "Bánh ngọt"}
+                            : product.category?.name || "Mắt kính thời trang"}
                         </p>
                         <div className="flex justify-between items-center">
                           <div className="flex flex-col">
                             <p
-                              className={`text-xl font-bold ${isFlashSale ? "text-red-600" : "text-pink-600"}`}
+                              className={`text-xl font-bold ${isFlashSale ? "text-red-600" : "text-dark-600"}`}
                             >
                               {formatCurrency(currentPrice)}
                             </p>
@@ -375,8 +375,8 @@ const ProductPage = () => {
                               </span>
                             )}
                           </div>
-                          <div className="w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center text-pink-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <ShoppingCart size={16} />
+                          <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <ShoppingCart size={18} />
                           </div>
                         </div>
                       </div>
@@ -389,15 +389,15 @@ const ProductPage = () => {
             <div className="mt-12 text-center">
               {loading && (
                 <div className="flex justify-center mb-4">
-                  <Loader className="w-8 h-8 animate-spin text-pink-500" />
+                  <Loader className="w-8 h-8 animate-spin text-blue-500" />
                 </div>
               )}
               {!loading && hasMore && products.length > 0 && (
                 <button
                   onClick={handleLoadMore}
-                  className="bg-white border border-pink-200 text-pink-600 hover:bg-pink-50 font-bold py-3 px-8 rounded-full shadow-sm hover:shadow-md transition-all transform active:scale-95 flex items-center gap-2 mx-auto"
+                  className="bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 font-bold py-3 px-8 rounded-full shadow-sm hover:shadow-md transition-all transform active:scale-95 flex items-center gap-2 mx-auto"
                 >
-                  Xem thêm bánh <ChevronDown size={20} />
+                  Xem thêm sản phẩm <ChevronDown size={20} />
                 </button>
               )}
               {!loading && !hasMore && products.length > 0 && (

@@ -7,13 +7,8 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   phone: { type: String },
   address: { type: String },
-  
-  // Đã có trường role để phân quyền (quan trọng)
   role: { type: String, enum: ["user", "admin"], default: "user" },
-  
   avatarUrl: { type: String },
-  
-  // Các trường cho chức năng quên mật khẩu
   resetPasswordToken: String,
   resetPasswordExpires: Date,
 }, { timestamps: true });

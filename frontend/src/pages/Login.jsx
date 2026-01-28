@@ -11,7 +11,7 @@ const axiosClient = axios.create({
   },
 });
 
-const Login = ({ setCurrentUser }) => {  // Nhận setCurrentUser từ props
+const Login = ({ setCurrentUser }) => {  
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
@@ -32,7 +32,6 @@ const Login = ({ setCurrentUser }) => {  // Nhận setCurrentUser từ props
       const data = res.data;
       console.log("Login Response:", data);
 
-      // Lấy token
       const token = data.token || data.accessToken;
 
       // Lấy đúng thông tin user
@@ -60,7 +59,6 @@ const Login = ({ setCurrentUser }) => {  // Nhận setCurrentUser từ props
       // Gọi setCurrentUser để cập nhật người dùng trong App
       setCurrentUser(user);
 
-      // Điều hướng theo role
       if (user.role === "admin") {
         navigate("/admin");
       } else {
@@ -77,17 +75,17 @@ const Login = ({ setCurrentUser }) => {  // Nhận setCurrentUser từ props
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-gradient-to-br from-pink-50 to-white p-4">
-      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-pink-100">
+    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-gradient-to-br from-blue-50 to-white p-4">
+      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-blue-100">
         <Link
           to="/"
-          className="inline-flex items-center text-gray-500 hover:text-pink-600 mb-6 transition"
+          className="inline-flex items-center text-gray-500 hover:text-blue-600 mb-6 transition"
         >
           <ArrowLeft size={16} className="mr-1" /> Trang chủ
         </Link>
 
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-pink-600 mb-2">
+          <h2 className="text-3xl font-bold text-blue-600 mb-2">
             Chào mừng trở lại!
           </h2>
           <p className="text-gray-500">Vui lòng đăng nhập để tiếp tục</p>
@@ -95,7 +93,7 @@ const Login = ({ setCurrentUser }) => {  // Nhận setCurrentUser từ props
 
         {error && (
           <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 text-sm border border-red-100 flex items-center">
-            <span className="mr-2">⚠️</span> {error}
+            <span className="mr-2"></span> {error}
           </div>
         )}
 
@@ -106,14 +104,14 @@ const Login = ({ setCurrentUser }) => {  // Nhận setCurrentUser từ props
             </label>
             <div className="relative group">
               <Mail
-                className="absolute left-3 top-3 text-gray-400 group-focus-within:text-pink-500 transition"
+                className="absolute left-3 top-3 text-gray-400 group-focus-within:text-blue-500 transition"
                 size={20}
               />
               <input
                 type="email"
                 name="email"
                 required
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-100 transition bg-gray-50 focus:bg-white"
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition bg-gray-50 focus:bg-white"
                 placeholder="name@example.com"
                 onChange={handleChange}
                 value={formData.email}
@@ -124,21 +122,21 @@ const Login = ({ setCurrentUser }) => {  // Nhận setCurrentUser từ props
           <div>
             <div className="flex justify-between items-center mb-2">
               <label className="block text-gray-700 font-medium">Mật khẩu</label>
-              {/* ✅ LINK QUÊN MẬT KHẨU Ở ĐÂY */}
-              <Link to="/forgot-password" size={20} className="text-xs text-pink-600 hover:underline">
+              {/*LINK QUÊN MẬT KHẨU Ở ĐÂY */}
+              <Link to="/forgot-password" size={20} className="text-xs text-blue-600 hover:underline">
                 Quên mật khẩu?
               </Link>
             </div>
             <div className="relative group">
               <Lock
-                className="absolute left-3 top-3 text-gray-400 group-focus-within:text-pink-500 transition"
+                className="absolute left-3 top-3 text-gray-400 group-focus-within:text-blue-500 transition"
                 size={20}
               />
               <input
                 type="password"
                 name="password"
                 required
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-100 transition bg-gray-50 focus:bg-white"
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-pink-100 transition bg-gray-50 focus:bg-white"
                 placeholder="••••••••"
                 onChange={handleChange}
                 value={formData.password}
@@ -148,7 +146,7 @@ const Login = ({ setCurrentUser }) => {  // Nhận setCurrentUser từ props
 
           <button
             disabled={loading}
-            className="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-pink-200 transition transform active:scale-95 flex justify-center items-center"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-200 transition transform active:scale-95 flex justify-center items-center"
           >
             {loading ? <Loader className="animate-spin" /> : "Đăng Nhập"}
           </button>
@@ -159,7 +157,7 @@ const Login = ({ setCurrentUser }) => {  // Nhận setCurrentUser từ props
             Chưa có tài khoản?{" "}
             <Link
               to="/register"
-              className="text-pink-600 font-bold hover:underline hover:text-pink-700"
+              className="text-blue-600 font-bold hover:underline hover:text-blue-700"
             >
               Đăng ký ngay
             </Link>

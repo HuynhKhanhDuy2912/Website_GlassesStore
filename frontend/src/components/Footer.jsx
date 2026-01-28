@@ -36,8 +36,8 @@ const Footer = () => {
           <ul className="space-y-3 text-sm">
             <li><Link to="/san-pham" className="hover:text-blue-400 transition-colors">Mắt kính Nam</Link></li>
             <li><Link to="/san-pham" className="hover:text-blue-400 transition-colors">Mắt kính Nữ</Link></li>
-            <li><Link to="/san-pham" className="hover:text-blue-400 transition-colors">Gọng kính vuông</Link></li>
-            <li><Link to="/gioi-thieu" className="hover:text-blue-400 transition-colors">Giới thiệu</Link></li>
+            <li><Link to="/san-pham" className="hover:text-blue-400 transition-colors">Gọng kính tròn</Link></li>
+            <li><Link to="/san-pham" className="hover:text-blue-400 transition-colors">Gọng kính vuông </Link></li>
           </ul>
         </div>
 

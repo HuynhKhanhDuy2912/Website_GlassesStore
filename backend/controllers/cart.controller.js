@@ -1,21 +1,22 @@
 import Cart from "../models/Cart.js";
 import Product from "../models/Product.js";
 
-// --- HELPER: Xử lý logic Flash Sale (Giống bên ProductController) ---
+// --- HELPER: Xử lý logic Flash Sale ---
 const processCartProduct = (product) => {
   if (!product) return null;
-  
+
   // Chuyển Mongoose Document sang Object để chỉnh sửa
   const p = product.toObject ? product.toObject() : product;
-  
+
   const now = Date.now();
-  const start = p.flashSaleStartDate ? new Date(p.flashSaleStartDate).getTime() : 0;
+  const start = p.flashSaleStartDate
+    ? new Date(p.flashSaleStartDate).getTime()
+    : 0;
   const end = p.flashSaleEndTime ? new Date(p.flashSaleEndTime).getTime() : 0;
 
   // Nếu đang bật FlashSale NHƯNG hết giờ (hoặc chưa đến giờ)
   if (p.isFlashSale && (now < start || now > end)) {
-      p.isFlashSale = false; // Tắt sale ảo
-      // Lúc này Frontend sẽ tự động lấy giá gốc hoặc giá sale thường
+    p.isFlashSale = false; // Tắt sale ảo
   }
   return p;
 };
@@ -30,15 +31,13 @@ export const getCart = async (req, res, next) => {
       return res.json({ items: [] });
     }
 
-    // ✅ QUAN TRỌNG: Duyệt qua từng món trong giỏ để kiểm tra Flash Sale
-    // Vì Mongoose populate trả về document, ta cần convert sang JSON để chỉnh sửa
     const cartObj = cart.toObject();
 
-    cartObj.items = cartObj.items.map(item => {
-        if (item.product) {
-            item.product = processCartProduct(item.product);
-        }
-        return item;
+    cartObj.items = cartObj.items.map((item) => {
+      if (item.product) {
+        item.product = processCartProduct(item.product);
+      }
+      return item;
     });
 
     res.json(cartObj);
@@ -47,7 +46,7 @@ export const getCart = async (req, res, next) => {
   }
 };
 
-// --- 2. THÊM VÀO GIỎ HÀNG (Logic cũ giữ nguyên) ---
+// --- 2. THÊM VÀO GIỎ HÀNG ---
 export const addToCart = async (req, res, next) => {
   try {
     const { productId, qty, attrs } = req.body;
@@ -60,9 +59,12 @@ export const addToCart = async (req, res, next) => {
 
     // Kiểm tra sản phẩm có tồn tại không (để tránh lỗi rác)
     const product = await Product.findById(productId);
-    if (!product) return res.status(404).json({ message: "Sản phẩm không tồn tại" });
+    if (!product)
+      return res.status(404).json({ message: "Sản phẩm không tồn tại" });
 
-    const itemIndex = cart.items.findIndex(p => p.product.toString() === productId);
+    const itemIndex = cart.items.findIndex(
+      (p) => p.product.toString() === productId,
+    );
 
     if (itemIndex > -1) {
       // Nếu đã có -> Cộng dồn số lượng
@@ -73,15 +75,15 @@ export const addToCart = async (req, res, next) => {
     }
 
     await cart.save();
-    
-    // Populate để trả về data đầy đủ luôn (tiện cho Frontend cập nhật ngay)
-    const populatedCart = await Cart.findById(cart._id).populate("items.product");
-    
-    // Cũng phải xử lý Flash Sale cho kết quả trả về này
+
+    const populatedCart = await Cart.findById(cart._id).populate(
+      "items.product",
+    );
+
     const cartObj = populatedCart.toObject();
-    cartObj.items = cartObj.items.map(item => {
-         if (item.product) item.product = processCartProduct(item.product);
-         return item;
+    cartObj.items = cartObj.items.map((item) => {
+      if (item.product) item.product = processCartProduct(item.product);
+      return item;
     });
 
     res.json(cartObj);
@@ -90,7 +92,7 @@ export const addToCart = async (req, res, next) => {
   }
 };
 
-// --- 3. CẬP NHẬT SỐ LƯỢNG (Logic cũ + Fix Flash Sale return) ---
+// --- 3. CẬP NHẬT SỐ LƯỢNG ---
 export const updateCartItem = async (req, res, next) => {
   try {
     const { itemIndex, qty } = req.body;
@@ -104,14 +106,14 @@ export const updateCartItem = async (req, res, next) => {
     }
 
     await cart.save();
-    
-    const populatedCart = await Cart.findById(cart._id).populate("items.product");
-    
-    // Fix Flash Sale output
+
+    const populatedCart = await Cart.findById(cart._id).populate(
+      "items.product",
+    );
     const cartObj = populatedCart.toObject();
-    cartObj.items = cartObj.items.map(item => {
-         if (item.product) item.product = processCartProduct(item.product);
-         return item;
+    cartObj.items = cartObj.items.map((item) => {
+      if (item.product) item.product = processCartProduct(item.product);
+      return item;
     });
 
     res.json(cartObj);
@@ -120,26 +122,35 @@ export const updateCartItem = async (req, res, next) => {
   }
 };
 
-// --- 4. XÓA SẢN PHẨM KHỎI GIỎ (Logic cũ + Fix Flash Sale return) ---
+// --- 4. XÓA SẢN PHẨM KHỎI GIỎ HÀNG---
 export const removeCartItem = async (req, res, next) => {
   try {
-    const { id } = req.params; // ID của product
+    const { id } = req.params; 
     const userId = req.user._id;
 
     const cart = await Cart.findOne({ user: userId });
-    if (!cart) return res.status(404).json({ message: "Giỏ hàng trống" });
+    if (!cart) {
+      return res.status(404).json({ message: "Giỏ hàng trống" });
+    }
 
-    cart.items = cart.items.filter(item => item.product.toString() !== id);
+    cart.items = cart.items.filter((item) => {
+      if (!item || !item._id) return false; 
+      if (!item.product) return false; 
+      return item._id.toString() !== id; 
+    });
 
     await cart.save();
-    
-    const populatedCart = await Cart.findById(cart._id).populate("items.product");
 
-    // Fix Flash Sale output
+    const populatedCart = await Cart.findById(cart._id).populate(
+      "items.product",
+    );
+
     const cartObj = populatedCart.toObject();
-    cartObj.items = cartObj.items.map(item => {
-         if (item.product) item.product = processCartProduct(item.product);
-         return item;
+    cartObj.items = cartObj.items.map((item) => {
+      if (item.product) {
+        item.product = processCartProduct(item.product);
+      }
+      return item;
     });
 
     res.json(cartObj);

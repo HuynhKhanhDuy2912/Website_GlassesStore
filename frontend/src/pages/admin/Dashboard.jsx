@@ -5,7 +5,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer 
 } from 'recharts';
 
-// ✅ CẬP NHẬT: Hàm helper xử lý ảnh an toàn hơn
+//CẬP NHẬT: Hàm helper xử lý ảnh an toàn hơn
 const getImageUrl = (path) => {
     if (!path) return 'https://via.placeholder.com/100?text=No+Img';
     if (path.startsWith("http")) return path;
@@ -57,12 +57,12 @@ const Dashboard = () => {
   const formatCurrency = (n) => new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);
   const formatDate = (d) => new Date(d).toLocaleDateString("vi-VN");
 
-  if (loading) return <div className="p-10 text-center text-pink-600 font-bold animate-pulse">Đang tải dữ liệu thống kê...</div>;
+  if (loading) return <div className="p-10 text-center text-blue-600 font-bold animate-pulse">Đang tải dữ liệu thống kê...</div>;
 
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-        <TrendingUp className="text-pink-600"/> Tổng Quan Kinh Doanh
+        <TrendingUp className="text-red-600"/> Tổng Quan Kinh Doanh
       </h1>
       
       {/* 1. Cards thống kê */}
@@ -89,7 +89,7 @@ const Dashboard = () => {
           title="Sản phẩm" 
           value={stats.counts.products} 
           icon={<Package size={24}/>} 
-          color="bg-pink-500" 
+          color="bg-yellow-500" 
         />
       </div>
 
@@ -122,7 +122,6 @@ const Dashboard = () => {
                     stats.topProducts.map((prod, index) => (
                         <div key={index} className="flex items-center gap-4 border-b border-gray-50 pb-3 last:border-0">
                             <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200">
-                                {/* ✅ ĐÃ SỬA: Gọi hàm getImageUrl ở đây */}
                                 <img 
                                     src={getImageUrl(prod.image)} 
                                     alt={prod.name} 
@@ -134,7 +133,7 @@ const Dashboard = () => {
                                 <h4 className="font-medium text-gray-800 text-sm truncate" title={prod.name}>{prod.name}</h4>
                                 <p className="text-xs text-gray-500">{formatCurrency(prod.price)}</p>
                             </div>
-                            <div className="text-pink-600 font-bold text-sm bg-pink-50 px-2 py-1 rounded">
+                            <div className="text-blue-600 font-bold text-sm bg-blue-50 px-2 py-1 rounded">
                                 x{prod.totalSold}
                             </div>
                         </div>
@@ -168,7 +167,7 @@ const Dashboard = () => {
                                     <div className="text-xs text-gray-400 font-normal">{order._id}</div>
                                 </td>
                                 <td className="py-3 text-sm">{formatDate(order.createdAt)}</td>
-                                <td className="py-3 text-sm font-bold text-pink-600">{formatCurrency(order.totalPrice)}</td>
+                                <td className="py-3 text-sm font-bold text-blue-600">{formatCurrency(order.totalPrice)}</td>
                                 <td className="py-3">
                                     <span className={`px-2 py-1 rounded text-xs font-medium 
                                         ${order.status === 'completed' ? 'bg-green-100 text-green-700' : 

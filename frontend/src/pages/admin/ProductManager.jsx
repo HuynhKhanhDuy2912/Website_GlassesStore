@@ -141,7 +141,6 @@ const ProductManager = () => {
         name: formData.name,
         slug: formData.slug || undefined,
         description: formData.description,
-        // 🔥 FIX QUAN TRỌNG: Dùng Math.round để làm tròn số tiền, tránh bị lẻ 299.998
         price: Math.round(Number(formData.price)),
         salePrice: Math.round(Number(formData.salePrice)),
         stock: Number(formData.stock),
@@ -195,7 +194,7 @@ const ProductManager = () => {
       slug: product.slug,
       description: product.description,
       price: product.price,
-      salePrice: product.salePrice,
+      salePrice: product.salePrice || 0,
       stock: product.stock || 0,
       flavor: product.flavor || "Khác",
       category: product.category?._id || product.category,
@@ -302,7 +301,7 @@ const ProductManager = () => {
                     </td>
                     <td className="p-4">
                       <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs border border-gray-200">
-                        {p.flavor || "Khác"}
+                        {p.flavor || "Đang cập nhật"}
                       </span>
                     </td>
                     <td className="p-4">
@@ -328,7 +327,9 @@ const ProductManager = () => {
                       )}
                     </td>
                     <td className="p-4 font-semibold text-pink-600">
-                      {formatCurrency(p.salePrice > 0 ? p.salePrice : p.price)}
+                      {formatCurrency(
+                        p.salePrice > 0 ? p.salePrice : p.price,
+                      )}
                       {p.salePrice > 0 && (
                         <div className="text-xs text-gray-400 line-through font-normal">
                           {formatCurrency(p.price)}
@@ -447,7 +448,7 @@ const ProductManager = () => {
                   </select>
                 </div>
 
-                 {/* Thương hiệu */}
+                {/* Thương hiệu */}
                 <div>
                   <label className="block mb-1.5 font-medium text-gray-700">
                     Thương hiệu

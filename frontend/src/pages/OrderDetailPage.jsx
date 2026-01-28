@@ -6,7 +6,7 @@ import {
     RefreshCw, XCircle, Star, MessageSquare
 } from 'lucide-react';
 
-// ✅ HÀM XỬ LÝ ẢNH ĐỒNG BỘ
+//HÀM XỬ LÝ ẢNH ĐỒNG BỘ
 const getImageUrl = (path) => {
     if (!path) return null;
     if (typeof path === 'object') path = path.url || path[0]?.url || path[0];
@@ -75,7 +75,7 @@ const OrderDetailPage = () => {
             window.dispatchEvent(new Event("CART_UPDATED"));
             navigate("/cart");
         } catch (err) {
-            alert("Sản phẩm không khả dụng.");
+            alert("Sản phẩm không khả dụng.", err);
         } finally {
             setProcessingItem(null);
         }
