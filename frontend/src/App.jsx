@@ -166,7 +166,7 @@ function App() {
               DHD - GlassesShop
             </Link>
 
-            <div className="hidden md:flex space-x-8 font-medium text-gray-600 text-lg">
+            <div className="hidden md:flex space-x-8 font-medium text-blue-800 text-lg">
               <Link to="/" className="hover:text-blue-600 transition">
                 Trang chủ
               </Link>
@@ -181,10 +181,10 @@ function App() {
               </Link>
             </div>
 
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-6 text-dark">
               <Link
                 to="/cart"
-                className="relative hover:text-gray-600 transition group"
+                className="relative hover:text-blue-600 transition"
               >
                 <ShoppingCart className="w-6 h-6" />
                 {cartCount > 0 && (
@@ -194,14 +194,16 @@ function App() {
                 )}
               </Link>
 
-              <div className="relative group py-2">
-                <button className="hover:text-gray-600 transition flex items-center gap-2">
+              <div className="relative group">
+                {/* ===== TRIGGER ===== */}
+                <button className="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-gray-100 transition hover:shadow-md hover:text-blue-600">
                   {currentUser ? (
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold max-w-[100px] truncate hidden md:block">
+                    <>
+                      <span className="text-sm font-semibold text-dark max-w-[110px] truncate hidden md:block">
                         {currentUser.name}
                       </span>
-                      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-dark-600 border overflow-hidden">
+
+                      <div className="w-9 h-9 rounded-full bg-gray-100 border flex items-center justify-center overflow-hidden">
                         {currentUser.avatarUrl ? (
                           <img
                             src={getImageUrl(currentUser.avatarUrl)}
@@ -214,68 +216,94 @@ function App() {
                             }}
                           />
                         ) : (
-                          <User size={18} />
+                          <User size={18} className="text-gray-500" />
                         )}
                       </div>
-                    </div>
+                    </>
                   ) : (
-                    <User className="w-6 h-6" />
+                    <User className="w-6 h-6 text-gray-600" />
                   )}
                 </button>
 
-                <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-blue-100 overflow-hidden invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300 transform origin-top-right z-50">
-                  <div className="p-2 bg-white flex flex-col gap-1">
+                {/* ===== DROPDOWN ===== */}
+                <div
+                  className="absolute right-0 mt-2 w-60 bg-white rounded-xl shadow-xl border border-gray-100 
+                  invisible opacity-0 group-hover:visible group-hover:opacity-100 
+                  transition-all duration-200 z-50"
+                >
+                  <div className="p-2 flex flex-col gap-1">
                     {currentUser ? (
                       <>
+                        {/* ACCOUNT INFO */}
                         <div className="px-4 py-2 text-xs text-gray-400 border-b border-gray-100 mb-1">
-                          Tài khoản: <br />
-                          <span className="text-gray-600 font-medium truncate block">
+                          Tài khoản
+                          <span className="block text-sm text-gray-700 font-medium truncate">
                             {currentUser.email}
                           </span>
                         </div>
+
+                        {/* PROFILE */}
                         <Link
                           to="/profile"
-                          className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition"
+                          className="flex items-center gap-3 px-4 py-2 text-sm rounded-lg
+                       text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition font-medium"
                         >
-                          <User size={18} /> <span>Hồ sơ cá nhân</span>
+                          <User size={18} />
+                          Hồ sơ cá nhân
                         </Link>
+
+                        {/* ADMIN */}
                         {currentUser.role === "admin" && (
                           <Link
                             to="/admin"
-                            className="flex items-center gap-2 px-4 py-2 text-purple-700 hover:bg-purple-50 hover:text-purple-600 rounded-lg transition font-medium"
+                            className="flex items-center gap-3 px-4 py-2 text-sm rounded-lg
+                         text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition font-medium"
                           >
-                            <LayoutDashboard size={18} />{" "}
-                            <span>Trang quản trị</span>
+                            <LayoutDashboard size={18} />
+                            Trang quản trị
                           </Link>
                         )}
+
+                        {/* ORDERS */}
                         {currentUser.role !== "admin" && (
                           <Link
                             to="/my-orders"
-                            className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition"
+                            className="flex items-center gap-3 px-4 py-2 text-sm rounded-lg
+                         text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition font-medium"
                           >
-                            <Package size={18} /> <span>Đơn hàng của tôi</span>
+                            <Package size={18} />
+                            Đơn hàng của tôi
                           </Link>
                         )}
+
+                        {/* LOGOUT */}
                         <button
                           onClick={handleLogout}
-                          className="w-full flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                          className="flex items-center gap-3 px-4 py-2 text-sm rounded-lg
+                       text-red-600 hover:bg-red-50 transition font-medium"
                         >
-                          <LogOut size={18} /> <span>Đăng xuất</span>
+                          <LogOut size={18} />
+                          Đăng xuất
                         </button>
                       </>
                     ) : (
                       <>
                         <Link
                           to="/login"
-                          className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition"
+                          className="flex items-center gap-3 px-4 py-2 text-sm rounded-lg
+                       text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition font-medium"
                         >
-                          <LogIn size={18} /> <span>Đăng nhập</span>
+                          <LogIn size={18} />
+                          Đăng nhập
                         </Link>
+
                         <Link
                           to="/register"
-                          className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition"
+                          className="flex items-center gap-3 px-4 py-2 text-sm rounded-lg
+                       text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition font-medium"
                         >
-                          <UserPlus size={18} /> <span>Đăng ký</span>
+                          <UserPlus size={18} />
+                          Đăng ký
                         </Link>
                       </>
                     )}

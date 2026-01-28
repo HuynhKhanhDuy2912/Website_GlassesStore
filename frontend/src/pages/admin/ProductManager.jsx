@@ -12,6 +12,7 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
+  ShoppingBag,
 } from "lucide-react";
 
 // --- Axios config ---
@@ -61,9 +62,7 @@ const ProductManager = () => {
     images: [],
   });
 
-  // Gọi API mỗi khi trang (page) hoặc từ khóa (keyword) thay đổi
   useEffect(() => {
-    // Dùng Debounce đơn giản để tránh gọi API liên tục khi gõ
     const timeOutId = setTimeout(() => {
       fetchProducts();
     }, 500);
@@ -79,7 +78,6 @@ const ProductManager = () => {
     setLoading(true);
     setError(null);
     try {
-      // Gửi thêm params: page, limit, q (query search)
       const res = await axiosClient.get(`/products`, {
         params: {
           page: page,
@@ -88,7 +86,7 @@ const ProductManager = () => {
         },
       });
       setProducts(res.data.items || []);
-      setTotalPages(res.data.pages || 1); // Cập nhật tổng số trang từ server
+      setTotalPages(res.data.pages || 1);
     } catch (err) {
       console.error(err);
       setError("Không thể tải sản phẩm");
@@ -158,7 +156,7 @@ const ProductManager = () => {
       }
 
       setShowModal(false);
-      fetchProducts(); // Load lại danh sách
+      fetchProducts();
     } catch (err) {
       console.error(err);
       alert("Lỗi: " + (err.response?.data?.message || err.message));
@@ -224,7 +222,10 @@ const ProductManager = () => {
   return (
     <div className="p-6">
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-        <h1 className="text-2xl font-bold">Quản Lý Sản Phẩm</h1>
+        <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
+          <ShoppingBag className="text-blue-600" />
+          Quản Lý Sản Phẩm
+        </h1>
 
         <div className="flex gap-3 w-full md:w-auto">
           {/* THANH TÌM KIẾM */}
@@ -237,7 +238,7 @@ const ProductManager = () => {
                 setKeyword(e.target.value);
                 setPage(1); // Reset về trang 1 khi tìm kiếm
               }}
-              className="pl-10 pr-4 py-2 border rounded-lg focus:border-pink-500 outline-none w-full md:w-64"
+              className="pl-10 pr-4 py-2 border rounded-lg focus:border-blue-500 outline-none w-full md:w-64"
             />
             <Search
               className="absolute left-3 top-2.5 text-gray-400"
@@ -247,7 +248,7 @@ const ProductManager = () => {
 
           <button
             onClick={openAddModal}
-            className="bg-pink-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap hover:bg-pink-600 transition"
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap hover:bg-blue-600 transition"
           >
             <Plus size={20} /> Thêm mới
           </button>
@@ -266,9 +267,9 @@ const ProductManager = () => {
             <Loader className="animate-spin mr-2" /> Đang tải dữ liệu...
           </div>
         ) : (
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left  border-collapse">
             <thead className="bg-gray-50 border-b">
-              <tr>
+              <tr className="text-center">
                 <th className="p-4">Hình ảnh</th>
                 <th className="p-4">Tên sản phẩm</th>
                 <th className="p-4">Danh mục</th>
@@ -278,7 +279,7 @@ const ProductManager = () => {
                 <th className="p-4 text-right">Hành động</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="text-center">
               {products.length > 0 ? (
                 products.map((p) => (
                   <tr key={p._id} className="border-b hover:bg-gray-50">
@@ -300,13 +301,13 @@ const ProductManager = () => {
                       {p.category?.name || "---"}
                     </td>
                     <td className="p-4">
-                      <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs border border-gray-200">
+                      <span className="bg-yellow-300 text-dark-700 font-bold px-2 py-1 rounded text-xs border border-gray-200">
                         {p.flavor || "Đang cập nhật"}
                       </span>
                     </td>
                     <td className="p-4">
                       {p.stock > 0 ? (
-                        <div className="flex flex-col items-start gap-1">
+                        <div className="flex flex-col items-center gap-1">
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-bold border ${
                               p.stock <= 5
@@ -326,10 +327,8 @@ const ProductManager = () => {
                         </span>
                       )}
                     </td>
-                    <td className="p-4 font-semibold text-pink-600">
-                      {formatCurrency(
-                        p.salePrice > 0 ? p.salePrice : p.price,
-                      )}
+                    <td className="p-4 font-semibold text-dark-600">
+                      {formatCurrency(p.salePrice > 0 ? p.salePrice : p.price)}
                       {p.salePrice > 0 && (
                         <div className="text-xs text-gray-400 line-through font-normal">
                           {formatCurrency(p.price)}
@@ -340,14 +339,14 @@ const ProductManager = () => {
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => openEditModal(p)}
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded transition"
+                          className="p-2 text-blue-600 hover:bg-blue-500 hover:text-white rounded transition"
                           title="Sửa"
                         >
                           <Edit size={18} />
                         </button>
                         <button
                           onClick={() => handleDelete(p._id)}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded transition"
+                          className="p-2 text-red-600 hover:bg-red-500 hover:text-white rounded transition"
                           title="Xóa"
                         >
                           <Trash2 size={18} />
@@ -380,7 +379,7 @@ const ProductManager = () => {
           </button>
 
           <span className="text-sm font-medium text-gray-600">
-            Trang <span className="text-pink-600 font-bold">{page}</span> /{" "}
+            Trang <span className="text-blue-600 font-bold">{page}</span> /{" "}
             {totalPages}
           </span>
 
@@ -423,7 +422,7 @@ const ProductManager = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
-                    className="w-full border border-gray-300 px-4 py-2.5 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 outline-none transition"
+                    className="w-full border border-gray-300 px-4 py-2.5 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
                     placeholder="Ví dụ: Bánh kem dâu tây..."
                   />
                 </div>
@@ -437,7 +436,7 @@ const ProductManager = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, category: e.target.value })
                     }
-                    className="w-full border border-gray-300 px-4 py-2.5 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 outline-none transition"
+                    className="w-full border border-gray-300 px-4 py-2.5 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
                   >
                     <option value="">-- Chọn danh mục --</option>
                     {categories.map((c) => (
@@ -459,7 +458,7 @@ const ProductManager = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, flavor: e.target.value })
                     }
-                    className="w-full border border-gray-300 px-4 py-2.5 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 outline-none transition"
+                    className="w-full border border-gray-300 px-4 py-2.5 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
                     placeholder="Ví dụ: GUCCI..."
                   />
                 </div>
@@ -475,10 +474,10 @@ const ProductManager = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, stock: e.target.value })
                     }
-                    className="w-full border border-gray-300 px-4 py-2.5 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 outline-none transition"
+                    className="w-full border border-gray-300 px-4 py-2.5 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
                   />
                 </div>
-                {/* SỬA INPUT GIÁ: THÊM onWheel ĐỂ CHẶN LĂN CHUỘT LÀM LỆCH SỐ */}
+
                 <div>
                   <label className="block mb-1.5 font-medium text-gray-700">
                     Giá bán (VNĐ) <span className="text-red-500">*</span>
@@ -491,8 +490,8 @@ const ProductManager = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, price: e.target.value })
                     }
-                    onWheel={(e) => e.target.blur()} // <-- Fix lỗi lăn chuột nhảy số
-                    className="w-full border border-gray-300 px-4 py-2.5 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 outline-none transition"
+                    onWheel={(e) => e.target.blur()} 
+                    className="w-full border border-gray-300 px-4 py-2.5 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
                   />
                 </div>
                 <div className="md:col-span-2">
@@ -506,8 +505,8 @@ const ProductManager = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, salePrice: e.target.value })
                     }
-                    onWheel={(e) => e.target.blur()} // <-- Fix lỗi lăn chuột nhảy số
-                    className="w-full border border-gray-300 px-4 py-2.5 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 outline-none transition"
+                    onWheel={(e) => e.target.blur()} 
+                    className="w-full border border-gray-300 px-4 py-2.5 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
                     placeholder="Để 0 nếu không giảm giá"
                   />
                 </div>
@@ -557,7 +556,7 @@ const ProductManager = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
                   }
-                  className="w-full border border-gray-300 px-4 py-2.5 rounded-lg focus:border-pink-500 focus:ring-2 focus:ring-pink-200 outline-none transition"
+                  className="w-full border border-gray-300 px-4 py-2.5 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
                   rows={4}
                   placeholder="Nhập mô tả chi tiết..."
                 />
@@ -574,7 +573,7 @@ const ProductManager = () => {
                 <button
                   type="submit"
                   disabled={isUploading}
-                  className="px-5 py-2.5 bg-pink-500 text-white rounded-lg hover:bg-pink-600 font-medium shadow-lg shadow-pink-200 transition flex items-center gap-2"
+                  className="px-5 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium shadow-lg shadow-blue-200 transition flex items-center gap-2"
                 >
                   {isUploading && <Loader className="animate-spin" size={18} />}
                   {isUploading ? "Đang xử lý..." : "Lưu sản phẩm"}

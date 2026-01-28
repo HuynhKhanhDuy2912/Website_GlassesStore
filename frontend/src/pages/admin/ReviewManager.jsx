@@ -30,8 +30,6 @@ const getImageUrl = (product) => {
     if (!path.startsWith("/uploads")) {
         path = "/uploads" + path;
     }
-
-    // Kết quả: http://localhost:5000/uploads/ten-anh.png
     return `http://localhost:5000${path}`;
 };
 
@@ -64,7 +62,7 @@ const ReviewManager = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchReviews(); 
-    } catch (error) { alert("Lỗi cập nhật trạng thái"); }
+    } catch (error) { alert("Lỗi cập nhật trạng thái", error); }
   };
 
   const handleDelete = async (id) => {
@@ -75,7 +73,7 @@ const ReviewManager = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setReviews(reviews.filter(r => r._id !== id)); 
-    } catch (error) { alert("Lỗi khi xóa"); }
+    } catch (error) { alert("Lỗi khi xóa", error); }
   };
 
   const handleReply = async (id) => {
@@ -89,7 +87,7 @@ const ReviewManager = () => {
       alert("Đã trả lời thành công!");
       fetchReviews();
       setReplyText({ ...replyText, [id]: '' }); 
-    } catch (error) { alert("Lỗi khi gửi câu trả lời"); }
+    } catch (error) { alert("Lỗi khi gửi câu trả lời", error); }
   };
 
   if (loading) return <div className="p-8 text-center text-gray-500">Đang tải đánh giá...</div>;
@@ -146,16 +144,16 @@ const ReviewManager = () => {
                   <div className="mt-3 ml-4 pl-4 border-l-2 border-gray-200">
                     {review.adminResponse ? (
                         <div className="text-sm">
-                            <div className="flex items-center gap-2 font-bold text-pink-600 mb-1">
+                            <div className="flex items-center gap-2 font-bold text-blue-600 mb-1">
                                 <CornerDownRight size={16} /> Phản hồi của Shop:
                             </div>
-                            <p className="text-gray-600 bg-pink-50 p-2 rounded">{review.adminResponse}</p>
+                            <p className="text-gray-600 bg-blue-50 p-2 rounded">{review.adminResponse}</p>
                         </div>
                     ) : (
                         <div className="flex gap-2 mt-2">
                              <input 
                                 type="text" 
-                                className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-pink-500"
+                                className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-blue-500"
                                 placeholder="Nhập câu trả lời..."
                                 value={replyText[review._id] || ''}
                                 onChange={(e) => setReplyText({...replyText, [review._id]: e.target.value})}

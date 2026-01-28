@@ -61,8 +61,8 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-        <TrendingUp className="text-red-600"/> Tổng Quan Kinh Doanh
+      <h1 className="text-2xl font-bold mb-6 flex items-center gap-2 text-blue-600">
+        <TrendingUp/> Tổng Quan Kinh Doanh
       </h1>
       
       {/* 1. Cards thống kê */}

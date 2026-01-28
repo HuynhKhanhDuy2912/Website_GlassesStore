@@ -92,7 +92,7 @@ const OrderManager = () => {
             <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                 <div>
                     <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                        <Package className="text-pink-600" /> Quản lý Đơn hàng
+                        <Package className="text-blue-600" /> Quản lý Đơn hàng
                     </h2>
                     <p className="text-sm text-gray-500 mt-1">Tổng cộng: {orders.length} đơn hàng</p>
                 </div>
@@ -102,7 +102,7 @@ const OrderManager = () => {
                     <select 
                         value={filterStatus}
                         onChange={(e) => setFilterStatus(e.target.value)}
-                        className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500"
+                        className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
                     >
                         <option value="all">Tất cả trạng thái</option>
                         <option value="pending">Chờ xử lý</option>
@@ -127,8 +127,8 @@ const OrderManager = () => {
                     </thead>
                     <tbody className="text-sm text-gray-700 divide-y divide-gray-100">
                         {filteredOrders.map((order) => (
-                            <tr key={order._id} className="hover:bg-pink-50/30 transition-colors">
-                                <td className="p-4 font-mono font-medium text-pink-600">
+                            <tr key={order._id} className="hover:bg-blue-50/30 transition-colors">
+                                <td className="p-4 font-mono font-medium text-blue-600">
                                     #{order._id.slice(-6).toUpperCase()}
                                 </td>
                                 <td className="p-4">
@@ -153,7 +153,7 @@ const OrderManager = () => {
                                         <select 
                                             value={order.status}
                                             onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                                            className="text-xs border border-gray-200 rounded px-1 py-1 mt-1 cursor-pointer hover:border-pink-400 focus:outline-none"
+                                            className="text-xs border border-gray-200 rounded px-1 py-1 mt-1 cursor-pointer hover:border-blue-400 focus:outline-none"
                                         >
                                             <option value="pending">Chờ xử lý</option>
                                             <option value="delivered">Đang giao hàng</option>

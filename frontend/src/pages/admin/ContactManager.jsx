@@ -136,7 +136,7 @@ const ContactManager = () => {
             setContacts(updatedList.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)));
             setReplyMessage('');
             clearSelectedFile();
-        } catch (error) { alert("Lỗi gửi tin nhắn"); } 
+        } catch (error) { alert("Lỗi gửi tin nhắn", error); } 
         finally { setSending(false); }
     };
 
@@ -149,10 +149,10 @@ const ContactManager = () => {
             const newList = contacts.filter(c => c._id !== id);
             setContacts(newList);
             if (selectedTicket?._id === id) setSelectedTicket(null);
-        } catch (error) { alert("Lỗi xóa"); }
+        } catch (error) { alert("Lỗi xóa", error); }
     };
 
-    if (loading) return <div className="flex justify-center p-20"><Loader className="animate-spin text-pink-600"/></div>;
+    if (loading) return <div className="flex justify-center p-20"><Loader className="animate-spin text-blue-600"/></div>;
 
     return (
         <div className="bg-gray-100 min-h-screen p-6 font-sans">
@@ -163,13 +163,13 @@ const ContactManager = () => {
                     <div className="p-4 border-b border-gray-100 space-y-3">
                         <div className="flex justify-between items-center">
                             <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                                <MessageSquare className="text-pink-600"/> CSKH
+                                <MessageSquare className="text-blue-600"/> CSKH
                             </h2>
                             <span className="text-xs font-bold bg-gray-100 px-2 py-1 rounded text-gray-500">{filteredContacts.length}</span>
                         </div>
                         <div className="relative">
                             <Search className="absolute left-3 top-2.5 text-gray-400" size={18}/>
-                            <input type="text" className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-pink-500 transition"
+                            <input type="text" className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition"
                                 placeholder="Tìm khách hàng..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)}/>
                         </div>
                         <div className="flex gap-2">
@@ -177,7 +177,7 @@ const ContactManager = () => {
                             .map(tab => (
                                 <button key={tab.id} onClick={() => setFilterStatus(tab.id)}
                                     className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition border ${
-                                        filterStatus === tab.id ? 'bg-pink-600 text-white border-pink-600' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                                        filterStatus === tab.id ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
                                     }`}>
                                     {tab.label}
                                 </button>
@@ -194,14 +194,14 @@ const ContactManager = () => {
 
                             return (
                                 <div key={contact._id} onClick={() => handleSelectTicket(contact)}
-                                    className={`p-4 border-b border-gray-50 cursor-pointer hover:bg-gray-50 transition relative group ${selectedTicket?._id === contact._id ? 'bg-pink-50 hover:bg-pink-50' : ''}`}>
+                                    className={`p-4 border-b border-gray-50 cursor-pointer hover:bg-gray-50 transition relative group ${selectedTicket?._id === contact._id ? 'bg-blue-50 hover:bg-blue-50' : ''}`}>
                                     <div className="flex justify-between items-baseline mb-1">
                                         <h4 className={`text-sm truncate max-w-[160px] ${isUnread ? 'font-bold text-gray-900' : 'font-medium text-gray-700'}`}>{displayName}</h4>
-                                        <span className={`text-[10px] ${isUnread ? 'text-pink-600 font-bold' : 'text-gray-400'}`}>{new Date(contact.updatedAt).toLocaleDateString('vi-VN')}</span>
+                                        <span className={`text-[10px] ${isUnread ? 'text-blue-600 font-bold' : 'text-gray-400'}`}>{new Date(contact.updatedAt).toLocaleDateString('vi-VN')}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <div className={`text-xs truncate max-w-[85%] ${isUnread ? 'text-gray-800 font-medium' : 'text-gray-400'}`}>
-                                            {lastMsg?.message ? <span>{lastMsg.message}</span> : <span className="flex items-center gap-1 italic text-pink-500"><ImageIcon size={12}/> Hình ảnh</span>}
+                                            {lastMsg?.message ? <span>{lastMsg.message}</span> : <span className="flex items-center gap-1 italic text-blue-500"><ImageIcon size={12}/> Hình ảnh</span>}
                                         </div>
                                         {isUnread && <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm animate-pulse"></span>}
                                     </div>
@@ -237,11 +237,11 @@ const ContactManager = () => {
                                     return (
                                         <div key={idx} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                                             <div className={`flex gap-3 max-w-[75%] ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
-                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm ${isMe ? 'bg-pink-600 text-white' : 'bg-white text-blue-600 border border-gray-200'}`}>
+                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm ${isMe ? 'bg-blue-600 text-white' : 'bg-white text-blue-600 border border-gray-200'}`}>
                                                     {isMe ? <ShieldCheck size={16}/> : <User size={16}/>}
                                                 </div>
                                                 <div>
-                                                    <div className={`p-3 rounded-2xl text-sm shadow-sm overflow-hidden ${isMe ? 'bg-pink-600 text-white rounded-tr-none' : 'bg-white text-gray-700 border border-gray-200 rounded-tl-none'}`}>
+                                                    <div className={`p-3 rounded-2xl text-sm shadow-sm overflow-hidden ${isMe ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white text-gray-700 border border-gray-200 rounded-tl-none'}`}>
                                                         {msg.image && <div className="mb-2"><img src={getImageUrl(msg.image)} alt="img" className="max-w-full h-auto rounded-lg cursor-pointer hover:opacity-90" onClick={() => window.open(getImageUrl(msg.image), '_blank')}/></div>}
                                                         {msg.message && <p className="leading-relaxed whitespace-pre-wrap">{msg.message}</p>}
                                                     </div>
@@ -259,10 +259,10 @@ const ContactManager = () => {
                                     <div className="px-2 pb-2 flex"><div className="relative"><img src={previewUrl} alt="prev" className="h-16 w-auto rounded-lg border shadow-sm object-cover"/><button onClick={clearSelectedFile} className="absolute -top-2 -right-2 bg-gray-500 text-white rounded-full p-0.5 hover:bg-red-500"><X size={12}/></button></div></div>
                                 )}
                                 <form onSubmit={handleReply} className="flex gap-3 items-center">
-                                    <button type="button" onClick={() => fileInputRef.current.click()} className="p-2 text-gray-400 hover:text-pink-600 hover:bg-pink-50 rounded-full transition"><ImageIcon size={20} /></button>
+                                    <button type="button" onClick={() => fileInputRef.current.click()} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition"><ImageIcon size={20} /></button>
                                     <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileSelect}/>
-                                    <input type="text" className="flex-1 p-3 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:border-pink-500 transition" placeholder="Nhập phản hồi..." value={replyMessage} onChange={(e) => setReplyMessage(e.target.value)}/>
-                                    <button type="submit" disabled={sending || (!replyMessage.trim() && !selectedFile)} className="bg-pink-600 text-white p-3 rounded-xl hover:bg-pink-700 transition shadow-lg disabled:bg-gray-300">
+                                    <input type="text" className="flex-1 p-3 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:border-blue-500 transition" placeholder="Nhập phản hồi..." value={replyMessage} onChange={(e) => setReplyMessage(e.target.value)}/>
+                                    <button type="submit" disabled={sending || (!replyMessage.trim() && !selectedFile)} className="bg-blue-600 text-white p-3 rounded-xl hover:bg-blue-700 transition shadow-lg disabled:bg-gray-300">
                                         {sending ? <Loader className="animate-spin" size={20}/> : <Send size={20} />}
                                     </button>
                                 </form>

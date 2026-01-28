@@ -211,7 +211,7 @@ const ProductPage = () => {
               </div>
               <div className="mb-8 border-t border-gray-100 pt-6">
                 <h3 className="font-bold text-xl mb-4 flex items-center gap-2">
-                  <Tag  className="w-5 h-5" /> Thương Hiệu
+                  <Tag className="w-5 h-5" /> Thương Hiệu
                 </h3>
                 <ul className="space-y-2">
                   {/* Nút mặc định: Tất cả bánh (xóa lọc thương hiệu) */}
@@ -253,7 +253,7 @@ const ProductPage = () => {
               </div>
               <div>
                 <h3 className="font-bold text-xl mb-4 flex items-center gap-2">
-                  <DollarSign  className="w-5 h-5" /> Giá Tiền
+                  <DollarSign className="w-5 h-5" /> Giá Tiền
                 </h3>
                 <input
                   type="range"
@@ -288,7 +288,7 @@ const ProductPage = () => {
             {products.length === 0 && !loading ? (
               <div className="text-center py-24">
                 <Search className="w-8 h-8 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">Không tìm thấy bánh nào</p>
+                <p className="text-gray-500">Không tìm thấy sản phẩm nào</p>
                 <button
                   className="text-blue-600 underline mt-3 hover:text-blue-800"
                   onClick={clearFilters}
@@ -362,21 +362,72 @@ const ProductPage = () => {
                             ? `Thương hiệu: ${product.flavor}`
                             : product.category?.name || "Mắt kính thời trang"}
                         </p>
-                        <div className="flex justify-between items-center">
+                        <div className="flex items-center">
+                          {/* PRICE */}
                           <div className="flex flex-col">
                             <p
-                              className={`text-xl font-bold ${isFlashSale ? "text-red-600" : "text-dark-600"}`}
+                              className={`text-xl font-bold ${
+                                isFlashSale ? "text-red-600" : "text-dark-600"
+                              }`}
                             >
                               {formatCurrency(currentPrice)}
                             </p>
+
                             {currentPrice < originalPrice && (
                               <span className="text-xs text-gray-400 line-through">
                                 {formatCurrency(originalPrice)}
                               </span>
                             )}
                           </div>
-                          <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <ShoppingCart size={18} />
+
+                          {/* SPACER */}
+                          <div className="flex-1" />
+
+                          {/* ACTION BUTTONS */}
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={async (e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                const token =
+                                  localStorage.getItem("ACCESS_TOKEN");
+                                if (!token) {
+                                  navigate("/login");
+                                  return;
+                                }
+
+                                try {
+                                  await axios.post(
+                                    "http://localhost:5000/api/cart/add",
+                                    { productId: product._id, qty: 1 },
+                                    {
+                                      headers: {
+                                        Authorization: `Bearer ${token}`,
+                                      },
+                                    },
+                                  );
+
+                                  window.dispatchEvent(
+                                    new Event("CART_UPDATED"),
+                                  );
+                                  navigate("/cart");
+                                } catch (err) {
+                                  console.error("Lỗi Mua ngay:", err);
+                                  alert(
+                                    err.response?.data?.message ||
+                                      "Không thể thêm vào giỏ hàng",
+                                  );
+                                }
+                              }}
+                              className="px-4 py-2 text-sm font-semibold rounded-full bg-blue-600 text-white hover:bg-blue-700 transition"
+                            >
+                              Mua ngay
+                            </button>
+
+                            <button className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 hover:bg-blue-100 transition">
+                              <ShoppingCart size={18} />
+                            </button>
                           </div>
                         </div>
                       </div>

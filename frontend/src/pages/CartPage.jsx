@@ -5,7 +5,7 @@ import {
   Trash2,
   Minus,
   Plus,
-  ShoppingBag,
+  ShoppingCart,
   ArrowRight,
   CreditCard,
   CheckSquare,
@@ -177,9 +177,9 @@ const CartPage = () => {
     const item = cart?.items?.[index];
     if (!item) return;
 
-    // 🔴 Nếu số lượng < 1 → xóa cart item
     if (newQty < 1) {
-      return handleRemoveItem(item._id); // ✅ cartItemId
+      const productId = String(item.product._id || item.product);
+      return handleRemoveItem(productId);
     }
 
     const token = getToken();
@@ -207,19 +207,21 @@ const CartPage = () => {
     }
   };
 
-  const handleRemoveItem = async (cartItemId) => {
+  const handleRemoveItem = async (productId) => {
     const token = getToken();
     if (!window.confirm("Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?"))
       return;
 
     try {
       const res = await axios.delete(
-        `http://localhost:5000/api/cart/item/${cartItemId}`,
-        { headers: { Authorization: `Bearer ${token}` } },
+        `http://localhost:5000/api/cart/item/${productId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
       );
 
       setCart(res.data);
-      setSelectedItems((prev) => prev.filter((id) => id !== cartItemId));
+      setSelectedItems((prev) => prev.filter((id) => id !== productId));
     } catch (err) {
       console.error("Lỗi xóa:", err);
     }
@@ -253,7 +255,7 @@ const CartPage = () => {
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
         <div className="bg-white p-8 rounded-2xl shadow-sm text-center max-w-md w-full border border-blue-100">
           <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6 text-blue-400">
-            <ShoppingBag size={40} />
+            <ShoppingCart size={40} />
           </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">
             Giỏ hàng đang trống
@@ -278,7 +280,7 @@ const CartPage = () => {
     <div className="bg-gray-50 min-h-screen py-10 font-sans">
       <div className="container mx-auto px-4">
         <h1 className="text-3xl font-bold text-gray-800 mb-8 flex items-center gap-3">
-          <ShoppingBag className="text-blue-600" /> Giỏ Hàng Của Bạn
+          <ShoppingCart className="text-blue-600" /> Giỏ Hàng Của Bạn
         </h1>
 
         <div className="flex flex-col lg:flex-row gap-8">
@@ -312,7 +314,7 @@ const CartPage = () => {
                     </span>
                     <button
                       onClick={() =>
-                        handleRemoveInvalidItem(item._id || "unknown")
+                        handleRemoveInvalidItem(item.product || "unknown")
                       }
                       className="text-red-600 hover:underline text-sm font-bold"
                     >
@@ -325,11 +327,8 @@ const CartPage = () => {
               const rawId = item.product._id || item.product;
               const productId = String(rawId);
               const isSelected = selectedItems.includes(productId);
-
               const realPrice = getRealPrice(item);
               const isFlashSale = item.product.isFlashSale;
-
-              // LOGIC TÌM ẢNH (Ưu tiên image -> images[0] -> cart item image)
               const productImgPath =
                 item.product?.image || item.product?.images?.[0] || item.image;
 
@@ -399,7 +398,7 @@ const CartPage = () => {
                   </div>
 
                   {/* TĂNG GIẢM / XÓA */}
-                  <div className="flex flex-col items-end gap-4">
+                  <div className="flex items-center gap-4">
                     <div className="flex items-center border border-gray-200 rounded-lg h-9">
                       <button
                         disabled={updating}
@@ -420,8 +419,8 @@ const CartPage = () => {
                       </button>
                     </div>
                     <button
-                      onClick={() => handleRemoveItem(item._id)}
-                      className="text-gray-400 hover:text-red-500"
+                      onClick={() => handleRemoveItem(productId)}
+                      className="text-white bg-gray-400 hover:bg-red-600 p-2 rounded-lg transition"
                     >
                       <Trash2 size={16} />
                     </button>

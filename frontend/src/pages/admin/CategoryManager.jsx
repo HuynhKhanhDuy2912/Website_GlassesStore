@@ -139,7 +139,7 @@ const CategoryManager = () => {
   return (
     <div className="p-6 max-w-6xl mx-auto font-sans text-gray-800">
       <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
-        <List className="text-pink-600" /> Quản Lý Danh Mục
+        <List className="text-blue-600" /> Quản Lý Danh Mục
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -153,7 +153,7 @@ const CategoryManager = () => {
               {editingId ? (
                 <Edit size={18} className="text-blue-600" />
               ) : (
-                <Plus size={18} className="text-pink-600" />
+                <Plus size={18} className="text-blue-600" />
               )}
               {editingId ? "Cập Nhật Danh Mục" : "Thêm Mới"}
             </span>
@@ -173,7 +173,7 @@ const CategoryManager = () => {
                 Tên danh mục
               </label>
               <input
-                className="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-pink-200 outline-none bg-gray-50 focus:bg-white transition"
+                className="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-blue-200 outline-none bg-gray-50 focus:bg-white transition"
                 placeholder="Ví dụ: Kính mát ABC..."
                 value={formData.name}
                 onChange={(e) =>
@@ -210,7 +210,7 @@ const CategoryManager = () => {
                   </div>
                 ) : (
                   <label className="cursor-pointer w-full h-full flex flex-col items-center justify-center">
-                    <div className="bg-gray-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2 text-gray-400 group-hover:text-pink-500 group-hover:bg-pink-50 transition">
+                    <div className="bg-gray-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2 text-gray-400 group-hover:text-blue-500 group-hover:bg-blue-50 transition">
                       <Upload size={20} />
                     </div>
                     <span className="text-sm text-gray-500">Tải ảnh lên</span>
@@ -230,7 +230,7 @@ const CategoryManager = () => {
               className={`w-full py-2.5 rounded-lg font-bold transition shadow-md flex justify-center gap-2 disabled:opacity-70 text-white ${
                 editingId
                   ? "bg-blue-600 hover:bg-blue-700"
-                  : "bg-pink-600 hover:bg-pink-700"
+                  : "bg-blue-600 hover:bg-blue-700"
               }`}
             >
               {(loading || uploading) && (
@@ -243,9 +243,9 @@ const CategoryManager = () => {
 
         {/* LIST */}
         <div className="md:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="p-4 bg-pink-50 border-b border-pink-100 font-bold text-pink-700 flex justify-between">
+          <div className="p-4 bg-blue-50 border-b border-blue-100 font-bold text-blue-700 flex justify-between">
             <span>Danh sách hiện có</span>
-            <span className="bg-white px-2 rounded text-xs flex items-center border border-pink-200">
+            <span className="bg-white px-2 rounded text-xs flex items-center border border-blue-200">
               {categories.length}
             </span>
           </div>
@@ -284,7 +284,7 @@ const CategoryManager = () => {
                     className={`p-2 rounded-lg border transition shadow-sm ${
                       editingId === cat._id
                         ? "bg-blue-600 text-white border-blue-600"
-                        : "bg-white text-blue-600 border-gray-200 hover:bg-blue-50"
+                        : "bg-white text-blue-600 border-gray-200 hover:bg-blue-500 hover:text-white"
                     }`}
                     title="Chỉnh sửa"
                   >
@@ -292,7 +292,7 @@ const CategoryManager = () => {
                   </button>
                   <button
                     onClick={() => handleDelete(cat._id)}
-                    className="p-2 bg-white text-red-500 border border-gray-200 hover:bg-red-50 rounded-lg transition shadow-sm"
+                    className="p-2 bg-white text-red-500 border border-gray-200 hover:bg-red-500 hover:text-white rounded-lg transition shadow-sm"
                     title="Xóa"
                   >
                     <Trash2 size={18} />

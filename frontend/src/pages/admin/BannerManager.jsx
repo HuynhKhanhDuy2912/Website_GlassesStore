@@ -108,7 +108,7 @@ const BannerManager = () => {
         {/* Form Thêm Banner */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <Plus className="text-pink-600"/> Thêm Banner Mới
+                <Plus className="text-blue-600"/> Thêm Banner Mới
             </h2>
             <form onSubmit={handleAddBanner} className="flex flex-col md:flex-row gap-6">
                 
@@ -137,13 +137,13 @@ const BannerManager = () => {
                 <div className="flex-1 space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Tiêu đề lớn</label>
-                        <input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-pink-500" placeholder="VD: Vẻ đẹp của sự sang trọng" value={title} onChange={e => setTitle(e.target.value)} />
+                        <input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-blue-500" placeholder="VD: Vẻ đẹp của sự sang trọng" value={title} onChange={e => setTitle(e.target.value)} />
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Mô tả ngắn</label>
-                        <input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-pink-500" placeholder="VD: Giảm giá 20% hôm nay" value={description} onChange={e => setDescription(e.target.value)} />
+                        <input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-blue-500" placeholder="VD: Giảm giá 20% hôm nay" value={description} onChange={e => setDescription(e.target.value)} />
                     </div>
-                    <button disabled={loading} type="submit" className="bg-pink-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-pink-700 transition w-full md:w-auto flex items-center justify-center gap-2">
+                    <button disabled={loading} type="submit" className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition w-full md:w-auto flex items-center justify-center gap-2">
                         {loading ? "Đang tải lên..." : <><UploadCloud size={20}/> Lưu Banner</>}
                     </button>
                 </div>

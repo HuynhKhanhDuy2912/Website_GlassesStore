@@ -125,26 +125,43 @@ export const updateCartItem = async (req, res, next) => {
 // --- 4. XÓA SẢN PHẨM KHỎI GIỎ HÀNG---
 export const removeCartItem = async (req, res, next) => {
   try {
-    const { id } = req.params; 
-    const userId = req.user._id;
+    const { productId } = req.params;
 
-    const cart = await Cart.findOne({ user: userId });
+    const cart = await Cart.findOne({ user: req.user._id });
     if (!cart) {
-      return res.status(404).json({ message: "Giỏ hàng trống" });
+      return res.status(404).json({ message: "Giỏ hàng không tồn tại" });
     }
 
-    cart.items = cart.items.filter((item) => {
-      if (!item || !item._id) return false; 
-      if (!item.product) return false; 
-      return item._id.toString() !== id; 
-    });
+    const before = cart.items.length;
+
+    cart.items = cart.items.filter(
+      (item) => item.product.toString() !== productId
+    );
+
+    if (cart.items.length === before) {
+      return res.status(404).json({ message: "Sản phẩm không có trong giỏ" });
+    }
 
     await cart.save();
 
+    // 🔥 BẮT BUỘC populate lại
     const populatedCart = await Cart.findById(cart._id).populate(
-      "items.product",
+      "items.product"
     );
 
+    // 🔥 TÍNH subtotal TỪ product.price
+    populatedCart.subTotal = populatedCart.items.reduce((sum, item) => {
+      const price = Number(item.product?.price || 0);
+      const qty = Number(item.qty || 0);
+      return sum + price * qty;
+    }, 0);
+
+    populatedCart.total =
+      populatedCart.subTotal + populatedCart.shipping;
+
+    await populatedCart.save();
+
+    // 🔥 Process flash sale
     const cartObj = populatedCart.toObject();
     cartObj.items = cartObj.items.map((item) => {
       if (item.product) {
@@ -158,3 +175,4 @@ export const removeCartItem = async (req, res, next) => {
     next(err);
   }
 };
+
