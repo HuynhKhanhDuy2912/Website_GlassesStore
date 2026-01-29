@@ -6,10 +6,8 @@ import {
   XCircle,
   Clock,
   Eye,
-  Search,
   Calendar,
   Truck,
-  Trash2,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -210,12 +208,23 @@ const OrderManager = () => {
                       }
                       className={`text-xs border rounded px-1 py-1 mt-1 focus:outline-none
                         ${
-                        order.status === "completed" || order.status === "cancelled"
+                          order.status === "completed" ||
+                          order.status === "cancelled"
                             ? "bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200"
                             : "border-gray-200 cursor-pointer hover:border-blue-400"
                         }
                     `}
                     >
+                      {/* TRẠNG THÁI HOÀN THÀNH */}
+                      {order.status === "completed" && (
+                        <option value="completed">Đã giao xong</option>
+                      )}
+
+                      {/* TRẠNG THÁI ĐÃ HỦY */}
+                      {order.status === "cancelled" && (
+                        <option value="cancelled">Hủy đơn</option>
+                      )}
+                      
                       {/* Chờ xử lý – chỉ hiện khi chưa giao */}
                       {order.status !== "delivered" &&
                         order.status !== "completed" && (
