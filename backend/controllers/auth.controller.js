@@ -22,6 +22,12 @@ export const login = async (req, res, next) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(401).json({ message: "Sai email hoặc mật khẩu" });
 
+    if (user.status === "blocked") {
+      return res.status(403).json({
+        message: "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để được hỗ trợ."
+      });
+    }
+
     const ok = await user.comparePassword(password);
     if (!ok) return res.status(401).json({ message: "Sai email hoặc mật khẩu" });
 
@@ -29,7 +35,7 @@ export const login = async (req, res, next) => {
 
     // Trả về chuẩn { user, token }
     res.json({
-      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+      user: { id: user._id, name: user.name, email: user.email, role: user.role, avatarUrl: user.avatarUrl },
       token
     });
   } catch (err) {
@@ -40,7 +46,6 @@ export const login = async (req, res, next) => {
 
 export const logout = async (req, res, next) => {
   try {
-    // Ở phía client sẽ xoá token trong localStorage hoặc context
     res.json({ message: "Đăng xuất thành công" });
   } catch (err) {
     next(err);
@@ -53,14 +58,11 @@ export const forgotPassword = async (req, res, next) => {
 
     // Tạo token ngẫu nhiên
     const resetToken = crypto.randomBytes(20).toString("hex");
-
-    // Hash token và lưu vào DB
     user.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
     user.resetPasswordExpires = Date.now() + 10 * 60 * 1000; // Hết hạn sau 10 phút
 
     await user.save();
 
-    // Tạo URL (frontend của bạn)
     const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
 
     const message = `Bạn nhận được email này vì bạn (hoặc ai đó) đã yêu cầu đặt lại mật khẩu. Vui lòng nhấn vào đường dẫn sau:\n\n ${resetUrl}`;
@@ -92,7 +94,6 @@ export const resetPasswordDirect = async (req, res, next) => {
     }
 
     // 2. Cập nhật mật khẩu mới 
-    // (Mật khẩu sẽ tự động được hash nhờ hàm userSchema.pre('save') trong Model User)
     user.password = password;
     await user.save();
 

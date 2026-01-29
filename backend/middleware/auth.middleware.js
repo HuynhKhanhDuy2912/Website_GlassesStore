@@ -21,6 +21,13 @@ export const verifyToken = async (req, res, next) => {
         return res.status(401).json({ message: "Token không hợp lệ" });
       }
 
+      if (user.status === "blocked") {
+        return res.status(403).json({
+          message:
+            "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để được hỗ trợ.",
+        });
+      }
+
       req.user = user;
       next();
       return;
@@ -50,7 +57,7 @@ export const isAdmin = (req, res, next) => {
 };
 
 /* =================================================
-   🔥 ALIAS EXPORT (CỨU TOÀN BỘ ROUTES CŨ)
+   ALIAS EXPORT (CỨU TOÀN BỘ ROUTES CŨ)
    ================================================= */
 export const protect = verifyToken;
 export const admin = isAdmin;

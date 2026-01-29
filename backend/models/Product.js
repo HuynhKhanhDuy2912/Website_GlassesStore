@@ -20,10 +20,10 @@ const productSchema = new mongoose.Schema({
   // --- FLASH SALE FIELDS (Cấu trúc chuẩn) ---
   isFlashSale: { type: Boolean, default: false },
   flashSalePrice: { type: Number, default: 0 },
-  totalFlashSale: { type: Number, default: 0 },   // Tổng suất bán
-  soldCount: { type: Number, default: 0 },        // Đã bán trong đợt sale
-  flashSaleStartDate: { type: Date },             // Ngày bắt đầu
-  flashSaleEndTime: { type: Date },               // Ngày kết thúc
+  totalFlashSale: { type: Number, default: 0 },   
+  soldCount: { type: Number, default: 0 },       
+  flashSaleStartDate: { type: Date },             
+  flashSaleEndTime: { type: Date },               
 
 }, { timestamps: true });
 

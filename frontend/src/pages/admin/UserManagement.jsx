@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Search,
-  Trash2,
   Mail,
   Phone,
   ShieldCheck,
   User,
-  ShieldAlert,
   Loader,
+  Lock,
+  Unlock
 } from "lucide-react";
 
 // Hàm helper xử lý ảnh
@@ -23,7 +23,7 @@ const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [updatingId, setUpdatingId] = useState(null); // Để hiện loading khi đang sửa quyền user nào đó
+  const [updatingId, setUpdatingId] = useState(null);
 
   // Lấy thông tin người đang đăng nhập để tránh tự xóa/hạ quyền chính mình
   const currentUser = JSON.parse(localStorage.getItem("USER_INFO") || "{}");
@@ -48,29 +48,29 @@ const UserManagement = () => {
   }, []);
 
   // 2. Xử lý xóa user
-  const handleDelete = async (userId) => {
-    if (userId === currentUser._id) {
-      alert("Bạn không thể tự xóa tài khoản của chính mình!");
-      return;
-    }
+  // const handleDelete = async (userId) => {
+  //   if (userId === currentUser._id) {
+  //     alert("Bạn không thể tự xóa tài khoản của chính mình!");
+  //     return;
+  //   }
 
-    if (
-      window.confirm(
-        "Bạn có chắc chắn muốn xóa vĩnh viễn người dùng này không?",
-      )
-    ) {
-      try {
-        const token = localStorage.getItem("ACCESS_TOKEN");
-        await axios.delete(`http://localhost:5000/api/users/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUsers(users.filter((user) => user._id !== userId));
-        alert("Đã xóa thành công!");
-      } catch (error) {
-        alert("Lỗi khi xóa người dùng.", error);
-      }
-    }
-  };
+  //   if (
+  //     window.confirm(
+  //       "Bạn có chắc chắn muốn xóa vĩnh viễn người dùng này không?",
+  //     )
+  //   ) {
+  //     try {
+  //       const token = localStorage.getItem("ACCESS_TOKEN");
+  //       await axios.delete(`http://localhost:5000/api/users/${userId}`, {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       });
+  //       setUsers(users.filter((user) => user._id !== userId));
+  //       alert("Đã xóa thành công!");
+  //     } catch (error) {
+  //       alert("Lỗi khi xóa người dùng.", error);
+  //     }
+  //   }
+  // };
 
   // 3. Xử lý thay đổi quyền (User <-> Admin)
   const handleRoleChange = async (userId, newRole) => {
@@ -129,6 +129,44 @@ const UserManagement = () => {
         <Loader className="animate-spin" />
       </div>
     );
+
+  // 5. Cập nhật trạng thái
+  const handleStatusChange = async (userId, newStatus) => {
+    if (userId === currentUser._id) {
+      alert("Bạn không thể tự khóa tài khoản của chính mình!");
+      return;
+    }
+
+    const confirmMsg =
+      newStatus === "blocked"
+        ? "Bạn có chắc chắn muốn KHÓA tài khoản này?"
+        : "Bạn có chắc chắn muốn MỞ KHÓA tài khoản này?";
+
+    if (!window.confirm(confirmMsg)) return;
+
+    setUpdatingId(userId);
+
+    try {
+      const token = localStorage.getItem("ACCESS_TOKEN");
+
+      await axios.put(
+        `http://localhost:5000/api/users/${userId}/status`,
+        { status: newStatus },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      setUsers((prev) =>
+        prev.map((u) => (u._id === userId ? { ...u, status: newStatus } : u)),
+      );
+    } catch (error) {
+      alert(
+        "Lỗi cập nhật trạng thái: " +
+          (error.response?.data?.message || error.message),
+      );
+    } finally {
+      setUpdatingId(null);
+    }
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
@@ -234,36 +272,34 @@ const UserManagement = () => {
                       <div className="inline-flex items-center gap-2 relative group">
                         {/* Icon hiển thị trạng thái */}
                         {user.role === "admin" ? (
-                          <ShieldAlert size={18} className="text-red-500" />
+                          <ShieldCheck size={18} className="text-green-500" />
                         ) : (
                           <User size={18} className="text-blue-500" />
                         )}
 
                         {/* Dropdown chọn quyền */}
                         <select
-                          value={user.role}
-                          onChange={(e) =>
-                            handleRoleChange(user._id, e.target.value)
-                          }
-                          disabled={user._id === currentUser._id} // Không cho tự sửa quyền mình
-                          className={`
-                                    appearance-none pl-3 pr-8 py-1.5 rounded-lg text-sm font-bold border cursor-pointer outline-none focus:ring-2 transition
-                                    ${
-                                      user.role === "admin"
-                                        ? "bg-red-50 text-red-600 border-red-200 focus:ring-red-200"
-                                        : "bg-blue-50 text-blue-600 border-blue-200 focus:ring-blue-200"
-                                    }
-                                    ${user._id === currentUser._id ? "opacity-70 cursor-not-allowed" : ""}
-                                `}
-                        >
-                          <option value="user">User (Khách)</option>
+  value={user.role}
+  disabled={user.role === "admin"}
+  onChange={(e) => handleRoleChange(user._id, e.target.value)}
+  className={`
+    appearance-none pl-3 pr-8 py-1.5 rounded-lg text-sm font-bold border
+    ${user.role === "admin"
+      ? "bg-green-50 text-green-600 border-green-200 cursor-not-allowed"
+      : user.role === "admin"
+        ? "bg-green-50 text-green-600 border-green-200 cursor-pointer"
+        : "bg-blue-50 text-blue-600 border-blue-200 cursor-pointer"}
+  `}
+>
+
+                          <option value="user">User (Người dùng)</option>
                           <option value="admin">Admin (Quản trị)</option>
                         </select>
 
                         {/* Mũi tên giả cho đẹp */}
                         <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
                           <svg
-                            className={`w-3 h-3 ${user.role === "admin" ? "text-red-500" : "text-blue-500"}`}
+                            className={`w-3 h-3 ${user.role === "admin" ? "text-green-500" : "text-blue-500"}`}
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -284,7 +320,7 @@ const UserManagement = () => {
                     {new Date(user.createdAt).toLocaleDateString("vi-VN")}
                   </td>
 
-                  <td className="p-4 text-center">
+                  {/* <td className="p-4 text-center">
                     <button
                       onClick={() => handleDelete(user._id)}
                       disabled={user._id === currentUser._id}
@@ -297,6 +333,62 @@ const UserManagement = () => {
                     >
                       <Trash2 size={18} />
                     </button>
+                  </td> */}
+
+                  <td className="p-4 text-center">
+                    {updatingId === user._id ? (
+                      <Loader
+                        size={18}
+                        className="animate-spin mx-auto text-blue-500"
+                      />
+                    ) : (
+                      <div className="inline-flex items-center gap-2">
+                        {user.status === "active" ? (
+                          <Unlock size={18} className="text-green-500" />
+                        ) : (
+                          <Lock size={18} className="text-red-500" />
+                        )}
+
+                        <select
+  value={user.status}
+  disabled={user.role === "admin"}
+  onChange={(e) => handleStatusChange(user._id, e.target.value)}
+  className={`
+    appearance-none pl-3 pr-8 py-1.5 rounded-lg text-sm font-bold border
+    ${user.role === "admin"
+      ? "bg-green-50 text-green-600 border-green-200 cursor-not-allowed"
+      : user.status === "active"
+        ? "bg-green-50 text-green-600 border-green-200 cursor-pointer"
+        : "bg-red-50 text-red-600 border-red-200 cursor-pointer"}
+  `}
+>
+
+                          <option value="active">Hoạt động</option>
+                          <option value="blocked">Bị khóa</option>
+                        </select>
+
+                        {/* Arrow */}
+                        <div className="pointer-events-none -ml-6">
+                          <svg
+                            className={`w-3 h-3 ${
+                              user.status === "active"
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))

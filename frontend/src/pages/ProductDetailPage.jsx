@@ -533,7 +533,7 @@ const ProductDetailPage = () => {
                 <button
                   onClick={handleBuyNow}
                   disabled={product.stock === 0}
-                              className={`w-full h-12 font-bold rounded-2xl flex items-center justify-center gap-2 transition-all
+                  className={`w-full h-12 font-bold rounded-2xl flex items-center justify-center gap-2 transition-all
                   ${
                     product.stock === 0
                       ? "bg-gray-300 text-white cursor-not-allowed"
@@ -567,8 +567,20 @@ const ProductDetailPage = () => {
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 font-bold">
-                            <User size={20} />
+                          <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                            {rv.user?.avatarUrl ? (
+                              <img
+                                src={getImageUrl(rv.user.avatarUrl)}
+                                alt={rv.user.name}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.target.src =
+                                    "https://via.placeholder.com/100?text=User";
+                                }}
+                              />
+                            ) : (
+                              <User size={20} className="text-gray-500" />
+                            )}
                           </div>
                           <div>
                             <div className="font-bold text-gray-800">

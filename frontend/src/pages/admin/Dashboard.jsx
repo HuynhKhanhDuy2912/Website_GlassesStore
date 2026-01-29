@@ -80,7 +80,7 @@ const Dashboard = () => {
           color="bg-blue-500" 
         />
         <StatCard 
-          title="Khách hàng" 
+          title="Người dùng" 
           value={stats.counts.users} 
           icon={<Users size={24}/>} 
           color="bg-purple-500" 

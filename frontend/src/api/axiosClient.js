@@ -19,4 +19,21 @@ axiosClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+axiosClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response?.status;
+    const message = error.response?.data?.message;
+
+    // USER BỊ BLOCK
+    if (status === 403 && message?.includes("bị khóa")) {
+      alert("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.");
+      localStorage.removeItem("ACCESS_TOKEN");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default axiosClient;

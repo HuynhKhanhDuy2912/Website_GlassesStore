@@ -9,6 +9,11 @@ const userSchema = new mongoose.Schema({
   address: { type: String },
   role: { type: String, enum: ["user", "admin"], default: "user" },
   avatarUrl: { type: String },
+  status: {
+    type: String,
+    enum: ["active", "blocked"],
+    default: "active",
+  },
   resetPasswordToken: String,
   resetPasswordExpires: Date,
 }, { timestamps: true });

@@ -20,7 +20,7 @@ const AdminLayout = () => {
 
   const menuItems = [
     { path: "/admin", icon: <LayoutDashboard size={20} />, label: "Báo cáo Thống kê" },    
-    { path: "/admin/users", icon: <Users size={20} />, label: "Quản lý Khách hàng" },
+    { path: "/admin/users", icon: <Users size={20} />, label: "Quản lý Người dùng" },
     { path: "/admin/categories", icon: <Layers size={20} />, label: "Quản lý Danh mục" },
     { path: "/admin/products", icon: <ShoppingBag size={20} />, label: "Quản lý Sản phẩm" },
     { path: "/admin/orders", icon: <Package size={20} />, label: "Quản lý Đơn hàng" },

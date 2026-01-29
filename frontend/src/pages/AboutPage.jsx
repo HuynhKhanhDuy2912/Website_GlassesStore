@@ -268,7 +268,7 @@ const AboutPage = () => {
               to="/lien-he"
               className="inline-flex items-center gap-2 bg-white text-gray-700 border border-gray-300 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-50 transition"
             >
-              Đặt Lịch Đo Mắt
+              Liên Hệ Với Chúng Tôi <ArrowRight size={20} />
             </Link>
           </div>
         </div>

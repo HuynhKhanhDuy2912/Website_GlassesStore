@@ -391,7 +391,7 @@ const CartPage = () => {
                     </div>
 
                     {isFlashSale && (
-                      <div className="text-xs text-orange-500 flex items-center gap-1 mt-1 font-medium">
+                      <div className="text-xs text-blue-500 flex items-center gap-1 mt-1 font-medium">
                         <Zap size={12} fill="currentColor" /> Đang trong Flash
                         Sale
                       </div>

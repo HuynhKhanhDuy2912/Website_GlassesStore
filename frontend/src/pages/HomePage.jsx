@@ -174,32 +174,32 @@ const HomePage = () => {
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-3 gap-8 text-center">
-            <div className="p-6 bg-white rounded-2xl shadow-sm hover:shadow-md transition">
+            <div className="p-6 bg-blue-100 rounded-2xl shadow-sm hover:shadow-md transition">
               <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600">
                 <ShieldCheck size={32} />
               </div>
               <h3 className="text-xl font-bold mb-2">100% Chính hãng</h3>
-              <p className="text-gray-500">
+              <p className="text-gray-700">
                 Cam kết sản phẩm từ các thương hiệu hàng đầu, đầy đủ chứng nhận
                 nguồn gốc.
               </p>
             </div>
-            <div className="p-6 bg-white rounded-2xl shadow-sm hover:shadow-md transition">
+            <div className="p-6 bg-blue-100 rounded-2xl shadow-sm hover:shadow-md transition">
               <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600">
                 <Clock size={32} />
               </div>
               <h3 className="text-xl font-bold mb-2">Bảo Hành Trọn Đời</h3>
-              <p className="text-gray-500">
+              <p className="text-gray-700">
                 Hỗ trợ vệ sinh, thay ốc, và điều chỉnh gọng kính hoàn toàn miễn
                 phí.
               </p>
             </div>
-            <div className="p-6 bg-white rounded-2xl shadow-sm hover:shadow-md transition">
+            <div className="p-6 bg-blue-100 rounded-2xl shadow-sm hover:shadow-md transition">
               <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600">
                 <Truck size={32} />
               </div>
               <h3 className="text-xl font-bold mb-2">Đổi Trả Dễ Dàng</h3>
-              <p className="text-gray-500">
+              <p className="text-gray-700">
                 Hỗ trợ đổi sản phẩm trong vòng 7 ngày nếu không ưng ý hoặc lỗi
                 từ nhà sản xuất.
               </p>
@@ -211,8 +211,9 @@ const HomePage = () => {
       {/* BEST SELLERS */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-6">
-          <div className="flex justify-between items-end mb-10">
-            <div>
+          <div className="relative mb-10">
+            {/* Tiêu đề ở giữa */}
+            <div className="text-center">
               <h2 className="text-3xl font-bold text-gray-800">
                 Sản Phẩm Nổi Bật
               </h2>
@@ -220,9 +221,11 @@ const HomePage = () => {
                 Những chiếc mắt kính được đánh giá cao nhất (4 sao trở lên)
               </p>
             </div>
+
+            {/* Xem tất cả bên phải */}
             <Link
               to="/san-pham"
-              className="text-gray-600 font-semibold hover:underline hidden md:block"
+              className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-600 font-semibold hover:underline hidden md:block"
             >
               Xem tất cả &rarr;
             </Link>
@@ -248,7 +251,7 @@ const HomePage = () => {
                       }}
                     />
                   </div>
-                  <h3 className="font-bold text-lg text-gray-800 mb-1 group-hover:text-blue-600 transition line-clamp-1">
+                  <h3 className="font-bold font-serif text-lg text-gray-800 mb-1 group-hover:text-blue-600 transition line-clamp-1">
                     {product.name}
                   </h3>
                   <p className="text-gray-500 text-sm mb-2">
@@ -260,7 +263,6 @@ const HomePage = () => {
                       {product.price.toLocaleString()}đ
                     </span>
                     <div className="flex text-yellow-400 text-xs ml-auto items-center gap-1">
-                      
                       <div className="flex">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star
