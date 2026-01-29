@@ -222,6 +222,7 @@ const CartPage = () => {
 
       setCart(res.data);
       setSelectedItems((prev) => prev.filter((id) => id !== productId));
+      window.dispatchEvent(new Event("CART_UPDATED"));
     } catch (err) {
       console.error("Lỗi xóa:", err);
     }

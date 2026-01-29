@@ -92,22 +92,6 @@ const ProductDetailPage = () => {
     fetchProductData();
   }, [slug]);
 
-  // useEffect(() => {
-  //   if (product?._id) {
-  //     const fetchReviews = async () => {
-  //       try {
-  //         const res = await axios.get(
-  //           `http://localhost:5000/api/reviews?productId=${product._id}`,
-  //         );
-  //         setReviews(res.data);
-  //       } catch (err) {
-  //         console.error("Lỗi tải review:", err);
-  //       }
-  //     };
-  //     fetchReviews();
-  //   }
-  // }, [product]);
-
   useEffect(() => {
     if (product?._id) {
       const fetchReviews = async () => {
@@ -118,7 +102,7 @@ const ProductDetailPage = () => {
 
           setReviews(res.data);
 
-          // ✅ KIỂM TRA USER ĐÃ REVIEW CHƯA
+          // KIỂM TRA USER ĐÃ REVIEW CHƯA
           const token = localStorage.getItem("ACCESS_TOKEN");
           if (token) {
             const payload = JSON.parse(atob(token.split(".")[1]));
@@ -169,6 +153,40 @@ const ProductDetailPage = () => {
       alert("Lỗi: Không thể thêm vào giỏ hàng.");
     } finally {
       setAddingToCart(false);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    const token = localStorage.getItem("ACCESS_TOKEN");
+    if (!token) {
+      if (
+        window.confirm(
+          "Bạn cần đăng nhập để mua hàng. Đi đến trang đăng nhập ngay?",
+        )
+      ) {
+        navigate("/login");
+      }
+      return;
+    }
+
+    try {
+      await axios.post(
+        "http://localhost:5000/api/cart/add",
+        {
+          productId: product._id,
+          qty: quantity,
+          attrs: {},
+        },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      window.dispatchEvent(new Event("CART_UPDATED"));
+
+      // Chuyển thẳng sang trang thanh toán
+      navigate("/checkout");
+    } catch (err) {
+      console.error(err);
+      alert("Không thể mua ngay sản phẩm này.");
     }
   };
 
@@ -452,57 +470,78 @@ const ProductDetailPage = () => {
                 </p>
               </div>
 
-              {/* STOCK */}
-              <div className="mb-6">
-                {product.stock > 0 ? (
-                  <div className="inline-flex items-center gap-2 text-green-700 font-semibold bg-green-100 px-4 py-1.5 rounded-full">
-                    <Check size={18} /> Còn {product.stock} sản phẩm
-                  </div>
-                ) : (
-                  <div className="inline-flex items-center gap-2 text-red-600 font-semibold bg-red-100 px-4 py-1.5 rounded-full">
-                    <ShieldCheck size={18} /> Tạm hết hàng
-                  </div>
-                )}
-              </div>
-
               {/* ACTIONS */}
-              <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-gray-100">
-                <div className="flex items-center border border-gray-300 rounded-2xl bg-white h-12 shadow-sm">
+              <div className="pt-4 border-t border-gray-100 space-y-4">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  {/* STOCK */}
+                  <div>
+                    {product.stock > 0 ? (
+                      <div className="inline-flex items-center gap-2 text-blue-700 font-semibold bg-blue-100 px-4 py-1.5 h-12 rounded-full">
+                        <Check size={18} /> Còn {product.stock} sản phẩm
+                      </div>
+                    ) : (
+                      <div className="inline-flex items-center gap-2 text-red-600 font-semibold bg-red-100 px-4 py-1.5 h-12 rounded-full">
+                        <ShieldCheck size={18} /> Tạm hết hàng
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex items-center border border-gray-300 rounded-2xl bg-white h-12 shadow-sm">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      disabled={product.stock === 0}
+                      className="px-4 h-full hover:bg-gray-100 text-gray-600 rounded-l-2xl disabled:opacity-50"
+                    >
+                      <Minus size={16} />
+                    </button>
+
+                    <span className="w-12 text-center font-bold text-lg">
+                      {product.stock === 0 ? 0 : quantity}
+                    </span>
+
+                    <button
+                      onClick={() => {
+                        if (quantity < product.stock) setQuantity(quantity + 1);
+                        else alert(`Chỉ còn ${product.stock} sản phẩm!`);
+                      }}
+                      disabled={
+                        quantity >= product.stock || product.stock === 0
+                      }
+                      className="px-4 h-full hover:bg-gray-100 text-gray-600 rounded-r-2xl disabled:opacity-50"
+                    >
+                      <Plus size={16} />
+                    </button>
+                  </div>
+
                   <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    disabled={product.stock === 0}
-                    className="px-4 h-full hover:bg-gray-100 text-gray-600 rounded-l-2xl disabled:opacity-50"
+                    onClick={handleAddToCart}
+                    disabled={addingToCart || product.stock === 0}
+                    className={`flex-1 h-12 font-bold rounded-2xl flex items-center justify-center gap-2 transition-all
+                      ${
+                        product.stock === 0
+                          ? "bg-gray-400 text-white cursor-not-allowed"
+                          : addingToCart
+                            ? "bg-blue-400 text-white cursor-wait"
+                            : "bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50 hover:text-blue-700 active:scale-[0.98] transition-all shadow-sm"
+                      }
+                    `}
                   >
-                    <Minus size={16} />
-                  </button>
-                  <span className="w-12 text-center font-bold text-lg">
-                    {product.stock === 0 ? 0 : quantity}
-                  </span>
-                  <button
-                    onClick={() => {
-                      if (quantity < product.stock) setQuantity(quantity + 1);
-                      else alert(`Chỉ còn ${product.stock} sản phẩm!`);
-                    }}
-                    disabled={quantity >= product.stock || product.stock === 0}
-                    className="px-4 h-full hover:bg-gray-100 text-gray-600 rounded-r-2xl disabled:opacity-50"
-                  >
-                    <Plus size={16} />
+                    <ShoppingCart size={20} /> Thêm vào giỏ hàng
                   </button>
                 </div>
 
+                {/* MUA NGAY */}
                 <button
-                  onClick={handleAddToCart}
-                  disabled={addingToCart || product.stock === 0}
-                  className={`flex-1 h-12 font-bold rounded-2xl flex items-center justify-center gap-2 transition-all
-        ${
-          product.stock === 0
-            ? "bg-gray-400 text-white cursor-not-allowed"
-            : addingToCart
-              ? "bg-blue-400 text-white cursor-wait"
-              : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:brightness-110 active:scale-[0.98] shadow-lg shadow-blue-200"
-        }`}
+                  onClick={handleBuyNow}
+                  disabled={product.stock === 0}
+                              className={`w-full h-12 font-bold rounded-2xl flex items-center justify-center gap-2 transition-all
+                  ${
+                    product.stock === 0
+                      ? "bg-gray-300 text-white cursor-not-allowed"
+                      : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:brightness-110 active:scale-[0.98] shadow-lg shadow-blue-200"
+                  }
+                `}
                 >
-                  <ShoppingCart size={20} /> Thêm vào giỏ hàng
+                  Mua ngay
                 </button>
               </div>
             </div>

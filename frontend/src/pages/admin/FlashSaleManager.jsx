@@ -128,18 +128,15 @@ const FlashSaleManager = () => {
             <thead className="bg-gray-50 border-b border-gray-200 text-xs font-semibold uppercase text-gray-500 tracking-wider">
               <tr className="text-center">
                 <th className="p-4 w-16 border-b">Ảnh</th>
-                <th className="p-4 w-56 border-b">Sản Phẩm</th>
-                <th className="p-4 w-20 border-b">
-                  Kho
-                </th>
+                <th className="p-4 w-40 border-b">Sản Phẩm</th>
+                <th className="p-4 w-20 border-b">Kho</th>
                 <th className="p-4 w-24 border-b">Trạng Thái</th>
-                <th className="p-4 w-36 border-b">Giá Sale</th>
-                <th className="p-4 w-28 border-b">Tổng Suất</th>
-                <th className="p-4 w-28 border-b">Đã Bán (Ảo)</th>
-                <th className="p-4 w-48 border-b">Bắt Đầu</th>
-                <th className="p-4 w-48 border-b">Kết Thúc</th>
-                {/* Cố định Header cột Lưu */}
-                <th className="p-4 w-24 sticky right-0 bg-gray-50 border-b z-20 shadow-[-4px_0_8px_rgba(0,0,0,0.05)]">
+                <th className="p-4 w-32 border-b">Giá Sale</th>
+                <th className="p-4 w-20 border-b">Tổng Suất</th>
+                <th className="p-4 w-20 border-b">Đã Bán (Ảo)</th>
+                <th className="p-4 w-38 border-b">Bắt Đầu</th>
+                <th className="p-4 w-38 border-b">Kết Thúc</th>
+                <th className="p-4 w-24 border-b">
                   Lưu
                 </th>
               </tr>
@@ -276,7 +273,7 @@ const FlashSaleManager = () => {
                     </td>
 
                     {/* Cố định cột Lưu ở body */}
-                    <td className="p-3 text-right sticky right-0 bg-white z-10 shadow-[-4px_0_8px_rgba(0,0,0,0.05)]">
+                    <td className="p-3 text-right">
                       <button
                         onClick={() => handleSave(p)}
                         disabled={updatingId === p._id || hasError}

@@ -105,7 +105,7 @@ const Dashboard = () => {
                     <XAxis dataKey="_id" tick={{fontSize: 12}} />
                     <YAxis tickFormatter={(val) => `${val/1000}k`} tick={{fontSize: 12}} />
                     <Tooltip formatter={(value) => formatCurrency(value)} />
-                    <Bar dataKey="revenue" fill="#ec4899" radius={[4, 4, 0, 0]} barSize={40} name="Doanh thu" />
+                    <Bar dataKey="revenue" fill="#1253eb" radius={[4, 4, 0, 0]} barSize={40} name="Doanh thu" />
                 </BarChart>
                 </ResponsiveContainer>
             ) : (

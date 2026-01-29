@@ -174,7 +174,7 @@ const OrderDetailPage = () => {
                                             {order.status === 'completed' && (
                                                 <Link 
                                                     to={`${productLink}#reviews`} 
-                                                    className="flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-bold bg-blue-50 text-blue-600 border border-blue-100 rounded-lg hover:bg-blue-600 hover:text-white transition-all"
+                                                    className="flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-bold text-yellow-400 border border-blue-100 rounded-lg hover:bg-yellow-400 hover:text-white transition-all"
                                                 >
                                                     <Star size={14} fill="currentColor" /> Đánh giá
                                                 </Link>

@@ -137,7 +137,7 @@ const HomePage = () => {
       <FlashSale />
 
       {/* CATEGORIES */}
-      <section className="py-20 container mx-auto px-6">
+      <section className="py-5 container mx-auto px-6">
         <h2 className="text-3xl font-bold text-center mb-12">
           Khám Phá Danh Mục
         </h2>
@@ -260,9 +260,7 @@ const HomePage = () => {
                       {product.price.toLocaleString()}đ
                     </span>
                     <div className="flex text-yellow-400 text-xs ml-auto items-center gap-1">
-                      <span className="text-gray-400 font-medium text-[10px]">
-                        ({product.reviewCount || 0})
-                      </span>
+                      
                       <div className="flex">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star
@@ -281,6 +279,9 @@ const HomePage = () => {
                           />
                         ))}
                       </div>
+                      <span className="text-gray-400 font-medium text-[13px]">
+                        ({product.reviewCount || 0})
+                      </span>
                     </div>
                   </div>
                 </Link>
