@@ -39,6 +39,7 @@ const ProductDetailPage = () => {
   const [reviewTitle, setReviewTitle] = useState("");
   const [reviewContent, setReviewContent] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
+  const [hasReviewed, setHasReviewed] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -91,6 +92,22 @@ const ProductDetailPage = () => {
     fetchProductData();
   }, [slug]);
 
+  // useEffect(() => {
+  //   if (product?._id) {
+  //     const fetchReviews = async () => {
+  //       try {
+  //         const res = await axios.get(
+  //           `http://localhost:5000/api/reviews?productId=${product._id}`,
+  //         );
+  //         setReviews(res.data);
+  //       } catch (err) {
+  //         console.error("Lỗi tải review:", err);
+  //       }
+  //     };
+  //     fetchReviews();
+  //   }
+  // }, [product]);
+
   useEffect(() => {
     if (product?._id) {
       const fetchReviews = async () => {
@@ -98,11 +115,24 @@ const ProductDetailPage = () => {
           const res = await axios.get(
             `http://localhost:5000/api/reviews?productId=${product._id}`,
           );
+
           setReviews(res.data);
+
+          // ✅ KIỂM TRA USER ĐÃ REVIEW CHƯA
+          const token = localStorage.getItem("ACCESS_TOKEN");
+          if (token) {
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            const userId = payload.id;
+
+            const reviewed = res.data.some((rv) => rv.user?._id === userId);
+
+            setHasReviewed(reviewed);
+          }
         } catch (err) {
           console.error("Lỗi tải review:", err);
         }
       };
+
       fetchReviews();
     }
   }, [product]);
@@ -148,6 +178,10 @@ const ProductDetailPage = () => {
     if (!token) {
       alert("Bạn cần đăng nhập để đánh giá!");
       navigate("/login");
+      return;
+    }
+    if (hasReviewed) {
+      alert("Bạn đã đánh giá sản phẩm này rồi!");
       return;
     }
     if (userRating === 0) {
@@ -549,7 +583,16 @@ const ProductDetailPage = () => {
               <h3 className="text-xl font-bold text-gray-800 mb-6">
                 Viết nhận xét của bạn
               </h3>
-              <form onSubmit={handleSubmitReview}>
+              {hasReviewed && (
+                <div className="mb-4 p-3 rounded-xl bg-green-100 text-green-700 text-sm font-semibold">
+                  Bạn đã đánh giá sản phẩm này. Cảm ơn bạn!
+                </div>
+              )}
+
+              <form
+                onSubmit={handleSubmitReview}
+                className={hasReviewed ? "opacity-60 pointer-events-none" : ""}
+              >
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Bạn chấm mấy sao?
