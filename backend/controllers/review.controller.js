@@ -1,6 +1,6 @@
 import Review from "../models/Review.js";
 import Product from "../models/Product.js";
-import Order from "../models/Order.js"; // ✅ Đã import đúng Model Order
+import Order from "../models/Order.js"; 
 
 // ============================================================
 // HELPER: Tính toán lại rating trung bình cho Product
@@ -34,7 +34,7 @@ export const addReview = async (req, res, next) => {
     const p = await Product.findById(productId);
     if (!p) return res.status(404).json({ message: "Sản phẩm không tồn tại" });
 
-    // 2. 🔥 KIỂM TRA ĐIỀU KIỆN: ĐÃ MUA & ĐƠN HÀNG "COMPLETED"
+    // 2. KIỂM TRA ĐIỀU KIỆN: ĐÃ MUA & ĐƠN HÀNG "COMPLETED"
     // Dựa trên Model Order bạn cung cấp:
     // - status: "completed"
     // - items: mảng chứa { product: ObjectId }

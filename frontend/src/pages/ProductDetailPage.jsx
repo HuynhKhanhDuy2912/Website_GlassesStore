@@ -7,7 +7,6 @@ import {
   ShieldCheck,
   Check,
   ChevronRight,
-  Search,
   MessageSquare,
   User,
   Zap,
@@ -245,7 +244,7 @@ const ProductDetailPage = () => {
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
             {/* LEFT: Images */}
             <div className="w-full lg:w-1/2 space-y-4">
-              <div className="aspect-square max-w-[550px] mx-auto rounded-3xl overflow-hidden bg-gray-50 relative group border border-gray-200 shadow-sm">
+              <div className="aspect-square max-w-[600px] mx-auto rounded-3xl overflow-hidden bg-gray-50 relative group border border-gray-200 shadow-sm">
                 <img
                   src={mainImage}
                   alt={product.name}
@@ -302,19 +301,58 @@ const ProductDetailPage = () => {
             {/* RIGHT: Info */}
             <div className="w-full lg:w-1/2 flex flex-col">
               {/* CATEGORY */}
-              <div className="mb-4 text-sm">
-                Danh mục:
-                {product.category && (
-                  <span className="ml-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold uppercase tracking-wide hover:bg-blue-200 transition">
-                    <Link to={`/san-pham?category=${product.category._id}`}>
-                      {product.category.name}
-                    </Link>
-                  </span>
-                )}
+              {/* CATEGORY + RATING */}
+              <div className="mb-4 text-sm flex flex-wrap items-center gap-4">
+                {/* CATEGORY */}
+                <div>
+                  Danh mục:
+                  {product.category && (
+                    <span className="ml-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold uppercase tracking-wide hover:bg-blue-200 transition">
+                      <Link to={`/san-pham?category=${product.category._id}`}>
+                        {product.category.name}
+                      </Link>
+                    </span>
+                  )}
+                </div>
+
+                {/* RATING */}
+                {/* RATING */}
+                <div
+                  className="flex items-center gap-1 text-gray-600 cursor-pointer hover:text-blue-600 transition"
+                  onClick={() =>
+                    document
+                      .getElementById("reviews")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
+                >
+                  {product.reviewCount > 0 ? (
+                    <>
+                      <Star
+                        size={16}
+                        className="text-yellow-400 fill-yellow-400"
+                      />
+                      <span className="font-semibold text-gray-800">
+                        {product.avgRating}
+                      </span>
+                      <span className="text-gray-400">
+                        ({product.reviewCount} đánh giá)
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} size={16} className="text-yellow-400" />
+                      ))}
+                      <span className="text-gray-400 ml-1">
+                        (Chưa có đánh giá)
+                      </span>
+                    </>
+                  )}
+                </div>
               </div>
 
               {/* NAME */}
-              <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 leading-tight">
+              <h1 className="text-3xl md:text-4xl font-extrabold text-blue-800 mb-4 leading-tight">
                 {product.name}
               </h1>
 
@@ -336,7 +374,7 @@ const ProductDetailPage = () => {
                     <div className="flex items-end gap-3 flex-wrap">
                       <span
                         className={`text-2xl font-extrabold ${
-                          isFlashSale ? "text-red-600" : "text-gray-900"
+                          isFlashSale ? "text-red-600" : "text-blue-800"
                         }`}
                       >
                         {currentPrice.toLocaleString()}đ
@@ -362,16 +400,16 @@ const ProductDetailPage = () => {
                       Thương hiệu
                     </p>
 
-                    <p className="text-gray-900 font-bold break-words text-2xl uppercase">
+                    <p className="text-blue-800 font-bold break-words text-2xl uppercase">
                       {product.flavor || "Đang cập nhật thương hiệu"}
                     </p>
                   </div>
                 </div>
-              </div>    
+              </div>
 
               {/* DESCRIPTION */}
               <div className="mb-8 p-5 rounded-2xl bg-white border border-gray-200 shadow-sm">
-                <p className="text-sm font-semibold text-gray-500 mb-2">
+                <p className="text-sm font-bold text-dark-600 mb-2 border-b border-gray-200 pb-2">
                   Mô tả sản phẩm
                 </p>
                 <p className="text-gray-700 leading-relaxed whitespace-pre-line break-words">

@@ -102,10 +102,10 @@ const CategoryManager = () => {
 
       if (editingId) {
         await api.put(`/categories/${editingId}`, payload);
-        alert("✅ Đã cập nhật danh mục!");
+        alert(" Đã cập nhật danh mục!");
       } else {
         await api.post("/categories", payload);
-        alert("✅ Đã thêm danh mục mới!");
+        alert(" Đã thêm danh mục mới!");
       }
 
       fetchCategories();

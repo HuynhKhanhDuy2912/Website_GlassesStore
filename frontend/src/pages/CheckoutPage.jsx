@@ -5,7 +5,7 @@ import {
     MapPin, Banknote, ChevronLeft, CheckCircle, Loader, Save 
 } from 'lucide-react';
 
-// ✅ HÀM XỬ LÝ ẢNH ĐỒNG BỘ VỚI APP.JS
+//  HÀM XỬ LÝ ẢNH ĐỒNG BỘ VỚI APP.JS
 const getImageUrl = (path) => {
     if (!path) return 'https://placehold.co/150?text=No+Image';
     if (typeof path === 'string' && path.startsWith("http")) return path;

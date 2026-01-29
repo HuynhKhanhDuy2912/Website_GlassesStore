@@ -37,7 +37,7 @@ const ContactManager = () => {
         return name.charAt(0).toUpperCase();
     };
 
-    // ✅ HÀM XỬ LÝ ẢNH ĐÃ SỬA LỖI
+    //  HÀM XỬ LÝ ẢNH ĐÃ SỬA LỖI
     const getImageUrl = (path) => {
         // 1. Nếu không có ảnh -> Trả về ảnh placeholder mới
         if (!path) return 'https://placehold.co/300x200?text=No+Image';

@@ -1,5 +1,5 @@
 import express from "express";
-// ✅ 1. Thêm updateUserRole vào dòng import này
+//  1. Thêm updateUserRole vào dòng import này
 import { updateUserProfile, getAllUsers, deleteUser, updateUserRole } from "../controllers/user.controller.js"; 
 import { protect, admin } from "../middleware/auth.middleware.js";
 
@@ -15,7 +15,7 @@ router.put("/profile", protect, uploadFiles.single("avatar"), updateUserProfile)
 router.get("/", protect, admin, getAllUsers);
 router.delete("/:id", protect, admin, deleteUser);
 
-// ✅ 2. THÊM DÒNG NÀY: Route cập nhật quyền (User <-> Admin)
+//  2. THÊM DÒNG NÀY: Route cập nhật quyền (User <-> Admin)
 // Chỉ Admin mới được truy cập
 router.put("/:id/role", protect, admin, updateUserRole);
 

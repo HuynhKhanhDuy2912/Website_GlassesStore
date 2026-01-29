@@ -22,9 +22,9 @@ const sendEmail = async (options) => {
   // Thêm await để bắt lỗi nếu gửi thất bại
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log("✅ Email đã gửi: " + info.response);
+    console.log(" Email đã gửi: " + info.response);
   } catch (error) {
-    console.error("❌ Lỗi Nodemailer:", error);
+    console.error(" Lỗi Nodemailer:", error);
     throw error; // Quăng lỗi để controller bắt được
   }
 };

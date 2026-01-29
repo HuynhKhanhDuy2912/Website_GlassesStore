@@ -81,7 +81,7 @@ const OrderDetailPage = () => {
         }
     };
 
-    if (loading) return <div className="flex justify-center py-20"><Loader className="animate-spin text-pink-500 w-10 h-10" /></div>;
+    if (loading) return <div className="flex justify-center py-20"><Loader className="animate-spin text-blue-500 w-10 h-10" /></div>;
     if (!order) return <div className="text-center py-20 text-gray-500">Không tìm thấy đơn hàng</div>;
 
     const statusConfig = {
@@ -96,16 +96,16 @@ const OrderDetailPage = () => {
 
     return (
         <div className="container mx-auto px-4 py-8 bg-gray-50 min-h-screen font-sans">
-            <Link to={isAdmin ? "/admin/orders" : "/my-orders"} className="inline-flex items-center gap-2 text-gray-500 hover:text-pink-600 mb-6 font-medium transition-colors">
+            <Link to={isAdmin ? "/admin/orders" : "/my-orders"} className="inline-flex items-center gap-2 text-gray-500 hover:text-blue-600 mb-6 font-medium transition-colors">
                 <ChevronLeft size={20} /> Quay lại
             </Link>
 
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden max-w-5xl mx-auto">
                 {/* Header */}
-                <div className="bg-pink-50/50 p-6 border-b border-pink-100 flex flex-wrap justify-between items-center gap-4">
+                <div className="bg-blue-50/50 p-6 border-b border-blue-100 flex flex-wrap justify-between items-center gap-4">
                     <div>
                         <h1 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                            <Package className="text-pink-600" /> Đơn hàng #{order._id.slice(-6).toUpperCase()}
+                            <Package className="text-blue-600" /> Đơn hàng #{order._id.slice(-6).toUpperCase()}
                         </h1>
                         <p className="text-sm text-gray-500 mt-1 flex items-center gap-2">
                             <Calendar size={14}/> Ngày đặt: {new Date(order.createdAt).toLocaleString('vi-VN')}
@@ -121,7 +121,7 @@ const OrderDetailPage = () => {
                     <div className="lg:col-span-1 space-y-6">
                         <div className="bg-gray-50 p-5 rounded-xl border border-gray-100">
                             <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2 border-b pb-3 text-xs uppercase">
-                                <MapPin size={16} className="text-pink-600"/> Địa chỉ nhận hàng
+                                <MapPin size={16} className="text-blue-600"/> Địa chỉ nhận hàng
                             </h3>
                             <div className="text-sm space-y-2">
                                 <p className="font-bold text-gray-900">{order.shippingAddress?.fullName}</p>
@@ -131,7 +131,7 @@ const OrderDetailPage = () => {
                         </div>
                         <div className="bg-gray-50 p-5 rounded-xl border border-gray-100">
                             <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2 border-b pb-3 text-xs uppercase">
-                                <CreditCard size={16} className="text-pink-600"/> Thanh toán
+                                <CreditCard size={16} className="text-blue-600"/> Thanh toán
                             </h3>
                             <p className="text-sm font-medium">{order.paymentMethod === 'cod' ? 'Thanh toán khi nhận hàng' : 'Thanh toán qua thẻ'}</p>
                         </div>
@@ -142,7 +142,7 @@ const OrderDetailPage = () => {
                         <h3 className="font-bold text-gray-800 mb-4 text-lg">Sản phẩm ({order.items?.length})</h3>
                         <div className="space-y-4">
                             {order.items?.map((item, idx) => {
-                                // ✅ Đường dẫn đến chi tiết sản phẩm
+                                //  Đường dẫn đến chi tiết sản phẩm
                                 const productSlug = item.product?.slug || item.product?._id || item.product;
                                 const productLink = `/san-pham/${productSlug}`;
                                 
@@ -162,11 +162,11 @@ const OrderDetailPage = () => {
 
                                         <div className="flex-grow">
                                             {/* Click vào tên để xem chi tiết */}
-                                            <Link to={productLink} className="font-bold text-gray-800 hover:text-pink-600 transition-colors line-clamp-1">
+                                            <Link to={productLink} className="font-bold text-gray-800 hover:text-blue-600 transition-colors line-clamp-1">
                                                 {item.name}
                                             </Link>
                                             <p className="text-sm text-gray-500 mt-1 font-medium">Số lượng: {item.qty}</p>
-                                            <p className="font-bold text-pink-600 mt-1">{item.price?.toLocaleString()}đ</p>
+                                            <p className="font-bold text-blue-600 mt-1">{item.price?.toLocaleString()}đ</p>
                                         </div>
 
                                         <div className="flex flex-col gap-2">
@@ -174,7 +174,7 @@ const OrderDetailPage = () => {
                                             {order.status === 'completed' && (
                                                 <Link 
                                                     to={`${productLink}#reviews`} 
-                                                    className="flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-bold bg-pink-50 text-pink-600 border border-pink-100 rounded-lg hover:bg-pink-600 hover:text-white transition-all"
+                                                    className="flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-bold bg-blue-50 text-blue-600 border border-blue-100 rounded-lg hover:bg-blue-600 hover:text-white transition-all"
                                                 >
                                                     <Star size={14} fill="currentColor" /> Đánh giá
                                                 </Link>
@@ -197,7 +197,7 @@ const OrderDetailPage = () => {
                         </div>
 
                         {/* Tổng chi phí */}
-                        <div className="mt-8 bg-pink-50/20 p-6 rounded-xl border border-pink-100 space-y-3">
+                        <div className="mt-8 bg-blue-50/20 p-6 rounded-xl border border-blue-100 space-y-3">
                             <div className="flex justify-between text-gray-600 text-sm font-medium">
                                 <span>Tạm tính</span>
                                 <span>{order.itemsPrice?.toLocaleString()}đ</span>
@@ -206,9 +206,9 @@ const OrderDetailPage = () => {
                                 <span>Phí vận chuyển (Mặc định)</span>
                                 <span className="font-medium text-gray-800">{order.shippingPrice?.toLocaleString()}đ</span>
                             </div>
-                            <div className="border-t border-pink-200 pt-3 flex justify-between items-center">
+                            <div className="border-t border-blue-200 pt-3 flex justify-between items-center">
                                 <span className="font-bold text-gray-800 text-lg">Tổng cộng thanh toán</span>
-                                <span className="text-2xl font-bold text-pink-600">{order.totalPrice?.toLocaleString()}đ</span>
+                                <span className="text-2xl font-bold text-blue-600">{order.totalPrice?.toLocaleString()}đ</span>
                             </div>
                         </div>
 

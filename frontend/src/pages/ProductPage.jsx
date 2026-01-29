@@ -9,6 +9,7 @@ import {
   ShoppingCart,
   Plus,
   Zap,
+  Star,
 } from "lucide-react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -30,7 +31,7 @@ const ProductPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const maxPriceFilter = parseInt(searchParams.get("maxPrice")) || 10000000;
+  const maxPriceFilter = parseInt(searchParams.get("maxPrice")) || 20000000;
   const categoryId = searchParams.get("category") || "";
   const searchTerm = searchParams.get("q") || "";
   const flavorFilter = searchParams.get("flavor") || "";
@@ -70,7 +71,7 @@ const ProductPage = () => {
           flavor: flavorFilter || undefined,
           page: page,
           limit: 6,
-          maxPrice: maxPriceFilter < 10000000 ? maxPriceFilter : undefined,
+          maxPrice: maxPriceFilter < 20000000 ? maxPriceFilter : undefined,
           sort: sortType, // Gửi tham số sort xuống Backend
         };
 
@@ -170,7 +171,7 @@ const ProductPage = () => {
           Bộ sưu tập kính thời trang
         </h1>
         <p className="text-blue-500 text-lg">
-          Rõ nét từng khoảnh khắc cuộc sống
+          Tôn vinh phong cách, sắc nét từng ánh nhìn
         </p>
       </div>
 
@@ -214,7 +215,7 @@ const ProductPage = () => {
                   <Tag className="w-5 h-5" /> Thương Hiệu
                 </h3>
                 <ul className="space-y-2">
-                  {/* Nút mặc định: Tất cả bánh (xóa lọc thương hiệu) */}
+                  {/* Nút mặc định: Tất cả (xóa lọc thương hiệu) */}
                   <li>
                     <button
                       onClick={() => handleFlavorChange("")}
@@ -258,8 +259,8 @@ const ProductPage = () => {
                 <input
                   type="range"
                   min="0"
-                  max="10000000"
-                  step="10000"
+                  max="20000000"
+                  step="20000"
                   value={maxPriceFilter}
                   onChange={handlePriceChange}
                   className="w-full accent-blue-500 cursor-pointer"
@@ -354,14 +355,30 @@ const ProductPage = () => {
                         )}
                       </div>
                       <div className="px-2">
-                        <h3 className="font-bold text-lg mb-1 text-gray-800 group-hover:text-blue-600 transition line-clamp-1">
+                        <h3 className="font-bold font-serif text-lg mb-1 text-gray-800 group-hover:text-blue-600 transition line-clamp-1">
                           {product.name}
                         </h3>
-                        <p className="text-gray-500 text-sm mb-2 line-clamp-1">
-                          {product.flavor
-                            ? `Thương hiệu: ${product.flavor}`
-                            : product.category?.name || "Mắt kính thời trang"}
-                        </p>
+                        <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
+                          <span className="font-medium line-clamp-1">
+                            {product.flavor || "Thời trang"}
+                          </span>
+
+                          <div className="flex items-center gap-1">
+                            <Star
+                              size={14}
+                              className="text-yellow-400 fill-yellow-400"
+                            />
+
+                            <span className="text-gray-700 font-medium">
+                              {product.avgRating || "0.0"}
+                            </span>
+
+                            <span className="text-gray-400">
+                              ({product.reviewCount || 0} đánh giá) 
+                            </span>
+                          </div>
+                        </div>
+
                         <div className="flex items-center">
                           {/* PRICE */}
                           <div className="flex flex-col">

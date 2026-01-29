@@ -157,7 +157,7 @@ function App() {
   return (
     <div className="font-sans text-gray-800 bg-gray-50 min-h-screen flex flex-col">
       {!isAdminPage && (
-        <nav className="bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm border-b border-pink-100">
+        <nav className="bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm border-b border-blue-100">
           <div className="container mx-auto px-4 py-3 flex justify-between items-center">
             <Link
               to="/"

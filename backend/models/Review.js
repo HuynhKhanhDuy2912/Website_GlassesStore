@@ -7,9 +7,7 @@ const reviewSchema = new mongoose.Schema({
   title: { type: String },
   content: { type: String },
   images: [String],
-  approved: { type: Boolean, default: true }, // Bạn đang để mặc định là hiện luôn
-  
-  // ✅ THÊM TRƯỜNG NÀY:
+  approved: { type: Boolean, default: true },
   adminResponse: { type: String } 
 }, { timestamps: true });
 

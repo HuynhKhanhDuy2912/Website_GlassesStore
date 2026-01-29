@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Star, Check, Trash2, MessageSquare, CornerDownRight, Eye, EyeOff } from 'lucide-react';
 
-// ✅ HÀM XỬ LÝ ẢNH (FINAL VERSION): Xử lý mọi trường hợp
+//  HÀM XỬ LÝ ẢNH (FINAL VERSION): Xử lý mọi trường hợp
 const getImageUrl = (product) => {
     // 1. Kiểm tra đầu vào
     if (!product) return 'https://placehold.co/150?text=No+Product';
@@ -103,7 +103,7 @@ const ReviewManager = () => {
           <div key={review._id} className={`p-4 rounded-lg border transition ${review.approved ? 'border-gray-200 bg-white' : 'border-red-200 bg-red-50'}`}>
             <div className="flex flex-col md:flex-row gap-4">
               
-              {/* ✅ PHẦN HIỂN THỊ ẢNH */}
+              {/*  PHẦN HIỂN THỊ ẢNH */}
               <div className="w-20 h-20 flex-shrink-0 border border-gray-200 rounded-md overflow-hidden bg-gray-50">
                  <img 
                     // Truyền nguyên OBJECT product vào hàm

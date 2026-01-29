@@ -8,7 +8,7 @@ import { sendOrderConfirmationEmail, sendOrderStatusEmail } from '../utils/email
 export const addOrderItems = async (req, res, next) => {
   try {
     const { orderItems, shippingAddress, paymentMethod } = req.body;
-    const FIXED_SHIPPING_FEE = 25000; // ✅ Cố định phí ship 25k
+    const FIXED_SHIPPING_FEE = 25000; //  Cố định phí ship 25k
 
     if (!orderItems || orderItems.length === 0) {
       return res.status(400).json({ message: "Không có sản phẩm nào trong đơn hàng" });
@@ -37,7 +37,7 @@ export const addOrderItems = async (req, res, next) => {
         realPrice = product.salePrice;
       }
 
-      // ✅ Lưu Snapshot ảnh vào đơn hàng để không bị mất khi Product thay đổi
+      //  Lưu Snapshot ảnh vào đơn hàng để không bị mất khi Product thay đổi
       let savedImage = "";
       if (product.images && product.images.length > 0) {
           savedImage = product.images[0].url || product.images[0];
@@ -86,7 +86,7 @@ export const addOrderItems = async (req, res, next) => {
 export const listOrders = async (req, res, next) => {
   try {
     const filter = {};
-    // ✅ Kiểm tra role: Nếu không phải admin thì chỉ lấy đơn của User đó
+    //  Kiểm tra role: Nếu không phải admin thì chỉ lấy đơn của User đó
     if (req.user.role !== "admin") {
       filter.user = req.user._id;
     }

@@ -106,7 +106,7 @@ export const getProduct = async (req, res, next) => {
     const product = await Product.findById(req.params.id).populate("category");
     if (!product) return res.status(404).json({ message: "Không tìm thấy" });
 
-    // ✅ Xử lý thời gian trước khi trả về
+    //  Xử lý thời gian trước khi trả về
     res.json(processProductData(product));
   } catch (err) {
     next(err);
@@ -122,7 +122,7 @@ export const getProductBySlug = async (req, res) => {
     if (!product)
       return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
 
-    // ✅ Xử lý thời gian trước khi trả về
+    //  Xử lý thời gian trước khi trả về
     res.json(processProductData(product));
   } catch (err) {
     res.status(500).json({ message: "Lỗi server" });

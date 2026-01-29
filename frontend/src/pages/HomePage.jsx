@@ -67,7 +67,7 @@ const HomePage = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="w-10 h-10 border-4 border-pink-200 border-t-pink-600 rounded-full animate-spin"></div>
+        <div className="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -248,7 +248,7 @@ const HomePage = () => {
                       }}
                     />
                   </div>
-                  <h3 className="font-bold text-lg text-gray-800 mb-1 group-hover:text-pink-600 transition line-clamp-1">
+                  <h3 className="font-bold text-lg text-gray-800 mb-1 group-hover:text-blue-600 transition line-clamp-1">
                     {product.name}
                   </h3>
                   <p className="text-gray-500 text-sm mb-2">
@@ -256,7 +256,7 @@ const HomePage = () => {
                   </p>
 
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-pink-600 text-lg">
+                    <span className="font-bold text-blue-600 text-lg">
                       {product.price.toLocaleString()}đ
                     </span>
                     <div className="flex text-yellow-400 text-xs ml-auto items-center gap-1">

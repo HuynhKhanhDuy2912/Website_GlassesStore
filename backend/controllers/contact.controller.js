@@ -22,7 +22,7 @@ const contactController = {
             // 🔥 TÌM CONTACT CŨ
             let contact = await Contact.findOne({ user_id: userId });
 
-            // ✅ NẾU ĐÃ CÓ → CHAT TIẾP
+            //  NẾU ĐÃ CÓ → CHAT TIẾP
             if (contact) {
                 contact.conversation.push({
                     sender: "user",
@@ -42,7 +42,7 @@ const contactController = {
                 });
             }
 
-            // ✅ CHƯA CÓ → TẠO DUY NHẤT 1 LẦN
+            //  CHƯA CÓ → TẠO DUY NHẤT 1 LẦN
             const newContact = new Contact({
                 user_id: userId,
                 subject: subject || "Hỗ trợ khách hàng",

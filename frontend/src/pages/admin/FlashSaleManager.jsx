@@ -112,8 +112,8 @@ const FlashSaleManager = () => {
         <div className="relative">
           <input
             type="text"
-            placeholder="Tìm tên bánh..."
-            className="pl-9 pr-4 py-2 border rounded-lg w-64 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+            placeholder="Tìm tên sản phẩm..."
+            className="pl-9 pr-4 py-2 border rounded-lg w-64 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -225,11 +225,11 @@ const FlashSaleManager = () => {
                       />
                     </td>
 
-                    <td className="p-3 bg-pink-50/30 border-x border-pink-50 relative">
+                    <td className="p-3 bg-blue-50/30 border-x border-blue-50 relative">
                       <input
                         type="number"
                         min="0"
-                        className={`w-full p-2 border bg-white rounded text-center text-pink-700 font-bold text-sm focus:ring-1 transition-colors ${hasError ? "border-red-500 text-red-600" : "border-pink-200 focus:border-pink-500"}`}
+                        className={`w-full p-2 border bg-white rounded text-center text-blue-700 font-bold text-sm focus:ring-1 transition-colors ${hasError ? "border-red-500 text-red-600" : "border-blue-200 focus:border-blue-500"}`}
                         value={p.soldCount || 0}
                         onChange={(e) =>
                           handleChange(p._id, "soldCount", e.target.value)

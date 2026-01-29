@@ -136,7 +136,7 @@ const Login = ({ setCurrentUser }) => {
                 type="password"
                 name="password"
                 required
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-pink-100 transition bg-gray-50 focus:bg-white"
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition bg-gray-50 focus:bg-white"
                 placeholder="••••••••"
                 onChange={handleChange}
                 value={formData.password}
