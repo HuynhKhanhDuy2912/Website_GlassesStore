@@ -144,12 +144,12 @@ export const removeCartItem = async (req, res, next) => {
 
     await cart.save();
 
-    // 🔥 BẮT BUỘC populate lại
+    // BẮT BUỘC populate lại
     const populatedCart = await Cart.findById(cart._id).populate(
       "items.product"
     );
 
-    // 🔥 TÍNH subtotal TỪ product.price
+    // TÍNH subtotal TỪ product.price
     populatedCart.subTotal = populatedCart.items.reduce((sum, item) => {
       const price = Number(item.product?.price || 0);
       const qty = Number(item.qty || 0);
@@ -161,7 +161,7 @@ export const removeCartItem = async (req, res, next) => {
 
     await populatedCart.save();
 
-    // 🔥 Process flash sale
+    //  Process flash sale
     const cartObj = populatedCart.toObject();
     cartObj.items = cartObj.items.map((item) => {
       if (item.product) {

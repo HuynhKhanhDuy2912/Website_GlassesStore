@@ -70,7 +70,7 @@ const ProductPage = () => {
           category: categoryId || undefined,
           flavor: flavorFilter || undefined,
           page: page,
-          limit: 6,
+          limit: 9,
           maxPrice: maxPriceFilter < 20000000 ? maxPriceFilter : undefined,
           sort: sortType, // Gửi tham số sort xuống Backend
         };

@@ -5,7 +5,7 @@ const contactSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
-        unique: true // 🔥 MỖI USER CHỈ 1 CONTACT
+        unique: true //  MỖI USER CHỈ 1 CONTACT
     },
 
     subject: { type: String, default: "Hỗ trợ khách hàng" },

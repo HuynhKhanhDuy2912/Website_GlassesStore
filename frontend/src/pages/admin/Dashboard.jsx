@@ -228,7 +228,7 @@ useEffect(() => {
 
         {/* 3. Top sản phẩm */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <h3 className="font-extrabold text-xl mb-4">Top Bán Chạy 🔥</h3>
+          <h3 className="font-extrabold text-xl mb-4">Top Bán Chạy </h3>
           <div className="space-y-4">
             {stats.topProducts.length > 0 ? (
               stats.topProducts.map((prod, index) => (

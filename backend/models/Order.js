@@ -25,7 +25,7 @@ const orderSchema = new mongoose.Schema({
   taxPrice: Number,
   totalPrice: Number,
   
-  // 🔥 SỬA DÒNG NÀY: Thêm "delivered" vào enum
+  //  SỬA DÒNG NÀY: Thêm "delivered" vào enum
   status: { 
       type: String, 
       enum: ["pending", "delivered", "completed", "cancelled"], 

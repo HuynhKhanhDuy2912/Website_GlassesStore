@@ -19,7 +19,7 @@ const contactController = {
                 });
             }
 
-            // 🔥 TÌM CONTACT CŨ
+            //  TÌM CONTACT CŨ
             let contact = await Contact.findOne({ user_id: userId });
 
             //  NẾU ĐÃ CÓ → CHAT TIẾP

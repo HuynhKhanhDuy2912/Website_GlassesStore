@@ -35,7 +35,7 @@ export const login = async (req, res, next) => {
 
     // Trả về chuẩn { user, token }
     res.json({
-      user: { id: user._id, name: user.name, email: user.email, role: user.role, avatarUrl: user.avatarUrl },
+      user: { id: user._id, name: user.name, email: user.email, role: user.role, avatarUrl: user.avatarUrl, phone: user.phone, address: user.address },
       token
     });
   } catch (err) {

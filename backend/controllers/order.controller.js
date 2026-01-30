@@ -4,7 +4,7 @@ import Product from "../models/Product.js";
 import User from "../models/User.js";
 import { sendOrderConfirmationEmail, sendOrderStatusEmail } from '../utils/email.service.js';
 
-// --- 1. TẠO ĐƠN HÀNG (User đặt hàng) ---
+// --- 1. TẠO ĐƠN HÀNG ---
 export const addOrderItems = async (req, res, next) => {
   try {
     const { orderItems, shippingAddress, paymentMethod } = req.body;
@@ -82,7 +82,7 @@ export const addOrderItems = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// --- 2. LẤY DANH SÁCH ĐƠN HÀNG (Admin/User) ---
+// --- 2. LẤY DANH SÁCH ĐƠN HÀNG ---
 export const listOrders = async (req, res, next) => {
   try {
     const filter = {};
