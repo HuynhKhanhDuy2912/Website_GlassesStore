@@ -8,6 +8,7 @@ import {
   Eye,
   Calendar,
   Truck,
+  Check,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -15,7 +16,7 @@ const OrderManager = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState("all");
-  const [filterDate, setFilterDate] = useState(""); // Lưu ngày chọn lọc (YYYY-MM-DD)
+  const [filterDate, setFilterDate] = useState("");
 
   useEffect(() => {
     fetchOrders();
@@ -56,6 +57,31 @@ const OrderManager = () => {
     }
   };
 
+  const getPaymentStatusBadge = (order) => {
+    // Kiểm tra trạng thái chuỗi thay vì true/false
+    switch (order.isPaid) {
+      case "completed":
+        return (
+          <span className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
+            <CheckCircle size={12} /> Đã thanh toán
+          </span>
+        );
+      case "failed":
+        return (
+          <span className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
+            <XCircle size={12} /> Thanh toán lỗi
+          </span>
+        );
+      default: // Trường hợp "pending"
+        return (
+          <span className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700 border border-orange-200">
+            <Clock size={12} />
+            Chưa thanh toán
+          </span>
+        );
+    }
+  };
+
   // --- HÀM XÓA ĐƠN HÀNG ---
   // const handleDeleteOrder = async (orderId) => {
   //   if (
@@ -87,6 +113,12 @@ const OrderManager = () => {
             <Clock size={12} /> Chờ xử lý
           </span>
         );
+      case "confirmed":
+        return (
+          <span className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700 border border-orange-200">
+            <Check size={12} /> Đã xác nhận
+          </span>
+        );
       case "delivered":
         return (
           <span className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200">
@@ -111,6 +143,27 @@ const OrderManager = () => {
             {status}
           </span>
         );
+    }
+  };
+
+  const handlePaymentStatusChange = async (orderId, newStatus) => {
+    try {
+      const token = localStorage.getItem("ACCESS_TOKEN");
+      await axios.put(
+        `http://localhost:5000/api/orders/${orderId}`,
+        { isPaid: newStatus }, // Backend cần xử lý cập nhật trường này
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      setOrders(
+        orders.map((order) =>
+          order._id === orderId ? { ...order, isPaid: newStatus } : order,
+        ),
+      );
+      alert("Cập nhật trạng thái thanh toán thành công!");
+    } catch (error) {
+      console.error(error);
+      alert("Lỗi cập nhật thanh toán!");
     }
   };
 
@@ -172,6 +225,7 @@ const OrderManager = () => {
           >
             <option value="all">Tất cả trạng thái</option>
             <option value="pending">Chờ xử lý</option>
+            <option value="confirmed">Đã xác nhận</option>
             <option value="delivered">Đang giao hàng</option>
             <option value="completed">Hoàn thành</option>
             <option value="cancelled">Đã hủy</option>
@@ -182,12 +236,13 @@ const OrderManager = () => {
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
+            <tr className="bg-gray-50 text-gray-600 text-sm border-b border-gray-200 text-center">
               <th className="p-4 font-semibold">Mã đơn</th>
               <th className="p-4 font-semibold">Khách hàng</th>
               <th className="p-4 font-semibold">Ngày đặt</th>
               <th className="p-4 font-semibold">Tổng tiền</th>
               <th className="p-4 font-semibold">Trạng thái</th>
+              <th className="p-4 font-semibold">Thanh toán</th>
               <th className="p-4 font-semibold text-center">Hành động</th>
             </tr>
           </thead>
@@ -195,7 +250,7 @@ const OrderManager = () => {
             {filteredOrders.map((order) => (
               <tr
                 key={order._id}
-                className="hover:bg-blue-50/30 transition-colors"
+                className="hover:bg-blue-50/30 transition-colors text-center"
               >
                 <td className="p-4 font-mono font-medium text-blue-600">
                   #{order._id.slice(-6).toUpperCase()}
@@ -222,57 +277,92 @@ const OrderManager = () => {
                 </td>
                 <td className="p-4">
                   <div className="flex flex-col gap-2">
+                    {/* Hiện Badge trạng thái hiện tại */}
                     {getStatusBadge(order.status)}
                     <select
                       value={order.status}
                       onChange={(e) =>
                         handleStatusChange(order._id, e.target.value)
                       }
+                      // Disable khi đã hoàn thành hoặc đã hủy
                       disabled={
                         order.status === "completed" ||
                         order.status === "cancelled"
                       }
-                      className={`text-xs border rounded px-1 py-1 mt-1 focus:outline-none
+                      className={`text-xs border rounded px-1 py-1 mt-1 focus:outline-none 
                         ${
                           order.status === "completed" ||
                           order.status === "cancelled"
                             ? "bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200"
                             : "border-gray-200 cursor-pointer hover:border-blue-400"
-                        }
-                    `}
+                        }`}
                     >
-                      {/* TRẠNG THÁI HOÀN THÀNH */}
+                      {/* 1. Khi trạng thái là Chờ xử lý */}
+                      {order.status === "pending" && (
+                        <>
+                          <option value="pending" disabled>
+                            -- Hành động --
+                          </option>
+                          <option value="confirmed">Đã xác nhận</option>
+                          <option value="cancelled">Hủy đơn</option>
+                        </>
+                      )}
+
+                      {/* 2. Khi trạng thái là Đã xác nhận */}
+                      {order.status === "confirmed" && (
+                        <>
+                          <option value="confirmed" disabled>
+                            -- Hành động --
+                          </option>
+                          <option value="delivered">Đang giao hàng</option>
+                          <option value="cancelled">Hủy đơn</option>
+                        </>
+                      )}
+
+                      {/* 3. Khi trạng thái là Đang giao hàng */}
+                      {order.status === "delivered" && (
+                        <>
+                          <option value="delivered" disabled>
+                            -- Hành động --
+                          </option>
+                          <option value="completed">Đã giao xong</option>
+                        </>
+                      )}
+
+                      {/* 4. Khi trạng thái là Đã giao xong (Chỉ hiển thị chính nó và bị disable bởi logic trên) */}
                       {order.status === "completed" && (
                         <option value="completed">Đã giao xong</option>
                       )}
 
-                      {/* TRẠNG THÁI ĐÃ HỦY */}
+                      {/* 5. Khi trạng thái là Đã hủy (Chỉ hiển thị chính nó và bị disable) */}
                       {order.status === "cancelled" && (
                         <option value="cancelled">Hủy đơn</option>
                       )}
-
-                      {/* Chờ xử lý – chỉ hiện khi chưa giao */}
-                      {order.status !== "delivered" &&
-                        order.status !== "completed" && (
-                          <option value="pending">Chờ xử lý</option>
-                        )}
-
-                      {/* Đang giao */}
-                      {(order.status === "pending" ||
-                        order.status === "delivered") && (
-                        <option value="delivered">Đang giao hàng</option>
-                      )}
-
-                      {/* Đã giao xong – CHỈ hiện khi đang giao */}
-                      {order.status === "delivered" && (
-                        <option value="completed">Đã giao xong</option>
-                      )}
-
-                      {/* Hủy đơn – ẩn khi đang giao */}
-                      {order.status !== "delivered" && (
-                        <option value="cancelled">Hủy đơn</option>
-                      )}
                     </select>
+                  </div>
+                </td>
+                <td className="p-4">
+                  <div className="flex flex-col gap-1">
+                    {/* Hiển thị Badge trạng thái hiện tại */}
+                    {getPaymentStatusBadge(order)}
+
+                    {/* Logic hiển thị ô Select: Chỉ dành cho COD và khi chưa hoàn thành thanh toán */}
+                    {order.paymentMethod === "cod" &&
+                      order.isPaid !== "completed" && 
+                      order.status === "completed" &&(
+                        <select
+                          value={order.isPaid}
+                          onChange={(e) =>
+                            handlePaymentStatusChange(order._id, e.target.value)
+                          }
+                          className="text-xs border rounded px-1 py-1 mt-1 focus:outline-none border-gray-200 cursor-pointer hover:border-blue-400"
+                        >
+                          <option value="pending" disable>
+                            -- Cập nhật trạng thái --
+                          </option>
+                          <option value="completed">Đã thanh toán</option>
+                        </select>
+                      )}
                   </div>
                 </td>
                 <td className="p-4 text-center">

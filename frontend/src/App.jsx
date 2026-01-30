@@ -32,6 +32,7 @@ import ProfilePage from "./pages/ProfilePage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
+import OrderSuccess from "./components/OrderSuccess";
 
 // Admin
 import AdminLayout from "./layouts/AdminLayout";
@@ -335,6 +336,7 @@ function App() {
           />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/order/success" element={<OrderSuccess />} />
 
           {/* <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}> */}
           <Route path="/admin" element={<AdminLayout />}>

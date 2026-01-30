@@ -49,33 +49,37 @@ const CheckoutPage = () => {
 
   const [paymentMethod, setPaymentMethod] = useState("cod");
 
-  useEffect(() => {
-    if (!items || items.length === 0) {
-      navigate("/cart");
-      return;
-    }
-    const user = userInfo;
+useEffect(() => {
+  // 1. Kiểm tra lỗi VNPay
+  const query = new URLSearchParams(location.search);
+  if (query.get("payment_error")) {
+    alert("Thanh toán VNPay đã bị hủy hoặc gặp lỗi. Vui lòng kiểm tra lại!");
+    setLoading(false);
+  }
 
-    if (!userId) return;
+  // 2. Chặn nếu giỏ hàng trống
+  if (!items || items.length === 0) {
+    navigate("/cart");
+    return;
+  }
 
-    const savedAddress = localStorage.getItem(`SAVED_SHIPPING_INFO_${userId}`);
+  // 3. LUÔN ƯU TIÊN ĐIỀN TỪ USER_INFO TRƯỚC
+  if (userInfo) {
+    setShippingInfo({
+      fullName: userInfo.name || "",
+      phone: userInfo.phone || "",
+      addressLine: "",
+      city: userInfo.address || "",
+    });
+  }
+}, [items, userId]);
 
-    if (savedAddress) {
-      setShippingInfo(JSON.parse(savedAddress));
-    } else {
-      setShippingInfo({
-        fullName: user?.name || "",
-        phone: "",
-        addressLine: "",
-        city: "",
-      });
-    }
-  }, [items, navigate, localStorage.getItem("USER_INFO")]);
 
   const handleChange = (e) => {
     setShippingInfo({ ...shippingInfo, [e.target.name]: e.target.value });
   };
 
+  
   // XÓA CÁC SẢN PHẨM ĐÃ MUA TRONG GIỎ HÀNG
   const clearPurchasedItems = async () => {
     const token = localStorage.getItem("ACCESS_TOKEN");
@@ -155,6 +159,7 @@ const CheckoutPage = () => {
         city: shippingInfo.city || "Việt Nam",
       },
       paymentMethod: paymentMethod,
+      isPaid: "pending",
       itemsPrice: total,
       shippingPrice: SHIPPING_FEE,
       taxPrice: 0,
@@ -171,13 +176,15 @@ const CheckoutPage = () => {
       );
 
       if (res.status === 201) {
-        try {
-          await clearPurchasedItems();
-        } catch (err) {
-          console.error("Lỗi khi xóa giỏ hàng:", err);
+        // Chỉ khi tạo đơn thành công ở bước này, ta mới xoá giỏ hàng
+        await clearPurchasedItems();
+        window.dispatchEvent(new Event("CART_UPDATED"));
+
+        if (res.data.paymentUrl) {
+          window.location.href = res.data.paymentUrl;
+          return;
         }
 
-        window.dispatchEvent(new Event("CART_UPDATED"));
         alert("Đặt hàng thành công!");
         navigate(`/order/${res.data._id}`);
       }
@@ -215,10 +222,6 @@ const CheckoutPage = () => {
               <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
                 <MapPin className="text-blue-600" /> Thông tin giao hàng
               </h2>
-
-              <div className="absolute top-6 right-6 text-xs text-gray-400 flex items-center gap-1">
-                <Save size={12} /> Tự động lưu địa chỉ
-              </div>
 
               <div className="space-y-4">
                 <div>
@@ -300,16 +303,16 @@ const CheckoutPage = () => {
                 </div>
 
                 <div
-                  onClick={() => setPaymentMethod("card")}
-                  className={`cursor-pointer p-4 border rounded-xl flex items-center gap-3 transition-all ${paymentMethod === "card" ? "border-blue-500 bg-blue-50 ring-1 ring-blue-500" : "border-gray-200 hover:bg-gray-50"}`}
+                  onClick={() => setPaymentMethod("VNPay")}
+                  className={`cursor-pointer p-4 border rounded-xl flex items-center gap-3 transition-all ${paymentMethod === "VNPay" ? "border-blue-500 bg-blue-50 ring-1 ring-blue-500" : "border-gray-200 hover:bg-gray-50"}`}
                 >
                   <div className="w-5 h-5 rounded-full border border-gray-400 flex items-center justify-center bg-white">
-                    {paymentMethod === "card" && (
+                    {paymentMethod === "VNPay" && (
                       <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
                     )}
                   </div>
                   <div className="font-bold text-gray-800">
-                    Thanh toán Online / Thẻ
+                    Thanh toán VNPay
                   </div>
                 </div>
               </div>

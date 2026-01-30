@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Mail, Lock, Loader, ArrowLeft } from "lucide-react";
@@ -11,11 +11,24 @@ const axiosClient = axios.create({
   },
 });
 
-const Login = ({ setCurrentUser }) => {  
+const Login = ({ setCurrentUser }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const userInfo = localStorage.getItem("USER_INFO");
+    if (userInfo) {
+      const user = JSON.parse(userInfo);
+      // Nếu đã đăng nhập, đẩy user về trang tương ứng
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -121,9 +134,15 @@ const Login = ({ setCurrentUser }) => {
 
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="block text-gray-700 font-medium">Mật khẩu</label>
+              <label className="block text-gray-700 font-medium">
+                Mật khẩu
+              </label>
               {/*LINK QUÊN MẬT KHẨU Ở ĐÂY */}
-              <Link to="/forgot-password" size={20} className="text-xs text-blue-600 hover:underline">
+              <Link
+                to="/forgot-password"
+                size={20}
+                className="text-xs text-blue-600 hover:underline"
+              >
                 Quên mật khẩu?
               </Link>
             </div>

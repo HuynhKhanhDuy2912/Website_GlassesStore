@@ -84,7 +84,6 @@ const Dashboard = () => {
 
   const [orders, setOrders] = useState([]);
 
-
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -104,26 +103,25 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-  const fetchOrders = async () => {
-    try {
-      const token = localStorage.getItem("ACCESS_TOKEN");
-      const res = await axios.get("http://localhost:5000/api/orders", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setOrders(res.data);
-    } catch (error) {
-      console.error("Lỗi lấy danh sách đơn hàng:", error);
-    }
-  };
+    const fetchOrders = async () => {
+      try {
+        const token = localStorage.getItem("ACCESS_TOKEN");
+        const res = await axios.get("http://localhost:5000/api/orders", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setOrders(res.data);
+      } catch (error) {
+        console.error("Lỗi lấy danh sách đơn hàng:", error);
+      }
+    };
 
-  fetchOrders();
-}, []);
+    fetchOrders();
+  }, []);
 
-useEffect(() => {
-  const data = buildMonthlyChartData(orders, year);
-  setChartData(data);
-}, [orders, year]);
-
+  useEffect(() => {
+    const data = buildMonthlyChartData(orders, year);
+    setChartData(data);
+  }, [orders, year]);
 
   const formatCurrency = (n) =>
     new Intl.NumberFormat("vi-VN", {
@@ -295,7 +293,7 @@ useEffect(() => {
                         {order.user ? order.user.name : "Người dùng"}
                       </div>
                       <div className="text-xs text-gray-400">
-                        #{order._id.slice(-6)}
+                        {order.user.email}
                       </div>
                     </td>
 
@@ -306,7 +304,8 @@ useEffect(() => {
 
                     {/* Địa chỉ */}
                     <td className="py-3 text-gray-600">
-                      {order.shippingAddress?.addressLine}, {order.shippingAddress?.city}
+                      {order.shippingAddress?.addressLine},{" "}
+                      {order.shippingAddress?.city}
                     </td>
 
                     {/* Ngày đặt */}
@@ -326,20 +325,24 @@ useEffect(() => {
                         ${
                           order.status === "completed"
                             ? "bg-green-600 text-white"
-                            : order.status === "delivered"
-                              ? "bg-blue-600 text-white"
-                              : order.status === "cancelled"
-                                ? "bg-red-600 text-white"
-                                : "bg-yellow-400 text-white"
+                            : order.status === "confirmed"
+                              ? "bg-orange-600 text-white "
+                              : order.status === "delivered"
+                                ? "bg-blue-600 text-white"
+                                : order.status === "cancelled"
+                                  ? "bg-red-600 text-white"
+                                  : "bg-yellow-400 text-white"
                         }`}
                       >
                         {order.status === "completed"
                           ? "Hoàn thành"
-                          : order.status === "delivered"
-                            ? "Đang giao"
-                            : order.status === "cancelled"
-                              ? "Đã hủy"
-                              : "Chờ xử lý"}
+                          : order.status === "confirmed"
+                            ? "Đã xác nhận"
+                            : order.status === "delivered"
+                              ? "Đang giao"
+                              : order.status === "cancelled"
+                                ? "Đã hủy"
+                                : "Chờ xử lý"}
                       </span>
                     </td>
                   </tr>
