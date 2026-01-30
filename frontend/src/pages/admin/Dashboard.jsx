@@ -82,6 +82,8 @@ const Dashboard = () => {
 
   const [loading, setLoading] = useState(true);
 
+  const [orders, setOrders] = useState([]);
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -100,11 +102,26 @@ const Dashboard = () => {
     fetchStats();
   }, []);
 
-  // Build chart khi đổi năm hoặc có order mới
   useEffect(() => {
-    const data = buildMonthlyChartData(stats.recentOrders, year);
+    const fetchOrders = async () => {
+      try {
+        const token = localStorage.getItem("ACCESS_TOKEN");
+        const res = await axios.get("http://localhost:5000/api/orders", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setOrders(res.data);
+      } catch (error) {
+        console.error("Lỗi lấy danh sách đơn hàng:", error);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  useEffect(() => {
+    const data = buildMonthlyChartData(orders, year);
     setChartData(data);
-  }, [stats.recentOrders, year]);
+  }, [orders, year]);
 
   const formatCurrency = (n) =>
     new Intl.NumberFormat("vi-VN", {
@@ -253,11 +270,13 @@ const Dashboard = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left border-separate border-spacing-y-2">
             <thead>
-              <tr className="text-gray-500 uppercase text-xs tracking-wide">
+              <tr className="text-gray-500 uppercase text-xs tracking-wide text-center">
                 <th className="pl-4 pb-2">Khách hàng</th>
+                <th className="pb-2">Số điện thoại</th>
+                <th className="pb-2">Địa chỉ</th>
                 <th className="pb-2">Ngày đặt</th>
-                <th className="pb-2 text-right">Tổng tiền</th>
-                <th className="pb-2 text-center">Trạng thái</th>
+                <th className="pb-2">Tổng tiền</th>
+                <th className="pb-2">Trạng thái</th>
               </tr>
             </thead>
 
@@ -266,7 +285,7 @@ const Dashboard = () => {
                 stats.recentOrders.map((order) => (
                   <tr
                     key={order._id}
-                    className="bg-gray-50 hover:bg-blue-50 transition rounded-xl"
+                    className="bg-gray-50 hover:bg-blue-50 transition rounded-xl text-center"
                   >
                     {/* Khách hàng */}
                     <td className="pl-4 py-3">
@@ -278,29 +297,39 @@ const Dashboard = () => {
                       </div>
                     </td>
 
+                    {/* Số điện thoại */}
+                    <td className="py-3 text-gray-600">
+                      {order.shippingAddress?.phone}
+                    </td>
+
+                    {/* Địa chỉ */}
+                    <td className="py-3 text-gray-600">
+                      {order.shippingAddress?.addressLine},{" "}
+                      {order.shippingAddress?.city}
+                    </td>
+
                     {/* Ngày đặt */}
                     <td className="py-3 text-gray-600">
                       {formatDate(order.createdAt)}
                     </td>
 
                     {/* Tổng tiền */}
-                    <td className="py-3 text-right font-semibold text-dark-600">
+                    <td className="py-3 font-semibold text-dark-600">
                       {formatCurrency(order.totalPrice)}
                     </td>
 
                     {/* Trạng thái */}
-                    {/* Trạng thái */}
-                    <td className="py-3 text-center">
+                    <td className="py-3">
                       <span
                         className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
                         ${
                           order.status === "completed"
                             ? "bg-green-600 text-white"
                             : order.status === "delivered"
-                              ? "bg-blue-600 texttwhite"
+                              ? "bg-blue-600 text-white"
                               : order.status === "cancelled"
                                 ? "bg-red-600 text-white"
-                                : "bg-yellow-600 text-white"
+                                : "bg-yellow-400 text-white"
                         }`}
                       >
                         {order.status === "completed"

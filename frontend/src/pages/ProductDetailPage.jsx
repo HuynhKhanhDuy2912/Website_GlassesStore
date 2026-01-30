@@ -366,8 +366,7 @@ const ProductDetailPage = () => {
                     </span>
                   )}
                 </div>
-
-                {/* RATING */}
+                
                 {/* RATING */}
                 <div
                   className="flex items-center gap-1 text-gray-600 cursor-pointer hover:text-blue-600 transition"

@@ -72,8 +72,8 @@ const FlashSale = () => {
           <div className="flex items-center gap-2">
             <span className="text-sm font-bold uppercase opacity-90">Kết thúc sau:</span>
             <div className="flex gap-1 font-mono font-bold text-lg text-red-600">
-               <span className="bg-white px-2 rounded">{pad(timeLeft.h)}</span>:
-               <span className="bg-white px-2 rounded">{pad(timeLeft.m)}</span>:
+               <span className="bg-white px-2 rounded">{pad(timeLeft.h)}</span> <span className="text-white">:</span>
+               <span className="bg-white px-2 rounded">{pad(timeLeft.m)}</span> <span className="text-white">:</span>
                <span className="bg-white px-2 rounded">{pad(timeLeft.s)}</span>
             </div>
           </div>
@@ -98,8 +98,8 @@ const FlashSale = () => {
                          <span className="text-gray-400 text-xs line-through">{p.price.toLocaleString()}đ</span>
                       </div>
                       <div className="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden">
-                         <div className="absolute h-full bg-red-500" style={{width: `${soldW}%`}}></div>
-                         <span className="absolute inset-0 flex items-center justify-center text-[9px] text-white font-bold uppercase">Đã bán {p.soldCount}</span>
+                         <div className="absolute h-full bg-orange-400" style={{width: `${soldW}%`}}></div>
+                         <span className="absolute inset-0 flex items-center justify-center text-[12px] text-dark font-bold uppercase">Đã bán {p.soldCount}</span>
                       </div>
                    </div>
                 </div>

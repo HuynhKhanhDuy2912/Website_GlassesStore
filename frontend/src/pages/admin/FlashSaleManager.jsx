@@ -15,6 +15,9 @@ const FlashSaleManager = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [updatingId, setUpdatingId] = useState(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // Mỗi trang 10 sản phẩm
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -94,6 +97,11 @@ const FlashSaleManager = () => {
   const filtered = products.filter((p) =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+
+  // Tính toán phân trang
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentItems = filtered.slice(startIndex, startIndex + itemsPerPage);
   if (loading)
     return (
       <div className="p-10 text-center text-sm text-gray-500">
@@ -115,7 +123,10 @@ const FlashSaleManager = () => {
             placeholder="Tìm tên sản phẩm..."
             className="pl-9 pr-4 py-2 border rounded-lg w-64 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
           />
           <Search className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
         </div>
@@ -136,13 +147,11 @@ const FlashSaleManager = () => {
                 <th className="p-4 w-20 border-b">Đã Bán (Ảo)</th>
                 <th className="p-4 w-38 border-b">Bắt Đầu</th>
                 <th className="p-4 w-38 border-b">Kết Thúc</th>
-                <th className="p-4 w-24 border-b">
-                  Lưu
-                </th>
+                <th className="p-4 w-24 border-b">Lưu</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 text-sm">
-              {filtered.map((p) => {
+              {currentItems.map((p) => {
                 const isActive = p.isFlashSale;
                 const imgUrl = getImageUrl(p.images?.[0]?.url);
                 const hasError =
@@ -271,8 +280,6 @@ const FlashSaleManager = () => {
                         disabled={!isActive}
                       />
                     </td>
-
-                    {/* Cố định cột Lưu ở body */}
                     <td className="p-3 text-right">
                       <button
                         onClick={() => handleSave(p)}
@@ -293,6 +300,59 @@ const FlashSaleManager = () => {
             </tbody>
           </table>
         </div>
+        {/* THANH PHÂN TRANG */}
+        {totalPages > 1 && (
+          <div className="flex justify-between items-center px-6 py-4 bg-gray-50 border-t">
+            <div className="text-xs text-gray-500">
+              Hiển thị {startIndex + 1} -{" "}
+              {Math.min(startIndex + itemsPerPage, filtered.length)} trong tổng
+              số {filtered.length}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className={`px-3 py-1.5 rounded border text-xs font-medium transition ${
+                  currentPage === 1
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-white hover:bg-gray-50 text-gray-700 shadow-sm"
+                }`}
+              >
+                Trước
+              </button>
+
+              <div className="flex gap-1">
+                {[...Array(totalPages)].map((_, i) => (
+                  <button
+                    key={i + 1}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`w-8 h-8 rounded text-xs font-bold transition ${
+                      currentPage === i + 1
+                        ? "bg-blue-600 text-white"
+                        : "bg-white text-gray-600 border hover:bg-gray-50"
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+                className={`px-3 py-1.5 rounded border text-xs font-medium transition ${
+                  currentPage === totalPages
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-white hover:bg-gray-50 text-gray-700 shadow-sm"
+                }`}
+              >
+                Sau
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Thêm CSS thủ công hoặc vào file index.css */}

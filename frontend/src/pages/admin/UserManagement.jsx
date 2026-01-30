@@ -248,12 +248,12 @@ const UserManagement = () => {
 
                   <td className="p-4">
                     <div className="flex flex-col gap-1 text-sm">
-                      <div className="flex items-center gap-2 text-gray-600">
-                        <Mail size={14} /> {user.email}
+                      <div className="flex items-center gap-1 text-gray-600">
+                        <Mail className="pt-1" size={18} /> {user.email}
                       </div>
                       {user.phone && (
-                        <div className="flex items-center gap-2 text-gray-600">
-                          <Phone size={14} /> {user.phone}
+                        <div className="flex items-center gap-1 text-gray-600">
+                          <Phone className="pt-1" size={18} /> {user.phone}
                         </div>
                       )}
                     </div>
@@ -279,19 +279,18 @@ const UserManagement = () => {
 
                         {/* Dropdown chọn quyền */}
                         <select
-  value={user.role}
-  disabled={user.role === "admin"}
-  onChange={(e) => handleRoleChange(user._id, e.target.value)}
-  className={`
-    appearance-none pl-3 pr-8 py-1.5 rounded-lg text-sm font-bold border
-    ${user.role === "admin"
-      ? "bg-green-50 text-green-600 border-green-200 cursor-not-allowed"
-      : user.role === "admin"
-        ? "bg-green-50 text-green-600 border-green-200 cursor-pointer"
-        : "bg-blue-50 text-blue-600 border-blue-200 cursor-pointer"}
-  `}
->
-
+                          value={user.role}
+                          disabled={user.role === "admin"}
+                          onChange={(e) => handleRoleChange(user._id, e.target.value)}
+                          className={`
+                            appearance-none pl-3 pr-8 py-1.5 rounded-lg text-sm font-bold border
+                            ${user.role === "admin"
+                              ? "bg-green-50 text-green-600 border-green-200 cursor-not-allowed"
+                              : user.role === "admin"
+                                ? "bg-green-50 text-green-600 border-green-200 cursor-pointer"
+                                : "bg-blue-50 text-blue-600 border-blue-200 cursor-pointer"}
+                          `}
+                        >
                           <option value="user">User (Người dùng)</option>
                           <option value="admin">Admin (Quản trị)</option>
                         </select>
@@ -350,19 +349,18 @@ const UserManagement = () => {
                         )}
 
                         <select
-  value={user.status}
-  disabled={user.role === "admin"}
-  onChange={(e) => handleStatusChange(user._id, e.target.value)}
-  className={`
-    appearance-none pl-3 pr-8 py-1.5 rounded-lg text-sm font-bold border
-    ${user.role === "admin"
-      ? "bg-green-50 text-green-600 border-green-200 cursor-not-allowed"
-      : user.status === "active"
-        ? "bg-green-50 text-green-600 border-green-200 cursor-pointer"
-        : "bg-red-50 text-red-600 border-red-200 cursor-pointer"}
-  `}
->
-
+                          value={user.status}
+                          disabled={user.role === "admin"}
+                          onChange={(e) => handleStatusChange(user._id, e.target.value)}
+                          className={`
+                            appearance-none pl-3 pr-8 py-1.5 rounded-lg text-sm font-bold border
+                            ${user.role === "admin"
+                              ? "bg-green-50 text-green-600 border-green-200 cursor-not-allowed"
+                              : user.status === "active"
+                                ? "bg-green-50 text-green-600 border-green-200 cursor-pointer"
+                                : "bg-red-50 text-red-600 border-red-200 cursor-pointer"}
+                          `}
+                        >
                           <option value="active">Hoạt động</option>
                           <option value="blocked">Bị khóa</option>
                         </select>

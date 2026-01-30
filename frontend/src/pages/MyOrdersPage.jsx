@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Package, ChevronRight, Loader, Calendar, ShoppingBag, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Package, ChevronRight, Loader, Calendar, ShoppingBag, Clock, CheckCircle, XCircle, Truck } from 'lucide-react';
 
 const MyOrdersPage = () => {
     const [orders, setOrders] = useState([]);
@@ -30,15 +30,17 @@ const MyOrdersPage = () => {
     // Helper: Màu sắc trạng thái
     const getStatusColor = (status) => {
         switch (status) {
+            case 'delivered': return 'bg-blue-100 text-blue-700 border-blue-200';
             case 'completed': return 'bg-green-100 text-green-700 border-green-200';
             case 'cancelled': return 'bg-red-100 text-red-700 border-red-200';
-            default: return 'bg-yellow-100 text-yellow-800 border-yellow-200'; // pending
+            default: return 'bg-yellow-100 text-yellow-700 border-yellow-200'; // pending
         }
     };
 
     // Helper: Icon trạng thái
     const getStatusIcon = (status) => {
         switch (status) {
+            case 'delivered': return <Truck size={14} />;
             case 'completed': return <CheckCircle size={14} />;
             case 'cancelled': return <XCircle size={14} />;
             default: return <Clock size={14} />;
@@ -49,6 +51,7 @@ const MyOrdersPage = () => {
     const getStatusText = (status) => {
         switch (status) {
             case 'pending': return 'Đang xử lý';
+            case 'delivered': return 'Đang giao hàng';
             case 'completed': return 'Giao thành công';
             case 'cancelled': return 'Đã hủy';
             default: return status;
@@ -108,7 +111,7 @@ const MyOrdersPage = () => {
                                     </div>
                                     
                                     <Link to={`/order/${order._id}`} className="bg-gray-50 hover:bg-blue-50 text-gray-600 hover:text-blue-600 p-3 rounded-xl transition-colors">
-                                        <ChevronRight size={20} />
+                                        <ChevronRight size={20} /> 
                                     </Link>
                                 </div>
                             </div>

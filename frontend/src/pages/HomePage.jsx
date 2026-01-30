@@ -251,7 +251,7 @@ const HomePage = () => {
                       }}
                     />
                   </div>
-                  <h3 className="font-bold font-serif text-lg text-gray-800 mb-1 group-hover:text-blue-600 transition line-clamp-1">
+                  <h3 className="font-bold text-lg text-dark-600 mb-1 group-hover:text-blue-600 transition line-clamp-1">
                     {product.name}
                   </h3>
                   <p className="text-gray-500 text-sm mb-2">
@@ -259,7 +259,7 @@ const HomePage = () => {
                   </p>
 
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-blue-600 text-lg">
+                    <span className="font-bold text-dark-600 text-lg">
                       {product.price.toLocaleString()}đ
                     </span>
                     <div className="flex text-yellow-400 text-xs ml-auto items-center gap-1">

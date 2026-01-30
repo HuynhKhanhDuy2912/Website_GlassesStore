@@ -29,6 +29,9 @@ const CheckoutPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const userInfo = JSON.parse(localStorage.getItem("USER_INFO") || "null");
+  const userId = userInfo?._id;
+
   // Lấy dữ liệu từ Cart truyền sang
   const { items, total } = location.state || { items: [], total: 0 };
   const [loading, setLoading] = useState(false);
@@ -51,21 +54,23 @@ const CheckoutPage = () => {
       navigate("/cart");
       return;
     }
+    const user = userInfo;
 
-    const savedAddress = localStorage.getItem("SAVED_SHIPPING_INFO");
+    if (!userId) return;
+
+    const savedAddress = localStorage.getItem(`SAVED_SHIPPING_INFO_${userId}`);
+
     if (savedAddress) {
       setShippingInfo(JSON.parse(savedAddress));
     } else {
-      const userInfo = localStorage.getItem("USER_INFO");
-      if (userInfo) {
-        const user = JSON.parse(userInfo);
-        setShippingInfo((prev) => ({
-          ...prev,
-          fullName: user.name || "",
-        }));
-      }
+      setShippingInfo({
+        fullName: user?.name || "",
+        phone: "",
+        addressLine: "",
+        city: "",
+      });
     }
-  }, [items, navigate]);
+  }, [items, navigate, localStorage.getItem("USER_INFO")]);
 
   const handleChange = (e) => {
     setShippingInfo({ ...shippingInfo, [e.target.name]: e.target.value });
@@ -116,7 +121,13 @@ const CheckoutPage = () => {
     }
 
     setLoading(true);
-    localStorage.setItem("SAVED_SHIPPING_INFO", JSON.stringify(shippingInfo));
+
+    if (userId) {
+      localStorage.setItem(
+        `SAVED_SHIPPING_INFO_${userId}`,
+        JSON.stringify(shippingInfo),
+      );
+    }
 
     // Chuẩn bị dữ liệu gửi lên Server
     const orderData = {
@@ -158,7 +169,7 @@ const CheckoutPage = () => {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
-      
+
       if (res.status === 201) {
         try {
           await clearPurchasedItems();

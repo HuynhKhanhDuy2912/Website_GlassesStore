@@ -98,7 +98,7 @@ export const listOrders = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// --- 3. THỐNG KÊ DASHBOARD (Sửa lỗi undefined .length ở Frontend) ---
+// --- 3. THỐNG KÊ DASHBOARD ---
 export const getDashboardStats = async (req, res, next) => {
   try {
     // 1. Số lượng tổng quát
@@ -112,9 +112,9 @@ export const getDashboardStats = async (req, res, next) => {
     ]);
     const totalRevenue = revenueAgg.length > 0 ? revenueAgg[0].total : 0;
 
-    // 2. Lấy 5 đơn hàng gần nhất (Tránh lỗi .length ở Dashboard.jsx)
+    // 2. Lấy 5 đơn hàng gần nhất 
     const recentOrders = await Order.find()
-      .select("user totalPrice status createdAt")
+      .select("user totalPrice status createdAt shippingAddress")
       .populate("user", "name email")
       .sort({ createdAt: -1 })
       .limit(5);
