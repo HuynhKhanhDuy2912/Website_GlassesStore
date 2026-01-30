@@ -199,12 +199,12 @@ const UserManagement = () => {
       <div className="overflow-x-auto min-h-[400px]">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-gray-50 text-gray-600 text-sm uppercase tracking-wider">
+            <tr className="bg-gray-50 text-gray-600 text-sm uppercase tracking-wider text-center">
               <th className="p-4 rounded-tl-lg">Người dùng</th>
               <th className="p-4">Liên hệ</th>
-              <th className="p-4 text-center">Vai trò (Phân quyền)</th>
+              <th className="p-4">Vai trò (Phân quyền)</th>
               <th className="p-4">Ngày tham gia</th>
-              <th className="p-4 rounded-tr-lg text-center">Hành động</th>
+              <th className="p-4 rounded-tr-lg">Hành động</th>
             </tr>
           </thead>
           <tbody className="text-gray-700">
@@ -315,7 +315,7 @@ const UserManagement = () => {
                     )}
                   </td>
 
-                  <td className="p-4 text-sm text-gray-500">
+                  <td className="p-4 text-sm text-gray-500 text-center">
                     {new Date(user.createdAt).toLocaleDateString("vi-VN")}
                   </td>
 

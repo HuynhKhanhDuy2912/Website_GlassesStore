@@ -236,7 +236,7 @@ const ProductManager = () => {
               setSelectedCategory(e.target.value);
               setPage(1); 
             }}
-            className="px-4 py-2 border rounded-lg focus:border-blue-500 outline-none bg-white text-gray-700 w-full md:w-48"
+            className="px-4 py-2 border rounded-lg focus:border-blue-500 outline-none text-gray-700 w-full md:w-48"
           >
             <option value="">Tất cả danh mục</option>
             {categories.map((cat) => (
@@ -253,7 +253,7 @@ const ProductManager = () => {
               value={keyword}
               onChange={(e) => {
                 setKeyword(e.target.value);
-                setPage(1); // Reset về trang 1 khi tìm kiếm
+                setPage(1); 
               }}
               className="pl-10 pr-4 py-2 border rounded-lg focus:border-blue-500 outline-none w-full md:w-64"
             />

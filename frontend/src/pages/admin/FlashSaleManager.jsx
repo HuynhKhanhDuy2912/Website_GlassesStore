@@ -140,11 +140,11 @@ const FlashSaleManager = () => {
               <tr className="text-center">
                 <th className="p-4 w-16 border-b">Ảnh</th>
                 <th className="p-4 w-40 border-b">Sản Phẩm</th>
-                <th className="p-4 w-20 border-b">Kho</th>
-                <th className="p-4 w-24 border-b">Trạng Thái</th>
-                <th className="p-4 w-32 border-b">Giá Sale</th>
+                <th className="p-4 w-16 border-b">Kho</th>
+                <th className="p-4 w-20 border-b">Trạng Thái</th>
+                <th className="p-4 w-28 border-b">Giá Sale</th>
                 <th className="p-4 w-20 border-b">Tổng Suất</th>
-                <th className="p-4 w-20 border-b">Đã Bán (Ảo)</th>
+                <th className="p-4 w-20 border-b">Đã Bán</th>
                 <th className="p-4 w-38 border-b">Bắt Đầu</th>
                 <th className="p-4 w-38 border-b">Kết Thúc</th>
                 <th className="p-4 w-24 border-b">Lưu</th>
@@ -188,7 +188,7 @@ const FlashSaleManager = () => {
                       </div>
                     </td>
 
-                    <td className="p-3 text-center font-bold text-blue-700 border-blue-50">
+                    <td className="p-3 text-center font-bold text-dark border-blue-50">
                       {p.stock}
                     </td>
 
@@ -356,9 +356,9 @@ const FlashSaleManager = () => {
       </div>
 
       {/* Thêm CSS thủ công hoặc vào file index.css */}
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{ __html:`
         .custom-scrollbar::-webkit-scrollbar {
-          height: 6px;
+          height: 8px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
           background: #f1f1f1;
@@ -370,7 +370,7 @@ const FlashSaleManager = () => {
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
           background: #ccc;
         }
-      `}</style>
+      `}}/>
     </div>
   );
 };

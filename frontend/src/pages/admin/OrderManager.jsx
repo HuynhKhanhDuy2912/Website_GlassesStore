@@ -15,6 +15,7 @@ const OrderManager = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState("all");
+  const [filterDate, setFilterDate] = useState(""); // Lưu ngày chọn lọc (YYYY-MM-DD)
 
   useEffect(() => {
     fetchOrders();
@@ -113,10 +114,16 @@ const OrderManager = () => {
     }
   };
 
-  const filteredOrders =
-    filterStatus === "all"
-      ? orders
-      : orders.filter((o) => o.status === filterStatus);
+  const filteredOrders = orders.filter((o) => {
+    // Lọc theo trạng thái
+    const matchStatus = filterStatus === "all" || o.status === filterStatus;
+
+    // Lọc theo ngày (Chuyển createdAt về định dạng YYYY-MM-DD để so sánh với input date)
+    const orderDate = new Date(o.createdAt).toISOString().split("T")[0];
+    const matchDate = !filterDate || orderDate === filterDate;
+
+    return matchStatus && matchDate;
+  });
 
   if (loading)
     return (
@@ -135,6 +142,25 @@ const OrderManager = () => {
           <p className="text-sm text-gray-500 mt-1">
             Tổng cộng: {orders.length} đơn hàng
           </p>
+        </div>
+
+        {/* BỘ LỌC THEO NGÀY */}
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-600">Lọc theo ngày đặt:</span>
+          <input
+            type="date"
+            value={filterDate}
+            onChange={(e) => setFilterDate(e.target.value)}
+            className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 text-gray-700"
+          />
+          {filterDate && (
+            <button
+              onClick={() => setFilterDate("")}
+              className="text-xs text-red-500 hover:underline"
+            >
+              Xóa ngày
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
@@ -224,7 +250,7 @@ const OrderManager = () => {
                       {order.status === "cancelled" && (
                         <option value="cancelled">Hủy đơn</option>
                       )}
-                      
+
                       {/* Chờ xử lý – chỉ hiện khi chưa giao */}
                       {order.status !== "delivered" &&
                         order.status !== "completed" && (

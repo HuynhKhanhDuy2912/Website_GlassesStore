@@ -84,6 +84,7 @@ const Dashboard = () => {
 
   const [orders, setOrders] = useState([]);
 
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -103,25 +104,26 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const token = localStorage.getItem("ACCESS_TOKEN");
-        const res = await axios.get("http://localhost:5000/api/orders", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setOrders(res.data);
-      } catch (error) {
-        console.error("Lỗi lấy danh sách đơn hàng:", error);
-      }
-    };
+  const fetchOrders = async () => {
+    try {
+      const token = localStorage.getItem("ACCESS_TOKEN");
+      const res = await axios.get("http://localhost:5000/api/orders", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setOrders(res.data);
+    } catch (error) {
+      console.error("Lỗi lấy danh sách đơn hàng:", error);
+    }
+  };
 
-    fetchOrders();
-  }, []);
+  fetchOrders();
+}, []);
 
-  useEffect(() => {
-    const data = buildMonthlyChartData(orders, year);
-    setChartData(data);
-  }, [orders, year]);
+useEffect(() => {
+  const data = buildMonthlyChartData(orders, year);
+  setChartData(data);
+}, [orders, year]);
+
 
   const formatCurrency = (n) =>
     new Intl.NumberFormat("vi-VN", {
@@ -304,8 +306,7 @@ const Dashboard = () => {
 
                     {/* Địa chỉ */}
                     <td className="py-3 text-gray-600">
-                      {order.shippingAddress?.addressLine},{" "}
-                      {order.shippingAddress?.city}
+                      {order.shippingAddress?.addressLine}, {order.shippingAddress?.city}
                     </td>
 
                     {/* Ngày đặt */}
