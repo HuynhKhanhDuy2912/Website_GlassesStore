@@ -142,7 +142,7 @@ const HomePage = () => {
           Khám Phá Danh Mục
         </h2>
         {categories.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
             {categories.map((cat) => (
               <Link
                 to={`/san-pham?category=${cat._id}`}
@@ -251,7 +251,7 @@ const HomePage = () => {
                       }}
                     />
                   </div>
-                  <h3 className="font-bold text-lg text-dark-600 mb-1 group-hover:text-blue-600 transition line-clamp-1">
+                  <h3 className="font-medium text-lg text-dark mb-1 group-hover:text-blue-600 transition line-clamp-1">
                     {product.name}
                   </h3>
                   <p className="text-gray-500 text-sm mb-2">

@@ -312,7 +312,7 @@ useEffect(() => {
                     )}
                   </div>
                   <div className="font-bold text-gray-800">
-                    Thanh toán VNPay
+                    Ví điện tử VNPay
                   </div>
                 </div>
               </div>
