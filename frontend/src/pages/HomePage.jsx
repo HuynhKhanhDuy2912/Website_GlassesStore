@@ -23,7 +23,7 @@ const getImageUrl = (path) => {
   if (!path) return "https://via.placeholder.com/500x500?text=No+Image";
   if (path.startsWith("http")) return path;
   const cleanPath = path.replace(/\\/g, "/");
-  return `http://localhost:5000${cleanPath.startsWith("/") ? "" : "/"}${cleanPath}`;
+  return `https://website-glassesstore.onrender.com${cleanPath.startsWith("/") ? "" : "/"}${cleanPath}`;
 };
 
 const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
