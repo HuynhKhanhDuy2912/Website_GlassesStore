@@ -49,6 +49,7 @@ import FlashSaleManager from "./pages/admin/FlashSaleManager";
 //1. IMPORT FOOTER VỪA TẠO
 import Footer from "./components/Footer";
 
+const BACKENDURL = import.meta.env.BACKEND||"http://localhost:5000/api";
 // Hàm xử lý ảnh
 const getImageUrl = (path) => {
   if (!path) return null;
@@ -87,7 +88,7 @@ function App() {
     }
 
     try {
-      const res = await axios.get("http://localhost:5000/api/cart", {
+      const res = await axios.get(`${BACKENDURL}/cart`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

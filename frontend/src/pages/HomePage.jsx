@@ -26,6 +26,8 @@ const getImageUrl = (path) => {
   return `http://localhost:5000${cleanPath.startsWith("/") ? "" : "/"}${cleanPath}`;
 };
 
+const BACKENDURL = import.meta.env.BACKEND||"http://localhost:5000/api";
+
 const HomePage = () => {
   const [categories, setCategories] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -36,9 +38,9 @@ const HomePage = () => {
     const fetchData = async () => {
       try {
         const [cateRes, prodRes, bannerRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/categories"),
-          axios.get("http://localhost:5000/api/products?limit=8&featured=true"),
-          axios.get("http://localhost:5000/api/banners"),
+          axios.get(`${BACKENDURL}/categories`),
+          axios.get(`${BACKENDURL}/products?limit=8&featured=true`),
+          axios.get(`${BACKENDURL}/banners`),
         ]);
 
         setCategories(cateRes.data);

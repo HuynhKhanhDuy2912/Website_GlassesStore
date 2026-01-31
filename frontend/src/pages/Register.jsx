@@ -13,7 +13,6 @@ const Register = () => {
       const userInfo = localStorage.getItem("USER_INFO");
       if (userInfo) {
         const user = JSON.parse(userInfo);
-        // Nếu đã đăng nhập, đẩy user về trang tương ứng
         if (user.role === "admin") {
           navigate("/admin");
         } else {
