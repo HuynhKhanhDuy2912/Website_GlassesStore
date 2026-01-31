@@ -26,7 +26,7 @@ const getImageUrl = (path) => {
   return `http://localhost:5000${cleanPath.startsWith("/") ? "" : "/"}${cleanPath}`;
 };
 
-const BACKENDURL = import.meta.env.BACKEND||"http://localhost:5000/api";
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
 
 const HomePage = () => {
   const [categories, setCategories] = useState([]);

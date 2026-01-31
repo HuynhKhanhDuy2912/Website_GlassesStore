@@ -49,7 +49,7 @@ import FlashSaleManager from "./pages/admin/FlashSaleManager";
 //1. IMPORT FOOTER VỪA TẠO
 import Footer from "./components/Footer";
 
-const BACKENDURL = import.meta.env.BACKEND||"http://localhost:5000/api";
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
 // Hàm xử lý ảnh
 const getImageUrl = (path) => {
   if (!path) return null;
