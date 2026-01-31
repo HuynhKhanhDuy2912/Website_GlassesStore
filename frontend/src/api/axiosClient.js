@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BACKENDURL = import.meta.env.BACKEND||"http://localhost:5000/api";
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
 const axiosClient = axios.create({
   // baseURL: "http://localhost:5000/api",
   baseURL: BACKENDURL,
