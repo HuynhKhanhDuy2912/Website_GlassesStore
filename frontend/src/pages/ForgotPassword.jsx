@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Mail, Lock, Loader, ArrowLeft, CheckCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
+
 const ForgotPassword = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: '', password: '', confirmPassword: '' });
@@ -23,7 +25,7 @@ const ForgotPassword = () => {
         setStatus({ type: '', msg: '' });
 
         try {
-            const res = await axios.put('http://localhost:5000/api/auth/reset-password-direct', {
+            const res = await axios.put(`${BACKENDURL}/auth/reset-password-direct`, {
                 email: formData.email,
                 password: formData.password
             });

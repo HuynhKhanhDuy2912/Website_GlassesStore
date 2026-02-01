@@ -10,22 +10,26 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 
-const API_URL = "http://localhost:5000";
-
 // Cấu hình Axios
-const api = axios.create({
-  baseURL: `${API_URL}/api`,
-  headers: { "Content-Type": "application/json" },
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
+const axiosClient = axios.create({
+  baseURL: BACKENDURL,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-// Thêm interceptor để tự động gửi token
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("ACCESS_TOKEN");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+// Gắn token tự động
+axiosClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("ACCESS_TOKEN");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 const CategoryManager = () => {
   const [categories, setCategories] = useState([]);
@@ -42,8 +46,8 @@ const CategoryManager = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await api.get("/categories");
-      setCategories(Array.isArray(res.data) ? res.data : []); // <- fix
+      const res = await axiosClient.get("/categories");
+      setCategories(Array.isArray(res.data) ? res.data : []);
     } catch (error) {
       console.error(error);
     }
@@ -85,14 +89,13 @@ const CategoryManager = () => {
         const uploadData = new FormData();
         uploadData.append("image", previewFile);
 
-        const res = await axios.post(`${API_URL}/api/upload`, uploadData, {
+        const res = await axiosClient.post(`/upload`, uploadData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${localStorage.getItem("ACCESS_TOKEN")}`,
           },
         });
 
-        // Server trả về: { image: '/uploads/xxx.jpg' }
         imageUrl = res.data.image;
         setUploading(false);
       }
@@ -101,10 +104,10 @@ const CategoryManager = () => {
       const payload = { name: formData.name, image: imageUrl };
 
       if (editingId) {
-        await api.put(`/categories/${editingId}`, payload);
+        await axiosClient.put(`/categories/${editingId}`, payload);
         alert(" Đã cập nhật danh mục!");
       } else {
-        await api.post("/categories", payload);
+        await axiosClient.post(`/categories`, payload);
         alert(" Đã thêm danh mục mới!");
       }
 
@@ -122,7 +125,7 @@ const CategoryManager = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa?")) {
       try {
-        await api.delete(`/categories/${id}`);
+        await axiosClient.delete(`/categories/${id}`);
         fetchCategories();
       } catch (error) {
         alert("Không thể xóa danh mục này.", error);
@@ -133,7 +136,7 @@ const CategoryManager = () => {
   const getDisplayImage = (path) => {
     if (!path) return null;
     if (path.startsWith("blob:") || path.startsWith("http")) return path;
-    return `${API_URL}${path}`; // API_URL là http://localhost:5000
+    return `https://website-glassesstore.onrender.com${path}`;
   };
 
   return (

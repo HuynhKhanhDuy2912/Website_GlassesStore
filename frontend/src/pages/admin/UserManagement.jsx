@@ -16,8 +16,10 @@ const getImageUrl = (path) => {
   if (!path) return "https://via.placeholder.com/150?text=User";
   if (path.startsWith("http")) return path;
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
-  return `http://localhost:5000${cleanPath}`;
+  return `https://website-glassesstore.onrender.com${cleanPath}`;
 };
+
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -32,7 +34,7 @@ const UserManagement = () => {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem("ACCESS_TOKEN");
-      const res = await axios.get("http://localhost:5000/api/users", {
+      const res = await axios.get(`${BACKENDURL}/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(res.data);
@@ -61,7 +63,7 @@ const UserManagement = () => {
   //   ) {
   //     try {
   //       const token = localStorage.getItem("ACCESS_TOKEN");
-  //       await axios.delete(`http://localhost:5000/api/users/${userId}`, {
+  //       await axios.delete(`${BACKENDURL}/users/${userId}`, {
   //         headers: { Authorization: `Bearer ${token}` },
   //       });
   //       setUsers(users.filter((user) => user._id !== userId));
@@ -94,7 +96,7 @@ const UserManagement = () => {
       const token = localStorage.getItem("ACCESS_TOKEN");
       // Gọi API PUT cập nhật role
       await axios.put(
-        `http://localhost:5000/api/users/${userId}/role`,
+        `${BACKENDURL}/users/${userId}/role`,
         { role: newRole },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -150,7 +152,7 @@ const UserManagement = () => {
       const token = localStorage.getItem("ACCESS_TOKEN");
 
       await axios.put(
-        `http://localhost:5000/api/users/${userId}/status`,
+        `${BACKENDURL}/users/${userId}/status`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } },
       );

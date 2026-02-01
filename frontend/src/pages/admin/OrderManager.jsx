@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
+
 const OrderManager = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,7 +27,7 @@ const OrderManager = () => {
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem("ACCESS_TOKEN");
-      const res = await axios.get("http://localhost:5000/api/orders", {
+      const res = await axios.get(`${BACKENDURL}/orders`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setOrders(res.data);
@@ -40,7 +42,7 @@ const OrderManager = () => {
     try {
       const token = localStorage.getItem("ACCESS_TOKEN");
       await axios.put(
-        `http://localhost:5000/api/orders/${orderId}`,
+        `${BACKENDURL}/orders/${orderId}`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -91,7 +93,7 @@ const OrderManager = () => {
   //   ) {
   //     try {
   //       const token = localStorage.getItem("ACCESS_TOKEN");
-  //       await axios.delete(`http://localhost:5000/api/orders/${orderId}`, {
+  //       await axios.delete(`${BACKENDURL}/orders/${orderId}`, {
   //         headers: { Authorization: `Bearer ${token}` },
   //       });
 
@@ -150,7 +152,7 @@ const OrderManager = () => {
     try {
       const token = localStorage.getItem("ACCESS_TOKEN");
       await axios.put(
-        `http://localhost:5000/api/orders/${orderId}`,
+        `${BACKENDURL}/orders/${orderId}`,
         { isPaid: newStatus }, // Backend cần xử lý cập nhật trường này
         { headers: { Authorization: `Bearer ${token}` } },
       );

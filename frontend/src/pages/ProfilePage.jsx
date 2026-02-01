@@ -3,11 +3,13 @@ import axios from 'axios';
 import { User, Phone, MapPin, Save, Camera } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
+
 const getImageUrl = (path) => {
     if (!path) return null;
     if (path.startsWith("http")) return path;
     const cleanPath = path.startsWith('/') ? path : `/${path}`;
-    return `http://localhost:5000${cleanPath}`;
+    return `https://website-glassesstore.onrender.com${cleanPath}`;
 };
 
 const ProfilePage = () => {
@@ -75,7 +77,7 @@ const ProfilePage = () => {
       };
 
       const { data } = await axios.put(
-        "http://localhost:5000/api/users/profile",
+        `${BACKENDURL}/users/profile`,
         formData,
         config
       );

@@ -418,7 +418,7 @@ export const vnpayReturn = async (req, res, next) => {
           status: "pending",
           paidAt: Date.now(),
         });
-        res.redirect(`http://localhost:5173/order/success?vnp_ResponseCode=00&vnp_TxnRef=${orderId}`);
+        res.redirect(`https://website-glassesstore.pages.dev/order/success?vnp_ResponseCode=00&vnp_TxnRef=${orderId}`);
       } else {
         // --- THẤT BẠI: HOÀN TÁC (ROLLBACK) ---
         const order = await Order.findById(orderId);
@@ -433,10 +433,10 @@ export const vnpayReturn = async (req, res, next) => {
           await Order.findByIdAndDelete(orderId);
         }
         // 3. Đẩy khách quay lại trang thanh toán kèm mã báo lỗi
-        res.redirect(`http://localhost:5173/checkout?payment_error=true`);
+        res.redirect(`https://website-glassesstore.pages.dev/checkout?payment_error=true`);
       }
     } else {
-      res.redirect(`http://localhost:5173/order/success?vnp_ResponseCode=97`);
+      res.redirect(`https://website-glassesstore.pages.dev/order/success?vnp_ResponseCode=97`);
     }
   } catch (err) {
     next(err);

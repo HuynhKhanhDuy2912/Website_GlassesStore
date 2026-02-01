@@ -16,9 +16,12 @@ import {
 } from "lucide-react";
 
 // --- Axios config ---
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
 const axiosClient = axios.create({
-  baseURL: "http://localhost:5000/api",
-  headers: { "Content-Type": "application/json" },
+  baseURL: BACKENDURL,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 axiosClient.interceptors.request.use((config) => {
@@ -218,7 +221,7 @@ const ProductManager = () => {
     if (!img) return null;
     if (img.url.startsWith("blob:") || img.url.startsWith("http"))
       return img.url;
-    return `http://localhost:5000${img.url}`;
+    return `https://website-glassesstore.onrender.com${img.url}`;
   };
 
   return (

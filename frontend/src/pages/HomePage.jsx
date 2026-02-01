@@ -3,11 +3,9 @@ import {
   ShoppingCart,
   ChevronRight,
   Star,
-  Heart,
   Clock,
   Truck,
   ShieldCheck,
-  ChevronLeft,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import axios from "axios";

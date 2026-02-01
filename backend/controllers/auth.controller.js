@@ -63,7 +63,7 @@ export const forgotPassword = async (req, res, next) => {
 
     await user.save();
 
-    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+    const resetUrl = `https://website-glassesstore.pages.dev/reset-password/${resetToken}`;
 
     const message = `Bạn nhận được email này vì bạn (hoặc ai đó) đã yêu cầu đặt lại mật khẩu. Vui lòng nhấn vào đường dẫn sau:\n\n ${resetUrl}`;
 

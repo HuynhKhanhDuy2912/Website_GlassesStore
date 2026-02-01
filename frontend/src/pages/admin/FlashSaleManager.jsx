@@ -9,6 +9,8 @@ import {
   AlertTriangle,
 } from "lucide-react";
 
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
+
 const FlashSaleManager = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,7 +27,7 @@ const FlashSaleManager = () => {
   const fetchProducts = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/products?limit=100",
+        `${BACKENDURL}/products?limit=100`,
       );
       setProducts(res.data.items || []);
     } catch (err) {
@@ -75,7 +77,7 @@ const FlashSaleManager = () => {
     try {
       const token = localStorage.getItem("ACCESS_TOKEN");
       await axios.put(
-        `http://localhost:5000/api/products/${p._id}`,
+        `${BACKENDURL}/products/${p._id}`,
         {
           isFlashSale: p.isFlashSale,
           flashSalePrice: Number(p.flashSalePrice),

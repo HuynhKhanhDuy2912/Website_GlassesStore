@@ -14,23 +14,15 @@ import {
 } from "lucide-react";
 
 const getImageUrl = (input) => {
-  // 1. Kiểm tra dữ liệu đầu vào
   if (!input) return "https://placehold.co/150?text=No+Image";
-
   let path = input;
-
-  // 2. Nếu dữ liệu là Mảng (Array) -> Lấy phần tử đầu tiên
   if (Array.isArray(path)) {
     if (path.length > 0) path = path[0];
     else return "https://placehold.co/150?text=No+Image";
   }
-
-  // 3. Nếu dữ liệu là Object (không phải null) -> Thử lấy thuộc tính url hoặc image
   if (typeof path === "object" && path !== null) {
     path = path.url || path.image || "";
   }
-
-  // 4. Ép kiểu về chuỗi để đảm bảo an toàn tuyệt đối
   if (typeof path !== "string") {
     return "https://placehold.co/150?text=Error+Type";
   }
@@ -46,8 +38,10 @@ const getImageUrl = (input) => {
     finalPath = `/uploads${finalPath}`;
   }
 
-  return `http://localhost:5000${finalPath}`;
+  return `https://website-glassesstore.onrender.com${finalPath}`;
 };
+
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
 
 const CartPage = () => {
   const [cart, setCart] = useState(null);
@@ -69,7 +63,7 @@ const CartPage = () => {
       return;
     }
     try {
-      const res = await axios.get("http://localhost:5000/api/cart", {
+      const res = await axios.get(`${BACKENDURL}/cart`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCart(res.data);
@@ -187,7 +181,7 @@ const CartPage = () => {
 
     try {
       const res = await axios.put(
-        "http://localhost:5000/api/cart/item",
+        `${BACKENDURL}/cart/item`,
         {
           itemIndex: index,
           qty: newQty,
@@ -214,7 +208,7 @@ const CartPage = () => {
 
     try {
       const res = await axios.delete(
-        `http://localhost:5000/api/cart/item/${productId}`,
+        `${BACKENDURL}/cart/item/${productId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -232,7 +226,7 @@ const CartPage = () => {
     const token = getToken();
     try {
       const res = await axios.delete(
-        `http://localhost:5000/api/cart/item/${itemId}`,
+        `${BACKENDURL}/cart/item/${itemId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },

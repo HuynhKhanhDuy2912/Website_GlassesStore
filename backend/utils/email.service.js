@@ -109,7 +109,7 @@ const createOrderTemplate = (order) => {
 
       <!-- CTA -->
       <div style="text-align:center;margin-top:28px">
-        <a href="http://localhost:5173/order/${order._id}"
+        <a href="https://website-glassesstore.pages.dev/order/${order._id}"
           style="display:inline-block;background:#111827;color:#fff;padding:12px 22px;border-radius:6px;text-decoration:none;font-weight:600">
           Xem chi tiết đơn hàng
         </a>
@@ -184,7 +184,7 @@ export const sendOrderStatusEmail = async (order) => {
             <p>Xin chào <strong>${order.user?.name || "Khách hàng"}</strong>,</p>
             <p>Đơn hàng <strong>#${order._id}</strong> của bạn vừa chuyển sang trạng thái: <strong>${statusText}</strong>.</p>
             <div style="text-align: center; margin-top: 30px;">
-                <a href="http://localhost:5173/order/${order._id}" style="background-color: ${color}; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Xem chi tiết đơn hàng</a>
+                <a href="https://website-glassesstore.pages.dev/order/${order._id}" style="background-color: ${color}; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Xem chi tiết đơn hàng</a>
             </div>
             <p style="margin-top: 30px; font-size: 12px; color: #888;">Cảm ơn bạn đã mua sắm tại DHD - GlassesShop!</p>
           </div>

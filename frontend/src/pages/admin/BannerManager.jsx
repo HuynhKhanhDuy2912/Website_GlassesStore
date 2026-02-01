@@ -6,14 +6,14 @@ import { Image, Trash2, Plus, Eye, EyeOff, UploadCloud } from 'lucide-react';
 const getImageUrl = (path) => {
     if (!path) return 'https://placehold.co/600x200?text=No+Image';
     if (path.startsWith("http")) return path;
-    
-    // Xử lý đường dẫn
     let cleanPath = path.replace(/\\/g, "/");
     if (!cleanPath.startsWith("/")) cleanPath = "/" + cleanPath;
     if (!cleanPath.startsWith("/uploads")) cleanPath = "/uploads" + cleanPath;
 
-    return `http://localhost:5000${cleanPath}`;
+    return `https://website-glassesstore.onrender.com${cleanPath}`;
 };
+
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
 
 const BannerManager = () => {
   const [banners, setBanners] = useState([]);
@@ -28,7 +28,7 @@ const BannerManager = () => {
   const fetchBanners = async () => {
     try {
       const token = localStorage.getItem("ACCESS_TOKEN");
-      const res = await axios.get("http://localhost:5000/api/banners/admin", {
+      const res = await axios.get(`${BACKENDURL}/banners/admin`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setBanners(res.data);
@@ -64,7 +64,7 @@ const BannerManager = () => {
       formData.append("description", description);
       formData.append("image", selectedFile); // Gửi file ảnh
 
-      await axios.post("http://localhost:5000/api/banners", formData, {
+      await axios.post(`${BACKENDURL}/banners`, formData, {
         headers: { 
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data"
@@ -86,7 +86,7 @@ const BannerManager = () => {
     if(!window.confirm("Xóa banner này?")) return;
     try {
         const token = localStorage.getItem("ACCESS_TOKEN");
-        await axios.delete(`http://localhost:5000/api/banners/${id}`, {
+        await axios.delete(`${BACKENDURL}/banners/${id}`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         setBanners(banners.filter(b => b._id !== id));
@@ -96,7 +96,7 @@ const BannerManager = () => {
   const handleToggle = async (id) => {
     try {
         const token = localStorage.getItem("ACCESS_TOKEN");
-        await axios.put(`http://localhost:5000/api/banners/${id}/toggle`, {}, {
+        await axios.put(`${BACKENDURL}/banners/${id}/toggle`, {}, {
             headers: { Authorization: `Bearer ${token}` }
         });
         fetchBanners();

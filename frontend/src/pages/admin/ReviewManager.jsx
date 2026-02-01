@@ -22,8 +22,10 @@ const getImageUrl = (product) => {
   if (!path.startsWith("/uploads")) {
     path = "/uploads" + path;
   }
-  return `http://localhost:5000${path}`;
+  return `https://website-glassesstore.onrender.com${path}`;
 };
+
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
 
 const ReviewManager = () => {
   const [reviews, setReviews] = useState([]);
@@ -38,7 +40,7 @@ const ReviewManager = () => {
     try {
       const token = localStorage.getItem("ACCESS_TOKEN");
       const res = await axios.get(
-        "http://localhost:5000/api/reviews/admin/all",
+        `${BACKENDURL}/reviews/admin/all`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -59,7 +61,7 @@ const ReviewManager = () => {
     try {
       const token = localStorage.getItem("ACCESS_TOKEN");
       await axios.put(
-        `http://localhost:5000/api/reviews/${id}/approve`,
+        `${BACKENDURL}/reviews/${id}/approve`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -75,7 +77,7 @@ const ReviewManager = () => {
   //   if (!window.confirm("Bạn chắc chắn muốn xóa đánh giá này?")) return;
   //   try {
   //     const token = localStorage.getItem("ACCESS_TOKEN");
-  //     await axios.delete(`http://localhost:5000/api/reviews/${id}`, {
+  //     await axios.delete(`${BACKENDURL}/reviews/${id}`, {
   //       headers: { Authorization: `Bearer ${token}` },
   //     });
   //     setReviews(reviews.filter((r) => r._id !== id));
@@ -89,7 +91,7 @@ const ReviewManager = () => {
     try {
       const token = localStorage.getItem("ACCESS_TOKEN");
       await axios.put(
-        `http://localhost:5000/api/reviews/${id}/reply`,
+        `${BACKENDURL}/reviews/${id}/reply`,
         { response: replyText[id] },
         { headers: { Authorization: `Bearer ${token}` } },
       );

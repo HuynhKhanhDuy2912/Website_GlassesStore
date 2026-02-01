@@ -20,14 +20,15 @@ import {
 /* =======================
    HELPER
 ======================= */
-
 const getImageUrl = (path) => {
   if (!path) return "https://via.placeholder.com/100?text=No+Img";
   if (path.startsWith("http")) return path;
 
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
-  return `http://localhost:5000${cleanPath}`;
+  return `https://website-glassesstore.onrender.com${cleanPath}`;
 };
+
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
 
 const StatCard = ({ title, value, icon, color }) => (
   <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 transition hover:shadow-md">
@@ -88,7 +89,7 @@ const Dashboard = () => {
     const fetchStats = async () => {
       try {
         const token = localStorage.getItem("ACCESS_TOKEN");
-        const res = await axios.get("http://localhost:5000/api/orders/stats", {
+        const res = await axios.get(`${BACKENDURL}/orders/stats`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setStats(res.data);
@@ -106,7 +107,7 @@ const Dashboard = () => {
     const fetchOrders = async () => {
       try {
         const token = localStorage.getItem("ACCESS_TOKEN");
-        const res = await axios.get("http://localhost:5000/api/orders", {
+        const res = await axios.get(`${BACKENDURL}/api/orders`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setOrders(res.data);

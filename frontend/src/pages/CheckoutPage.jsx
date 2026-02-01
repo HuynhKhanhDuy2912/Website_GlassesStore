@@ -6,8 +6,7 @@ import {
   Banknote,
   ChevronLeft,
   CheckCircle,
-  Loader,
-  Save,
+  Loader
 } from "lucide-react";
 
 //  HÀM XỬ LÝ ẢNH ĐỒNG BỘ VỚI APP.JS
@@ -22,8 +21,10 @@ const getImageUrl = (path) => {
   if (!cleanPath.startsWith("/")) cleanPath = "/" + cleanPath;
   if (!cleanPath.startsWith("/uploads")) cleanPath = "/uploads" + cleanPath;
 
-  return `http://localhost:5000${cleanPath}`;
+  return `https://website-glassesstore.onrender.com${cleanPath}`;
 };
+
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
 
 const CheckoutPage = () => {
   const location = useLocation();
@@ -93,7 +94,7 @@ useEffect(() => {
 
         try {
           await axios.delete(
-            `http://localhost:5000/api/cart/item/${productId}`,
+            `${BACKENDURL}/cart/item/${productId}`,
             {
               headers: { Authorization: `Bearer ${token}` },
             },
@@ -168,7 +169,7 @@ useEffect(() => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/orders",
+        `${BACKENDURL}/orders`,
         orderData,
         {
           headers: { Authorization: `Bearer ${token}` },

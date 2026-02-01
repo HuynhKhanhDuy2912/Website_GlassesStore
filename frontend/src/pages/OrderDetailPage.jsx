@@ -26,8 +26,10 @@ const getImageUrl = (path) => {
   if (!cleanPath.startsWith("/")) cleanPath = "/" + cleanPath;
   if (!cleanPath.startsWith("/uploads")) cleanPath = "/uploads" + cleanPath;
 
-  return `http://localhost:5000${cleanPath}`;
+  return `https://website-glassesstore.onrender.com${cleanPath}`;
 };
+
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
 
 const OrderDetailPage = () => {
   const { id } = useParams();
@@ -44,7 +46,7 @@ const OrderDetailPage = () => {
     const fetchOrder = async () => {
       const token = localStorage.getItem("ACCESS_TOKEN");
       try {
-        const res = await axios.get(`http://localhost:5000/api/orders/${id}`, {
+        const res = await axios.get(`${BACKENDURL}/orders/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setOrder(res.data);
@@ -63,7 +65,7 @@ const OrderDetailPage = () => {
     try {
       const token = localStorage.getItem("ACCESS_TOKEN");
       const res = await axios.put(
-        `http://localhost:5000/api/orders/${id}/cancel`,
+        `${BACKENDURL}/orders/${id}/cancel`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -84,7 +86,7 @@ const OrderDetailPage = () => {
     setProcessingItem(item.product?._id || item.product);
     try {
       await axios.post(
-        "http://localhost:5000/api/cart/add",
+        `${BACKENDURL}/cart/add`,
         {
           productId: item.product?._id || item.product,
           qty: 1,

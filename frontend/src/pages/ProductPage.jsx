@@ -17,8 +17,10 @@ import axios from "axios";
 const getImageUrl = (path) => {
   if (!path) return "https://via.placeholder.com/400x400?text=No+Image";
   if (path.startsWith("http")) return path;
-  return `http://localhost:5000${path}`;
+  return `https://website-glassesstore.onrender.com${path}`;
 };
+
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
 
 const ProductPage = () => {
   const [products, setProducts] = useState([]);
@@ -38,7 +40,7 @@ const ProductPage = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/categories")
+      .get(`${BACKENDURL}/categories`)
       .then((res) => setCategories(res.data))
       .catch((err) => console.log(err));
   }, []);
@@ -75,7 +77,7 @@ const ProductPage = () => {
           sort: sortType, // Gửi tham số sort xuống Backend
         };
 
-        const res = await axios.get("http://localhost:5000/api/products", {
+        const res = await axios.get(`${BACKENDURL}/products`, {
           params,
         });
         const newItems = res.data.items || [];
@@ -98,7 +100,7 @@ const ProductPage = () => {
   // Fetch danh sách thương hiệu từ server
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/products/flavors")
+      .get(`${BACKENDURL}/products/flavors`)
       .then((res) => setDynamicFlavors(res.data))
       .catch((err) => console.log(err));
   }, []);
@@ -145,7 +147,7 @@ const ProductPage = () => {
     setAddingId(product._id);
     try {
       await axios.post(
-        "http://localhost:5000/api/cart/add",
+        `${BACKENDURL}/cart/add`,
         { productId: product._id, qty: 1, attrs: {} },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -416,7 +418,7 @@ const ProductPage = () => {
 
                                 try {
                                   await axios.post(
-                                    "http://localhost:5000/api/cart/add",
+                                    `${BACKENDURL}/cart/add`,
                                     { productId: product._id, qty: 1 },
                                     {
                                       headers: {

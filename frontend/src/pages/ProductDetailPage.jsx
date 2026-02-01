@@ -7,6 +7,7 @@ import {
   ShieldCheck,
   Check,
   ChevronRight,
+  ChevronLeft,
   MessageSquare,
   User,
   Zap,
@@ -15,10 +16,12 @@ import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
 const getImageUrl = (path) => {
-  if (!path) return "https://via.placeholder.com/500x500?text=No+Image";
+  if (!path) return "https://via.placeholder.com/400x400?text=No+Image";
   if (path.startsWith("http")) return path;
-  return `http://localhost:5000${path}`;
+  return `https://website-glassesstore.onrender.com${path}`;
 };
+
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
 
 const ProductDetailPage = () => {
   const { slug } = useParams();
@@ -27,6 +30,9 @@ const ProductDetailPage = () => {
 
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const ITEMS_PER_PAGE = 4;
+  const [relatedIndex, setRelatedIndex] = useState(0);
+
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -66,16 +72,16 @@ const ProductDetailPage = () => {
       setError(false);
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/products/slug/${slug}`,
+          `${BACKENDURL}/products/slug/${slug}`,
         );
         setProduct(res.data);
 
         if (res.data && res.data.category) {
           const catId = res.data.category._id || res.data.category;
           const relatedRes = await axios.get(
-            `http://localhost:5000/api/products`,
+            `${BACKENDURL}/products`,
             {
-              params: { category: catId, limit: 4 },
+              params: { category: catId, limit: 8 },
             },
           );
           setRelatedProducts(
@@ -97,7 +103,7 @@ const ProductDetailPage = () => {
       const fetchReviews = async () => {
         try {
           const res = await axios.get(
-            `http://localhost:5000/api/reviews?productId=${product._id}`,
+            `${BACKENDURL}/reviews?productId=${product._id}`,
           );
 
           setReviews(res.data);
@@ -135,7 +141,7 @@ const ProductDetailPage = () => {
     setAddingToCart(true);
     try {
       await axios.post(
-        "http://localhost:5000/api/cart/add",
+        `${BACKENDURL}/cart/add`,
         {
           productId: product._id,
           qty: quantity,
@@ -171,7 +177,7 @@ const ProductDetailPage = () => {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/cart/add",
+        `${BACKENDURL}/cart/add`,
         {
           productId: product._id,
           qty: quantity,
@@ -210,7 +216,7 @@ const ProductDetailPage = () => {
     setSubmittingReview(true);
     try {
       await axios.post(
-        "http://localhost:5000/api/reviews",
+        `${BACKENDURL}/reviews`,
         {
           productId: product._id,
           rating: userRating,
@@ -225,7 +231,7 @@ const ProductDetailPage = () => {
       setReviewTitle("");
       setReviewContent("");
       const res = await axios.get(
-        `http://localhost:5000/api/reviews?productId=${product._id}`,
+        `${BACKENDURL}/reviews?productId=${product._id}`,
       );
       setReviews(res.data);
     } catch (err) {
@@ -272,6 +278,23 @@ const ProductDetailPage = () => {
   const discountPercent = Math.round(
     ((originalPrice - currentPrice) / originalPrice) * 100,
   );
+
+  const visibleRelatedProducts = relatedProducts.slice(
+    relatedIndex,
+    relatedIndex + ITEMS_PER_PAGE,
+  );
+
+  const handleNextRelated = () => {
+    if (relatedIndex + ITEMS_PER_PAGE < relatedProducts.length) {
+      setRelatedIndex(relatedIndex + ITEMS_PER_PAGE);
+    }
+  };
+
+  const handlePrevRelated = () => {
+    if (relatedIndex - ITEMS_PER_PAGE >= 0) {
+      setRelatedIndex(relatedIndex - ITEMS_PER_PAGE);
+    }
+  };
 
   return (
     <div className="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col">
@@ -352,8 +375,6 @@ const ProductDetailPage = () => {
 
             {/* RIGHT: Info */}
             <div className="w-full lg:w-1/2 flex flex-col">
-              {/* CATEGORY */}
-              {/* CATEGORY + RATING */}
               <div className="mb-4 text-sm flex flex-wrap items-center gap-4">
                 {/* CATEGORY */}
                 <div>
@@ -366,7 +387,7 @@ const ProductDetailPage = () => {
                     </span>
                   )}
                 </div>
-                
+
                 {/* RATING */}
                 <div
                   className="flex items-center gap-1 text-gray-600 cursor-pointer hover:text-blue-600 transition"
@@ -545,6 +566,112 @@ const ProductDetailPage = () => {
               </div>
             </div>
           </div>
+
+          {/* SẢN PHẨM LIÊN QUAN */}
+          {relatedProducts.length > 0 && (
+            <div className="mt-16 border-t border-gray-100 pt-12">
+              <h3 className="text-2xl font-extrabold text-gray-800 mb-8">
+                Sản phẩm liên quan
+              </h3>
+
+              {/* WRAPPER */}
+              <div className="relative group">
+                {/* MŨI TÊN TRÁI */}
+                <button
+                  onClick={handlePrevRelated}
+                  disabled={relatedIndex === 0}
+                  className="
+          absolute left-[-20px] top-1/2 -translate-y-1/2 z-10
+          w-10 h-10 rounded-full
+          bg-white/80 backdrop-blur shadow-md
+          flex items-center justify-center
+          transition
+          opacity-0 group-hover:opacity-100
+          hover:bg-white
+          disabled:opacity-30
+        "
+                >
+                  <ChevronLeft size={22} className="text-gray-700" />
+                </button>
+
+                {/* GRID SẢN PHẨM */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  {visibleRelatedProducts.map((p) => {
+                    const price = p.isFlashSale
+                      ? p.flashSalePrice
+                      : p.salePrice > 0
+                        ? p.salePrice
+                        : p.price;
+
+                    return (
+                      <Link
+                        key={p._id}
+                        to={`/san-pham/${p.slug}`}
+                        className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition overflow-hidden"
+                      >
+                        <div className="aspect-square bg-gray-50 overflow-hidden relative">
+                          <img
+                            src={getImageUrl(p.images?.[0]?.url)}
+                            alt={p.name}
+                            className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                            onError={(e) => {
+                              e.target.src =
+                                "https://via.placeholder.com/300x300?text=No+Image";
+                            }}
+                          />
+
+                          {p.isFlashSale && (
+                            <span className="absolute top-2 left-2 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                              <Zap size={12} className="text-yellow-300" />{" "}
+                              Flash Sale
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="p-4">
+                          <h4 className="font-bold text-sm text-gray-800 line-clamp-2 mb-2">
+                            {p.name}
+                          </h4>
+
+                          <div className="flex items-center gap-2">
+                            <span className="text-blue-700 font-extrabold">
+                              {price.toLocaleString()}đ
+                            </span>
+
+                            {price < p.price && (
+                              <span className="text-gray-400 line-through text-sm">
+                                {p.price.toLocaleString()}đ
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+
+                {/* MŨI TÊN PHẢI */}
+                <button
+                  onClick={handleNextRelated}
+                  disabled={
+                    relatedIndex + ITEMS_PER_PAGE >= relatedProducts.length
+                  }
+                  className="
+          absolute right-[-20px] top-1/2 -translate-y-1/2 z-10
+          w-10 h-10 rounded-full
+          bg-white/80 backdrop-blur shadow-md
+          flex items-center justify-center
+          transition
+          opacity-0 group-hover:opacity-100
+          hover:bg-white
+          disabled:opacity-30
+        "
+                >
+                  <ChevronRight size={22} className="text-gray-700" />
+                </button>
+              </div>
+            </div>
+          )}
 
           <div
             id="reviews"

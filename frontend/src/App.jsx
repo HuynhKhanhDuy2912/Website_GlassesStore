@@ -49,7 +49,6 @@ import FlashSaleManager from "./pages/admin/FlashSaleManager";
 //1. IMPORT FOOTER VỪA TẠO
 import Footer from "./components/Footer";
 
-const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
 // Hàm xử lý ảnh
 const getImageUrl = (path) => {
   if (!path) return null;
@@ -57,7 +56,20 @@ const getImageUrl = (path) => {
   let cleanPath = path.replace(/\\/g, "/");
   if (!cleanPath.startsWith("/")) cleanPath = "/" + cleanPath;
   if (!cleanPath.startsWith("/uploads")) cleanPath = "/uploads" + cleanPath;
-  return `http://localhost:5000${cleanPath}`;
+  return `https://website-glassesstore.onrender.com${cleanPath}`;
+};
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
+
+const AdminRoute = ({ children, currentUser, checkingAuth }) => {
+  if (checkingAuth) {
+    return <div className="text-center py-20">Đang kiểm tra quyền...</div>;
+  }
+
+  if (!currentUser || currentUser.role !== "admin") {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
 };
 
 function App() {
@@ -74,7 +86,7 @@ function App() {
   });
 
   const [cartCount, setCartCount] = useState(0);
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [checkingAuth] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -103,25 +115,13 @@ function App() {
   };
 
   useEffect(() => {
-    const stored = localStorage.getItem("USER_INFO");
-    if (stored && stored !== "undefined") {
-      try {
-        const user = JSON.parse(stored);
-        setCurrentUser(user);
-        if (
-          user.role === "admin" &&
-          (location.pathname === "/login" || location.pathname === "/register")
-        ) {
-          navigate("/admin", { replace: true });
-        }
-      } catch {
-        setCurrentUser(null);
-      }
-    } else {
-      setCurrentUser(null);
+    if (
+      currentUser?.role === "admin" &&
+      (location.pathname === "/login" || location.pathname === "/register")
+    ) {
+      navigate("/admin", { replace: true });
     }
-    setCheckingAuth(false);
-  }, [location, navigate]);
+  }, [currentUser, location.pathname, navigate]);
 
   useEffect(() => {
     const handleUserUpdate = () => {
@@ -134,19 +134,17 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetchCartCount();
-    const handleCartUpdate = () => fetchCartCount();
+    const run = async () => {
+      await fetchCartCount();
+    };
+
+    run();
+
+    const handleCartUpdate = () => run();
     window.addEventListener("CART_UPDATED", handleCartUpdate);
+
     return () => window.removeEventListener("CART_UPDATED", handleCartUpdate);
   }, [currentUser]);
-
-  const AdminRoute = ({ children }) => {
-    if (checkingAuth)
-      return <div className="text-center py-20">Đang kiểm tra quyền...</div>;
-    if (!currentUser || currentUser.role !== "admin")
-      return <Navigate to="/" replace />;
-    return children;
-  };
 
   const handleLogout = () => {
     localStorage.removeItem("ACCESS_TOKEN");
@@ -339,8 +337,14 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/order/success" element={<OrderSuccess />} />
 
-          {/* <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}> */}
-          <Route path="/admin" element={<AdminLayout />}>
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute currentUser={currentUser} checkingAuth={checkingAuth}>
+                <AdminLayout onLogout={handleLogout}/>
+              </AdminRoute>
+            }
+          >
             <Route index element={<Dashboard />} />
             <Route path="products" element={<ProductManager />} />
             <Route path="categories" element={<CategoryManager />} />

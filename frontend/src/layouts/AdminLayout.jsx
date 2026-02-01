@@ -1,11 +1,10 @@
 import React from "react";
-import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   ShoppingBag,
   Layers,
   LogOut,
-  Home,
   Package,
   Mail,
   Users,
@@ -14,9 +13,8 @@ import {
   Zap,
 } from "lucide-react";
 
-const AdminLayout = () => {
+const AdminLayout = ({ onLogout }) => {
   const location = useLocation();
-  const navigate = useNavigate();
 
   const menuItems = [
     { path: "/admin", icon: <LayoutDashboard size={20} />, label: "Báo cáo Thống kê" },    
@@ -31,13 +29,12 @@ const AdminLayout = () => {
     { action: "logout", icon: <LogOut size={20} />, label: "Đăng xuất", danger: true },
   ];
 
-  const handleLogout = () => {
-    if (window.confirm("Bạn có chắc chắn muốn đăng xuất không?")) {
-      localStorage.removeItem("ACCESS_TOKEN");
-      localStorage.removeItem("USER_INFO");
-      navigate("/login");
-    }
-  };
+const handleLogout = () => {
+  if (window.confirm("Bạn có chắc chắn muốn đăng xuất không?")) {
+    onLogout();
+  }
+};
+
 
   return (
     <div className="flex h-screen bg-gray-100 font-sans">
