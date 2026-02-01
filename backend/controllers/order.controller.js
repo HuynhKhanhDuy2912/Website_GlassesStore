@@ -143,7 +143,7 @@ const createVNPayUrl = (req, order) => {
   let tmnCode = "4CXUYYFD"; // Thay bằng code thật
   let secretKey = "AGLCBHO0GMBQ7IJ686NQ6OUF0NTSS9SA"; // Thay bằng key thật
   let vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-  let returnUrl = `http://localhost:5000/api/orders/vnpay_return`; // URL web của bạn
+  let returnUrl = `https://website-glassesstore.onrender.com/api/orders/vnpay_return`; // URL web của bạn
 
   let vnp_Params = {};
   vnp_Params["vnp_Version"] = "2.1.0";
