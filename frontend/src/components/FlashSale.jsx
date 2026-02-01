@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 
+const BACKENDURL = import.meta.env.VITE_BECKEND_API_URL||"http://localhost:5000/api";
+
 const FlashSale = () => {
   const [products, setProducts] = useState([]);
   const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0 });
@@ -14,7 +16,7 @@ const FlashSale = () => {
   useEffect(() => {
     const fetchFlashSale = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/products?flashSale=true&limit=20');
+        const res = await axios.get(`${BACKENDURL}/products?flashSale=true&limit=20`);
         const now = Date.now();
         
         // Chỉ lấy sản phẩm ĐANG diễn ra (Bắt đầu <= Hiện tại <= Kết thúc)
@@ -88,7 +90,7 @@ const FlashSale = () => {
                    <div className="border rounded-xl p-3 hover:shadow-lg transition bg-white h-full group">
                       <div className="relative mb-3 h-48 rounded-lg overflow-hidden">
                          <Link to={`/san-pham/${p.slug}`}>
-                            <img src={`http://localhost:5000${p.images?.[0]?.url}`} alt={p.name} className="w-full h-full object-cover"/>
+                            <img src={`https://website-glassesstore.onrender.com${p.images?.[0]?.url}`} alt={p.name} className="w-full h-full object-cover"/>
                          </Link>
                          <div className="absolute top-0 right-0 bg-yellow-400 text-red-700 font-bold text-xs px-2 py-1 rounded-bl-lg">⚡ -{percent}%</div>
                       </div>
