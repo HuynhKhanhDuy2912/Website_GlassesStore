@@ -8,9 +8,17 @@ import {
   Eye,
 } from "lucide-react";
 
+import heroBg from "@/assets/img/banner_about.jpg";
+import storyImg from "@/assets/img/banner_about1.jpg";
+
+import about1 from "@/assets/img/about1.jpg";
+import about2 from "@/assets/img/about2.jpg";
+import about3 from "@/assets/img/about3.jpg";
+import about4 from "@/assets/img/about4.jpg";
+
 // Giữ nguyên format ảnh như bạn yêu cầu
-const HERO_BG = "src/assets/img//banner_about.jpg";
-const STORY_IMG = "src/assets/img//banner_about1.jpg";
+const HERO_BG = heroBg;
+const STORY_IMG = storyImg;
 
 const AboutPage = () => {
   return (
@@ -230,19 +238,19 @@ const AboutPage = () => {
       {/* 5. IMAGE STRIP (Giữ nguyên các thẻ img như yêu cầu) */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
         <img
-          src="src/assets/img/about1.jpg"
+          src={about1}
           className="w-full h-64 object-cover hover:opacity-90 transition cursor-pointer"
         />
         <img
-          src="src/assets/img/about2.jpg"
+          src={about2}
           className="w-full h-64 object-cover hover:opacity-90 transition cursor-pointer"
         />
         <img
-          src="src/assets/img/about3.jpg"
+          src={about3}
           className="w-full h-64 object-cover hover:opacity-90 transition cursor-pointer"
         />
         <img
-          src="src/assets/img/about4.jpg"
+          src={about4}
           className="w-full h-64 object-cover hover:opacity-90 transition cursor-pointer"
         />
       </div>
