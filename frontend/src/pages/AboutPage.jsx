@@ -8,13 +8,14 @@ import {
   Eye,
 } from "lucide-react";
 
-import heroBg from "@/assets/img/banner_about.jpg";
-import storyImg from "@/assets/img/banner_about1.jpg";
+import heroBg from "../assets/img/banner_about.jpg";
+import storyImg from "../assets/img/banner_about1.jpg";
 
-import about1 from "@/assets/img/about1.jpg";
-import about2 from "@/assets/img/about2.jpg";
-import about3 from "@/assets/img/about3.jpg";
-import about4 from "@/assets/img/about4.jpg";
+import about1 from "../assets/img/about1.jpg";
+import about2 from "../assets/img/about2.jpg";
+import about3 from "../assets/img/about3.jpg";
+import about4 from "../assets/img/about4.jpg";
+
 
 // Giữ nguyên format ảnh như bạn yêu cầu
 const HERO_BG = heroBg;
