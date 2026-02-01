@@ -107,7 +107,7 @@ const Dashboard = () => {
     const fetchOrders = async () => {
       try {
         const token = localStorage.getItem("ACCESS_TOKEN");
-        const res = await axios.get(`${BACKENDURL}/api/orders`, {
+        const res = await axios.get(`${BACKENDURL}/orders`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setOrders(res.data);
